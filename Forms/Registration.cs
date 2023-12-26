@@ -19,62 +19,56 @@ namespace FinancialApp
 
         public void AddPerson()
         {
-            var ageValue = Int32.TryParse(ageInput.Text, out int ageInt);
-
-            if (ageInt == null)
+            if (ageInput.Text == null || phoneInput.Text == null)
             {
                 MessageBox.Show("Поле обязательно для заполнения");
-                return;
-            }
-            else if (ageValue == false)
-            {
-                MessageBox.Show("Возраст должен быть числом");
-                return;
-            }
-
-            var phoneNumberValue = Int32.TryParse(phoneInput.Text, out int phoneNumberInt);
-
-            if (phoneNumberValue == null)
-            {
-                MessageBox.Show("Поле обязательно для заполнения");
-                return;
-            }
-            else if (phoneNumberValue == false)
-            {
-                MessageBox.Show("Номер телефона должен быть в виде числа");
-                return;
-            }
-
-            var person = new Person();
-            var personId = Guid.NewGuid();
-
-            person.Id = personId;
-            person.Name = name.Text;
-            person.Surname = surnameInput.Text;
-
-            if (ageInt <= 0)
-            {
-                MessageBox.Show("Возраст не может быть меньше 0");
-                return;
-            }
-            else if (ageInt > 200)
-            {
-                MessageBox.Show("Возраст не может быть больше 200 лет");
                 return;
             }
             else
             {
-                person.Age = ageInt;
+                var ageValue = Int32.TryParse(ageInput.Text, out int ageInt);
+                if (ageValue == false)
+                {
+                    MessageBox.Show("Возраст должен быть числом");
+                    return;
+                }
+                else
+                {
+                    if (ageInt <= 0)
+                    {
+                        MessageBox.Show("Возраст не может быть меньше 0");
+                        return;
+                    }
+                    else if (ageInt > 200)
+                    {
+                        MessageBox.Show("Возраст не может быть больше 200 лет");
+                        return;
+                    }
+                }
+
+                var phoneNumberValue = Int32.TryParse(phoneInput.Text, out int phoneNumberInt);
+                if (phoneNumberValue == false)
+                {
+                    MessageBox.Show("Номер телефона должен быть в виде числа");
+                    return;
+                }
+
+                var person = new Person();
+                var personId = Guid.NewGuid();
+
+                person.Id = personId;
+                person.Name = name.Text;
+                person.Surname = surnameInput.Text;
+                person.City = cityInput.Text;
+                person.Adress = adressInput.Text;
+                person.PhoneNumber = phoneNumberInt;
+                person.EmailAdress = emailInput.Text;
+                person.Login = loginInput.Text;
+                person.Password = passwordInput.Text;
+
+                _db.Persons.Add(person);
             }
 
-            person.City = cityInput.Text;
-            person.Adress = adressInput.Text;
-            person.PhoneNumber = phoneNumberInt;
-            person.EmailAdress = emailInput.Text;
-            person.Login = loginInput.Text;
-            person.Password = passwordInput.Text;
-
-            _db.Persons.Add(person);
             MessageBox.Show("Поздравляем! Вы успешно прошли регистрацию");
             Thread.Sleep(50);
             _db.SaveDB();
@@ -85,6 +79,5 @@ namespace FinancialApp
         {
             Close();
         }
-
     }
 }

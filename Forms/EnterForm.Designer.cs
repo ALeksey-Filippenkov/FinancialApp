@@ -53,7 +53,14 @@ namespace FinancialApp
             label2 = new Label();
             label1 = new Label();
             tabPage2 = new TabPage();
+            historyOperationExel = new Button();
             historyOperationDataGridView = new DataGridView();
+            date = new DataGridViewTextBoxColumn();
+            Column1 = new DataGridViewTextBoxColumn();
+            sender = new DataGridViewTextBoxColumn();
+            type = new DataGridViewTextBoxColumn();
+            money = new DataGridViewTextBoxColumn();
+            Recipient = new DataGridViewTextBoxColumn();
             seachButton = new Button();
             moneyTransferButton = new Button();
             refreshButton = new Button();
@@ -66,11 +73,6 @@ namespace FinancialApp
             label12 = new Label();
             label11 = new Label();
             label10 = new Label();
-            date = new DataGridViewTextBoxColumn();
-            sender = new DataGridViewTextBoxColumn();
-            type = new DataGridViewTextBoxColumn();
-            money = new DataGridViewTextBoxColumn();
-            Recipient = new DataGridViewTextBoxColumn();
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
             tabPage2.SuspendLayout();
@@ -79,7 +81,7 @@ namespace FinancialApp
             // 
             // exitButton
             // 
-            exitButton.Location = new Point(12, 566);
+            exitButton.Location = new Point(26, 626);
             exitButton.Name = "exitButton";
             exitButton.Size = new Size(75, 23);
             exitButton.TabIndex = 2;
@@ -104,7 +106,7 @@ namespace FinancialApp
             tabControl1.Location = new Point(0, 1);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(985, 559);
+            tabControl1.Size = new Size(985, 619);
             tabControl1.TabIndex = 4;
             tabControl1.Click += tabPage2_Click;
             // 
@@ -132,7 +134,7 @@ namespace FinancialApp
             tabPage1.Location = new Point(4, 24);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(977, 531);
+            tabPage1.Size = new Size(977, 591);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Личные данные";
             tabPage1.UseVisualStyleBackColor = true;
@@ -283,6 +285,7 @@ namespace FinancialApp
             // 
             // tabPage2
             // 
+            tabPage2.Controls.Add(historyOperationExel);
             tabPage2.Controls.Add(historyOperationDataGridView);
             tabPage2.Controls.Add(seachButton);
             tabPage2.Controls.Add(moneyTransferButton);
@@ -299,139 +302,44 @@ namespace FinancialApp
             tabPage2.Location = new Point(4, 24);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new Padding(3);
-            tabPage2.Size = new Size(977, 531);
+            tabPage2.Size = new Size(977, 591);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Мои финансы";
             tabPage2.UseVisualStyleBackColor = true;
             // 
+            // historyOperationExel
+            // 
+            historyOperationExel.Location = new Point(705, 548);
+            historyOperationExel.Name = "historyOperationExel";
+            historyOperationExel.Size = new Size(251, 23);
+            historyOperationExel.TabIndex = 16;
+            historyOperationExel.Text = "История операций в EXEL";
+            historyOperationExel.UseVisualStyleBackColor = true;
+            historyOperationExel.Click += historyOperationExel_Click;
+            // 
             // historyOperationDataGridView
             // 
             historyOperationDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            historyOperationDataGridView.Columns.AddRange(new DataGridViewColumn[] { date, sender, type, money, Recipient });
-            historyOperationDataGridView.Location = new Point(366, 359);
+            historyOperationDataGridView.Columns.AddRange(new DataGridViewColumn[] { date, Column1, sender, type, money, Recipient });
+            historyOperationDataGridView.Location = new Point(366, 55);
             historyOperationDataGridView.Name = "historyOperationDataGridView";
             historyOperationDataGridView.RowTemplate.Height = 25;
-            historyOperationDataGridView.Size = new Size(504, 150);
+            historyOperationDataGridView.Size = new Size(605, 388);
             historyOperationDataGridView.TabIndex = 15;
-            // 
-            // seachButton
-            // 
-            seachButton.Location = new Point(366, 305);
-            seachButton.Name = "seachButton";
-            seachButton.Size = new Size(447, 23);
-            seachButton.TabIndex = 14;
-            seachButton.Text = "Поиск операции";
-            seachButton.UseVisualStyleBackColor = true;
-            seachButton.Click += seachButton_Click;
-            // 
-            // moneyTransferButton
-            // 
-            moneyTransferButton.Location = new Point(40, 305);
-            moneyTransferButton.Name = "moneyTransferButton";
-            moneyTransferButton.Size = new Size(292, 23);
-            moneyTransferButton.TabIndex = 13;
-            moneyTransferButton.Text = "Перевести деньги";
-            moneyTransferButton.UseVisualStyleBackColor = true;
-            moneyTransferButton.Click += moneyTransferButton_Click;
-            // 
-            // refreshButton
-            // 
-            refreshButton.Location = new Point(40, 196);
-            refreshButton.Name = "refreshButton";
-            refreshButton.Size = new Size(75, 23);
-            refreshButton.TabIndex = 12;
-            refreshButton.Text = "Обновить";
-            refreshButton.UseVisualStyleBackColor = true;
-            refreshButton.Click += refreshButton_Click;
-            // 
-            // creatAccount
-            // 
-            creatAccount.Location = new Point(40, 247);
-            creatAccount.Name = "creatAccount";
-            creatAccount.Size = new Size(292, 23);
-            creatAccount.TabIndex = 11;
-            creatAccount.Text = "Создать счет";
-            creatAccount.UseVisualStyleBackColor = true;
-            creatAccount.Click += creatAccount_Click;
-            // 
-            // eurLebel
-            // 
-            eurLebel.AutoSize = true;
-            eurLebel.Location = new Point(168, 158);
-            eurLebel.Name = "eurLebel";
-            eurLebel.Size = new Size(13, 15);
-            eurLebel.TabIndex = 10;
-            eurLebel.Text = "0";
-            // 
-            // usdLebel
-            // 
-            usdLebel.AutoSize = true;
-            usdLebel.Location = new Point(168, 99);
-            usdLebel.Name = "usdLebel";
-            usdLebel.Size = new Size(13, 15);
-            usdLebel.TabIndex = 9;
-            usdLebel.Text = "0";
-            // 
-            // rubLebel
-            // 
-            rubLebel.AutoSize = true;
-            rubLebel.Location = new Point(168, 37);
-            rubLebel.Name = "rubLebel";
-            rubLebel.Size = new Size(13, 15);
-            rubLebel.TabIndex = 8;
-            rubLebel.Text = "0";
-            // 
-            // button1
-            // 
-            button1.Location = new Point(40, 276);
-            button1.Name = "button1";
-            button1.Size = new Size(292, 23);
-            button1.TabIndex = 7;
-            button1.Text = "Пополнить счет";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
-            // 
-            // historyLebel
-            // 
-            historyLebel.AutoSize = true;
-            historyLebel.Location = new Point(366, 37);
-            historyLebel.Name = "historyLebel";
-            historyLebel.Size = new Size(105, 15);
-            historyLebel.TabIndex = 6;
-            historyLebel.Text = "Итория операций";
-            // 
-            // label12
-            // 
-            label12.AutoSize = true;
-            label12.Location = new Point(40, 158);
-            label12.Name = "label12";
-            label12.Size = new Size(57, 15);
-            label12.TabIndex = 2;
-            label12.Text = "Счет EUR";
-            // 
-            // label11
-            // 
-            label11.AutoSize = true;
-            label11.Location = new Point(40, 99);
-            label11.Name = "label11";
-            label11.Size = new Size(58, 15);
-            label11.TabIndex = 1;
-            label11.Text = "Счет USD";
-            // 
-            // label10
-            // 
-            label10.AutoSize = true;
-            label10.Location = new Point(40, 37);
-            label10.Name = "label10";
-            label10.Size = new Size(58, 15);
-            label10.TabIndex = 0;
-            label10.Text = "Счет RUB";
             // 
             // date
             // 
+            date.Frozen = true;
             date.HeaderText = "Дата";
             date.Name = "date";
             date.ReadOnly = true;
+            // 
+            // Column1
+            // 
+            Column1.Frozen = true;
+            Column1.HeaderText = "Тип операции";
+            Column1.Name = "Column1";
+            Column1.ReadOnly = true;
             // 
             // sender
             // 
@@ -458,6 +366,119 @@ namespace FinancialApp
             Recipient.HeaderText = "Получатель";
             Recipient.Name = "Recipient";
             Recipient.ReadOnly = true;
+            // 
+            // seachButton
+            // 
+            seachButton.Location = new Point(371, 548);
+            seachButton.Name = "seachButton";
+            seachButton.Size = new Size(273, 23);
+            seachButton.TabIndex = 14;
+            seachButton.Text = "Поиск операции";
+            seachButton.UseVisualStyleBackColor = true;
+            seachButton.Click += seachButton_Click;
+            // 
+            // moneyTransferButton
+            // 
+            moneyTransferButton.Location = new Point(40, 548);
+            moneyTransferButton.Name = "moneyTransferButton";
+            moneyTransferButton.Size = new Size(292, 23);
+            moneyTransferButton.TabIndex = 13;
+            moneyTransferButton.Text = "Перевести деньги";
+            moneyTransferButton.UseVisualStyleBackColor = true;
+            moneyTransferButton.Click += moneyTransferButton_Click;
+            // 
+            // refreshButton
+            // 
+            refreshButton.Location = new Point(26, 225);
+            refreshButton.Name = "refreshButton";
+            refreshButton.Size = new Size(176, 23);
+            refreshButton.TabIndex = 12;
+            refreshButton.Text = "Обновить данные";
+            refreshButton.UseVisualStyleBackColor = true;
+            refreshButton.Click += refreshButton_Click;
+            // 
+            // creatAccount
+            // 
+            creatAccount.Location = new Point(40, 490);
+            creatAccount.Name = "creatAccount";
+            creatAccount.Size = new Size(292, 23);
+            creatAccount.TabIndex = 11;
+            creatAccount.Text = "Создать счет";
+            creatAccount.UseVisualStyleBackColor = true;
+            creatAccount.Click += creatAccount_Click;
+            // 
+            // eurLebel
+            // 
+            eurLebel.AutoSize = true;
+            eurLebel.Location = new Point(189, 176);
+            eurLebel.Name = "eurLebel";
+            eurLebel.Size = new Size(13, 15);
+            eurLebel.TabIndex = 10;
+            eurLebel.Text = "0";
+            // 
+            // usdLebel
+            // 
+            usdLebel.AutoSize = true;
+            usdLebel.Location = new Point(189, 117);
+            usdLebel.Name = "usdLebel";
+            usdLebel.Size = new Size(13, 15);
+            usdLebel.TabIndex = 9;
+            usdLebel.Text = "0";
+            // 
+            // rubLebel
+            // 
+            rubLebel.AutoSize = true;
+            rubLebel.Location = new Point(189, 55);
+            rubLebel.Name = "rubLebel";
+            rubLebel.Size = new Size(13, 15);
+            rubLebel.TabIndex = 8;
+            rubLebel.Text = "0";
+            // 
+            // button1
+            // 
+            button1.Location = new Point(40, 519);
+            button1.Name = "button1";
+            button1.Size = new Size(292, 23);
+            button1.TabIndex = 7;
+            button1.Text = "Пополнить счет";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
+            // historyLebel
+            // 
+            historyLebel.AutoSize = true;
+            historyLebel.Location = new Point(366, 37);
+            historyLebel.Name = "historyLebel";
+            historyLebel.Size = new Size(105, 15);
+            historyLebel.TabIndex = 6;
+            historyLebel.Text = "Итория операций";
+            // 
+            // label12
+            // 
+            label12.AutoSize = true;
+            label12.Location = new Point(26, 176);
+            label12.Name = "label12";
+            label12.Size = new Size(57, 15);
+            label12.TabIndex = 2;
+            label12.Text = "Счет EUR";
+            // 
+            // label11
+            // 
+            label11.AutoSize = true;
+            label11.Location = new Point(26, 117);
+            label11.Name = "label11";
+            label11.Size = new Size(58, 15);
+            label11.TabIndex = 1;
+            label11.Text = "Счет USD";
+            // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.Location = new Point(26, 55);
+            label10.Name = "label10";
+            label10.Size = new Size(58, 15);
+            label10.TabIndex = 0;
+            label10.Text = "Счет RUB";
             // 
             // EnterForm
             // 
@@ -516,9 +537,11 @@ namespace FinancialApp
         private Button seachButton;
         private DataGridView historyOperationDataGridView;
         private DataGridViewTextBoxColumn date;
+        private DataGridViewTextBoxColumn Column1;
         private DataGridViewTextBoxColumn sender;
         private DataGridViewTextBoxColumn type;
         private DataGridViewTextBoxColumn money;
         private DataGridViewTextBoxColumn Recipient;
+        private Button historyOperationExel;
     }
 }

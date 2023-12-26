@@ -1,5 +1,8 @@
 ﻿using FinancialApp.DataBase;
 using FinancialApp.Enum;
+using FinancialApp.GeneralMethods;
+using System.Runtime.InteropServices;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace FinancialApp
 {
@@ -15,33 +18,33 @@ namespace FinancialApp
             _Id = Id;
             _form = Form1;
             _db = db;
+            this.Refresh();
+            tabPage2.Update();
+            EnterLebelText();
+            PrintHitory();
         }
 
         private void saveLKButton_Click(object sender, EventArgs e)
         {
-            var ageValue = Int32.TryParse(age.Text, out int ageInt);
-
-            if (ageInt == null)
+            if (age.Text == null || phone.Text == null)
             {
                 MessageBox.Show("Поле обязательно для заполнения");
                 return;
             }
-            else if (ageValue == false)
+            else
             {
-                MessageBox.Show("Возраст должен быть числом");
-                return;
-            }
-
-            var phoneNumberValue = Int32.TryParse(phone.Text, out int phoneNumberInt);
-            if (phoneNumberInt == null)
-            {
-                MessageBox.Show("Поле обязательно для заполнения");
-                return;
-            }
-            else if (phoneNumberValue == false)
-            {
-                MessageBox.Show("Номер телефона должен быть в виде числа");
-                return;
+                var ageValue = Int32.TryParse(age.Text, out int ageInt);
+                if (ageValue == false)
+                {
+                    MessageBox.Show("Возраст должен быть числом");
+                    return;
+                }
+                var phoneNumberValue = Int32.TryParse(phone.Text, out int phoneNumberInt);
+                if (phoneNumberValue == false)
+                {
+                    MessageBox.Show("Номер телефона должен быть в виде числа");
+                    return;
+                }
             }
 
             _db.SaveDB();
@@ -51,15 +54,18 @@ namespace FinancialApp
 
         private void exitButton_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(
+            DialogResult result = MessageBox.Show(
                 "Вы действительно хотите выйти?",
                 "Подтверждение выхода",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Information,
                 MessageBoxDefaultButton.Button1,
                 MessageBoxOptions.DefaultDesktopOnly);
-            _form.Show();
-            Close();
+            if (result == DialogResult.Yes)
+            {
+                _form.Show();
+                Close();
+            }
         }
 
         private void tabPage1_Click(object sender, EventArgs e)
@@ -94,6 +100,12 @@ namespace FinancialApp
 
         private void refreshButton_Click(object sender, EventArgs e)
         {
+            EnterLebelText();
+
+            PrintHitory();
+        }
+        private void EnterLebelText()
+        {
             this.Refresh();
             tabPage2.Update();
             var rub = _db.Money.FirstOrDefault(p => p.PersonId == _Id && p.Type == CurrencyType.RUB);
@@ -112,33 +124,34 @@ namespace FinancialApp
             {
                 eurLebel.Text = eur.Balance.ToString();
             }
-
-            PrintHitory();
         }
 
         public void PrintHitory()
         {
-            historyLebel.Text = "История переводов";
-
+            historyOperationDataGridView.Rows.Clear();
             foreach (var transferItem in _db.HistoryTransfers)
             {
                 var personSender = _db.Persons.First(p => p.Id == transferItem.SenderId);
                 var today = DateOnly.FromDateTime(transferItem.DateTime);
                 var personRecipient = _db.Persons.FirstOrDefault(p => p.Id == transferItem.RecipientId);
 
-                int index = historyOperationDataGridView.Rows.Add();
-                historyOperationDataGridView.Rows[index].Cells[0].Value = today;
-                historyOperationDataGridView.Rows[index].Cells[1].Value = personSender.Name;
-                historyOperationDataGridView.Rows[index].Cells[2].Value = transferItem.Type;
-                historyOperationDataGridView.Rows[index].Cells[3].Value = transferItem.MoneyTransfer;
-                historyOperationDataGridView.Rows[index].Cells[4].Value = personRecipient.Name;
-
-                historyLebel.Text += $"\n{personSender.Name} {today}";
-                if (personRecipient == null )
-                    historyLebel.Text += $" пополнил счет {transferItem.Type} на  {transferItem.MoneyTransfer}";
-
-                else 
-                    historyLebel.Text += $" перевел {transferItem.MoneyTransfer} {transferItem.Type} {personRecipient.Name}";
+                if (transferItem.SenderId == _Id)
+                {
+                    int index = historyOperationDataGridView.Rows.Add();
+                    historyOperationDataGridView.Rows[index].Cells[0].Value = today;
+                    historyOperationDataGridView.Rows[index].Cells[2].Value = personSender.Name;
+                    historyOperationDataGridView.Rows[index].Cells[3].Value = transferItem.Type;
+                    historyOperationDataGridView.Rows[index].Cells[4].Value = transferItem.MoneyTransfer;
+                    if (personRecipient == null)
+                    {
+                        historyOperationDataGridView.Rows[index].Cells[1].Value = TypeOfOperation.Пополнение.ToString();
+                    }
+                    else
+                    {
+                        historyOperationDataGridView.Rows[index].Cells[1].Value = TypeOfOperation.Перевод.ToString();
+                        historyOperationDataGridView.Rows[index].Cells[5].Value = personRecipient.Name;
+                    }
+                }
             }
         }
         private void moneyTransferButton_Click(object sender, EventArgs e)
@@ -151,6 +164,12 @@ namespace FinancialApp
         {
             var operationSearch = new OperationSearch(_db);
             operationSearch.Show();
+        }
+
+        private void historyOperationExel_Click(object sender, EventArgs e)
+        {
+            DataOutputInExcel newExel = new DataOutputInExcel(_db, _Id);
+            newExel.GetDataOutputInExcel();
         }
     }
 }

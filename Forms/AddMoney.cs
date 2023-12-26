@@ -1,5 +1,7 @@
 ﻿using FinancialApp.DataBase;
 using FinancialApp.Enum;
+using FinancialApp.GeneralMethods;
+using System;
 
 namespace FinancialApp
 {
@@ -44,8 +46,7 @@ namespace FinancialApp
 
         public void AddingMoneyToTheAccount(double moneyDouble)
         {
-            var moneyAccount = _db.Money.FirstOrDefault(t => t.Type == (CurrencyType)currencyList.SelectedIndex && t.PersonId == _Id);
-
+            var moneyAccount = CommonMethod.GetSearchAccountOwner(_db, currencyList.SelectedIndex, _Id);
             if (moneyAccount == null)
             {
                 MessageBox.Show("Счета с таким видом валюты не найден");
@@ -60,7 +61,6 @@ namespace FinancialApp
             Thread.Sleep(50);
             _db.SaveDB();
             Close();
-
         }
 
         public void AddingMoneyToTheHistory(double moneyDouble) 

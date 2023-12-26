@@ -1,5 +1,15 @@
 ﻿using FinancialApp.DataBase;
 using FinancialApp.Enum;
+using FinancialApp.GeneralMethods;
+using HtmlAgilityPack;
+using OfficeOpenXml.FormulaParsing.LexicalAnalysis;
+using System;
+using System.Data;
+using System.Drawing.Text;
+using System.Net;
+using System.Security.Principal;
+using System.Text.Json;
+using System.Xml.Linq;
 
 namespace FinancialApp
 {
@@ -9,12 +19,15 @@ namespace FinancialApp
         private Guid _Id;
         private int _phoneNumerTransfer;
         private double _moneyTransfer;
+        private double _usd;
+        private double _eur;
 
         public MoneyTransfer(DB db, Guid Id)
         {
             InitializeComponent();
             _db = db;
             _Id = Id;
+            ViewrichTextBoxOutData();
         }
 
         private void transferButton_Click(object sender, EventArgs e)
@@ -70,10 +83,8 @@ namespace FinancialApp
 
         public void CheckingThePossibilityOfTranslation()
         {
-            var personSender = _db.Money.FirstOrDefault(m => m.Type == (CurrencyType)currencyList.SelectedIndex && m.PersonId == _Id);
+            var personSender = CommonMethod.GetSearchAccountOwner(_db, currencyList.SelectedIndex, _Id);
             var personRecipient = _db.Persons.FirstOrDefault(p => p.PhoneNumber == _phoneNumerTransfer);
-            var transfer = _db.Money.FirstOrDefault(t => t.Type == (CurrencyType)currencyList.SelectedIndex && t.PersonId == personRecipient.Id);
-
             if (personRecipient == null)
             {
                 MessageBox.Show("Пользователь с таким номером телефона не найден");
@@ -84,23 +95,24 @@ namespace FinancialApp
                 MessageBox.Show("У Вас нет счета с таким типом валюты");
                 return;
             }
+            var transfer = CommonMethod.GetSearchAccountOwner(_db, currencyList.SelectedIndex, personRecipient.Id);
+
+            if (transfer == null)
+            {
+                MessageBox.Show("У пользователя нет счета с такой валютой");
+                return;
+            }
             else if (personSender.Balance - _moneyTransfer < 0)
             {
                 MessageBox.Show("Недостаточно денег на счету");
-                return;
-            }
-            else if (transfer == null)
-            {
-                MessageBox.Show("У пользователя нет счета с такой валютой");
                 return;
             }
             else
                 SuccessfulMoneyTransfer(personSender, personRecipient, transfer);
         }
 
-        public void SuccessfulMoneyTransfer(PersonMoney personSender, Person personRecipient, PersonMoney transfer)
+        private void SuccessfulMoneyTransfer(PersonMoney personSender, Person personRecipient, PersonMoney transfer)
         {
-
             transfer.Balance += _moneyTransfer;
             personSender.Balance -= _moneyTransfer;
             MessageBox.Show("Поздравляем! Вы успешно перевели деньги");
@@ -112,7 +124,7 @@ namespace FinancialApp
             Close();
         }
 
-        public void SavingTheTranslationHistory(Person personRecipient)
+        private void SavingTheTranslationHistory(Person personRecipient)
         {
             var historyTransfer = new HistoryTransfer();
             historyTransfer.DateTime = DateTime.Now;
@@ -120,6 +132,104 @@ namespace FinancialApp
             historyTransfer.Type = (CurrencyType)currencyList.SelectedIndex;
             historyTransfer.RecipientId = personRecipient.Id;
             historyTransfer.MoneyTransfer = _moneyTransfer;
+            _db.HistoryTransfers.Add(historyTransfer);
+        }
+
+        private void ViewrichTextBoxOutData()
+        {
+            WebClient client = new WebClient();
+            var xml = client.DownloadString("https://www.cbr-xml-daily.ru/daily.xml");
+            XDocument xdoc = XDocument.Parse(xml);
+            var el = xdoc.Element("ValCurs").Elements("Valute");
+
+            string dollarS = el.Where(x => x.Attribute("ID").Value == "R01235").Select(x => x.Element("Value").Value).FirstOrDefault();
+            System.Globalization.CultureInfo dollar = new System.Globalization.CultureInfo("ru-Ru");
+            double _usd = Convert.ToDouble(dollarS, dollar);
+
+            string eurS = el.Where(x => x.Attribute("ID").Value == "R01239").Select(x => x.Element("Value").Value).FirstOrDefault();
+            System.Globalization.CultureInfo euro = new System.Globalization.CultureInfo("ru-Ru");
+            double _eur = Convert.ToDouble(eurS, euro);
+
+            label7.Text = $"Курс основных валют\nЕвро: {_eur} Доллар: {_usd}";
+        }
+
+        private void exchangeButton_Click(object sender, EventArgs e)
+        {
+            MoneyExchange();
+        }
+
+        private void MoneyExchange()
+        {
+            ViewrichTextBoxOutData();
+            var debit = debitAccountComboBox.SelectedIndex;
+            var replenishment = replenishmentAccountComboBox.SelectedIndex;
+            if (debit == -1 || replenishment == -1)
+            {
+                MessageBox.Show("Вы не выбрали тип валюты");
+                return;
+            }
+
+            var moneyValue = Double.TryParse(moneyTextBox.Text, out double money);
+            if (!moneyValue)
+            {
+                MessageBox.Show("Вы ввели не число.");
+                return;
+            }
+            else
+            {
+                var debitAccount = CommonMethod.GetSearchAccountOwner(_db, debit, _Id);
+                var replenishmentAccount = CommonMethod.GetSearchAccountOwner(_db, replenishment, _Id);
+                debitAccount.Balance -= money;
+                if ((CurrencyType)debit == CurrencyType.RUB)
+                {
+                    if ((CurrencyType)replenishmentAccount.Type == CurrencyType.USD)
+                    {
+                        replenishmentAccount.Balance = Math.Round(money / _usd, 2);
+                    }
+                    else if ((CurrencyType)replenishmentAccount.Type == CurrencyType.EUR)
+                    {
+                        replenishmentAccount.Balance = Math.Round(money / _usd, 2);
+                    }
+                }
+                else if ((CurrencyType)debit == CurrencyType.USD)
+                {
+                    if ((CurrencyType)replenishmentAccount.Type == CurrencyType.RUB)
+                    {
+                        replenishmentAccount.Balance = Math.Round(money * _usd, 2);
+                    }
+                    else if ((CurrencyType)replenishmentAccount.Type == CurrencyType.EUR)
+                    {
+                        replenishmentAccount.Balance = Math.Round(money / _usd, 2);
+                    }
+                }
+                else if ((CurrencyType)debit == CurrencyType.EUR)
+                {
+                    if ((CurrencyType)replenishmentAccount.Type == CurrencyType.RUB)
+                    {
+                        replenishmentAccount.Balance = Math.Round(money * _eur, 2);
+                    }
+                    if ((CurrencyType)replenishmentAccount.Type == CurrencyType.USD)
+                    {
+                        replenishmentAccount.Balance = Math.Round(money / _usd, 2);
+                    }
+                }
+                MessageBox.Show("Поздравляем! Вы успешно обменяли деньги деньги");
+
+                SaveMoneyExchangeHistory(debit, money);
+
+                Thread.Sleep(50);
+                _db.SaveDB();
+                Close();
+            }
+        }
+
+        private void SaveMoneyExchangeHistory(int debit, double money)
+        {
+            var historyTransfer = new HistoryTransfer();
+            historyTransfer.SenderId = _Id;
+            historyTransfer.DateTime = DateTime.Now;
+            historyTransfer.Type = (CurrencyType)debit;
+            historyTransfer.MoneyTransfer = money;
             _db.HistoryTransfers.Add(historyTransfer);
         }
 
