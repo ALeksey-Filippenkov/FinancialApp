@@ -1,5 +1,7 @@
 ﻿using FinancialApp.DataBase;
 using FinancialApp.Enum;
+using Microsoft.Office.Interop.Excel;
+using System.Data.Common;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using Excel = Microsoft.Office.Interop.Excel;
@@ -17,7 +19,7 @@ namespace FinancialApp.GeneralMethods
             _Id = Id;
         }
 
-        public void GetDataOutputInExcel()
+        public void GetDataOutputInExcel(List<HistoryTransfer> operationHistory)
         {
             Excel.Application application = null;
             Excel.Workbook workbook = null;
@@ -35,7 +37,7 @@ namespace FinancialApp.GeneralMethods
 
                 var row = 2;
                 var column = 1;
-
+ 
                 worksheet.Cells[1, column].Value = HeadlinesTypes.Дата.ToString();
                 worksheet.Cells[1, column + 1].Value = HeadlinesTypes.Отправитель.ToString();
                 worksheet.Cells[1, column + 2].Value = HeadlinesTypes.Тип_операции.ToString();
@@ -43,29 +45,59 @@ namespace FinancialApp.GeneralMethods
                 worksheet.Cells[1, column + 4].Value = HeadlinesTypes.Деньги.ToString();
                 worksheet.Cells[1, column + 5].Value = HeadlinesTypes.Получатель.ToString();
 
-                foreach (var transferItem in _db.HistoryTransfers)
+                foreach (var transferItem in operationHistory)
                 {
                     var personSender = _db.Persons.First(p => p.Id == transferItem.SenderId);
                     var personRecipient = _db.Persons.FirstOrDefault(p => p.Id == transferItem.RecipientId);
 
-                    if (transferItem.SenderId == _Id)
-                    {
-                        worksheet.Cells[row, column].Value = transferItem.DateTime;
-                        worksheet.Cells[row, column + 1].Value = personSender.Name;
-                        worksheet.Cells[row, column + 3].Value = transferItem.Type.ToString();
-                        worksheet.Cells[row, column + 4].Value = transferItem.MoneyTransfer;
+                    worksheet.Cells[row, column].Value = transferItem.DateTime;
+                    worksheet.Cells[row, column + 3].Value = transferItem.Type.ToString();
+                    worksheet.Cells[row, column + 4].Value = transferItem.MoneyTransfer;
 
-                        if (personRecipient == null)
-                        {
-                            worksheet.Cells[row, column + 2].Value = TypeOfOperation.Пополнение.ToString();
-                        }
-                        else
-                        {
-                            worksheet.Cells[row, column + 2].Value = TypeOfOperation.Перевод.ToString();
-                            worksheet.Cells[row, column + 5].Value = personRecipient.Name;
-                        }
-                        row++;
+                    if (transferItem.SenderId == transferItem.RecipientId)
+                    {
+                        worksheet.Cells[row, column + 1].Value = personSender.Name;
+                        worksheet.Cells[row, column + 2].Value = TypeOfOperation.Обмен.ToString();
                     }
+                    else if (personRecipient == null)
+                    {
+                        worksheet.Cells[row, column + 1].Value = personSender.Name;
+                        worksheet.Cells[row, column + 2].Value = TypeOfOperation.Пополнение.ToString();
+                    }
+                    else if (transferItem.RecipientId == _Id)
+                    {
+                        worksheet.Cells[row, column + 1].Value = personSender.Name;
+                        worksheet.Cells[row, column + 2].Value = TypeOfOperation.Перевод.ToString();
+                        worksheet.Cells[row, column + 5].Value = personRecipient.Name;
+                    }
+                    else if (transferItem.SenderId == _Id && personRecipient != null) 
+                    {
+                        worksheet.Cells[row, column + 1].Value = personSender.Name;
+                        worksheet.Cells[row, column + 2].Value = TypeOfOperation.Перевод.ToString();
+                        worksheet.Cells[row, column + 5].Value = personRecipient.Name;
+
+                    }
+                    row++;
+
+
+
+                    //if (transferItem.SenderId == _Id)
+                    //{
+ 
+                    //    worksheet.Cells[row, column + 1].Value = personSender.Name;
+
+
+                    //    if (personRecipient == null)
+                    //    {
+                    //        worksheet.Cells[row, column + 2].Value = TypeOfOperation.Пополнение.ToString();
+                    //    }
+                    //    else
+                    //    {
+                    //        worksheet.Cells[row, column + 2].Value = TypeOfOperation.Перевод.ToString();
+                    //        worksheet.Cells[row, column + 5].Value = personRecipient.Name;
+                    //    }
+                    //    row++;
+                    //}
                 }
 
                 for (int i = 1; i <= worksheet.UsedRange.Columns.Count; i++)

@@ -14,6 +14,7 @@ namespace FinancialApp
         private Form _form;
         private DB _db;
         private Guid _Id;
+        private List<HistoryTransfer> _operationHistorySeach;
 
         public EnterForm(Guid Id, Form Form1, DB db)
         {
@@ -132,9 +133,9 @@ namespace FinancialApp
         {
             historyOperationDataGridView.Rows.Clear();
 
-            var operationHistorySeach = _db.HistoryTransfers.Where(h => h.SenderId == _Id || h.RecipientId == _Id).ToList();
+            _operationHistorySeach = _db.HistoryTransfers.Where(h => h.SenderId == _Id || h.RecipientId == _Id).ToList();
 
-            foreach (var transferItem in operationHistorySeach)
+            foreach (var transferItem in _operationHistorySeach)
             {
                 var personSender = _db.Persons.First(p => p.Id == transferItem.SenderId);
                 var today = DateOnly.FromDateTime(transferItem.DateTime);
@@ -162,7 +163,7 @@ namespace FinancialApp
                     historyOperationDataGridView.Rows[index].Cells[2].Value = personSender.Name;
                     historyOperationDataGridView.Rows[index].Cells[5].Value = personRecipient.Name;
                 }
-                else if (transferItem.SenderId == _Id && personRecipient!= null)
+                else if (transferItem.SenderId == _Id && personRecipient != null)
                 {
                     historyOperationDataGridView.Rows[index].Cells[1].Value = TypeOfOperation.Перевод.ToString();
                     historyOperationDataGridView.Rows[index].Cells[2].Value = personSender.Name;
@@ -186,7 +187,7 @@ namespace FinancialApp
         private void historyOperationExel_Click(object sender, EventArgs e)
         {
             DataOutputInExcel newExel = new DataOutputInExcel(_db, _Id);
-            newExel.GetDataOutputInExcel();
+            newExel.GetDataOutputInExcel(_operationHistorySeach);
         }
     }
 }

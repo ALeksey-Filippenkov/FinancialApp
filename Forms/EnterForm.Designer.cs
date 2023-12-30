@@ -313,7 +313,7 @@ namespace FinancialApp
             historyOperationExel.Name = "historyOperationExel";
             historyOperationExel.Size = new Size(251, 23);
             historyOperationExel.TabIndex = 16;
-            historyOperationExel.Text = "История операций в EXEL";
+            historyOperationExel.Text = "История операций в EXCEL";
             historyOperationExel.UseVisualStyleBackColor = true;
             historyOperationExel.Click += historyOperationExel_Click;
             // 

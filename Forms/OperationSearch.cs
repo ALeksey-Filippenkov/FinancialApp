@@ -1,5 +1,6 @@
 ﻿using FinancialApp.DataBase;
 using FinancialApp.Enum;
+using FinancialApp.GeneralMethods;
 using System.Data;
 using System.Drawing.Text;
 
@@ -9,6 +10,7 @@ namespace FinancialApp
     {
         private DB _db;
         private Guid _Id;
+        private List<HistoryTransfer> _historyOperation;
 
         public OperationSearch(DB db, Guid Id)
         {
@@ -36,9 +38,9 @@ namespace FinancialApp
 
             var operationSeach = _db.HistoryTransfers.Where(h => h.SenderId == _Id || h.RecipientId == _Id).ToList();
 
-            var historyOperation = EventSearch(operationSeach, startingDateSeach, currencyTypeValue, personRecipientName);
+            _historyOperation = EventSearch(operationSeach, startingDateSeach, currencyTypeValue, personRecipientName);
 
-            PrintEvet(historyOperation);
+            PrintEvet(_historyOperation);
 
 
             List<HistoryTransfer> EventSearch(List<HistoryTransfer> operationSeach, DateOnly startingDateSeach, string currencyTypeValue, string personRecipientName)
@@ -136,23 +138,17 @@ namespace FinancialApp
                         }
                         else if (transferItem.SenderId == _Id && personRecipient != null)
                         {
-                            operationHistory.Text += $"\n{personSender.Name} {transferItem.DateTime} произвел {TypeOfOperation.Перевод.ToString()}  {transferItem.MoneyTransfer} {transferItem.Type} {personRecipient.Name}"; 
+                            operationHistory.Text += $"\n{personSender.Name} {transferItem.DateTime} произвел {TypeOfOperation.Перевод.ToString()}  {transferItem.MoneyTransfer} {transferItem.Type} {personRecipient.Name}";
                         }
-
-
-
-                        //    if (personSender.Id == _Id)
-                        //{
-                        //    operationHistory.Text += $"\n{personSender.Name} {transferItem.DateTime}";
-                        //    if (personRecipient == null)
-                        //        operationHistory.Text += $" пополнил счет {transferItem.Type} на {transferItem.MoneyTransfer}";
-
-                        //    else
-                        //        operationHistory.Text += $" перевел {transferItem.MoneyTransfer} {transferItem.Type} {personRecipient.Name}";
-                        //}
                     }
                 }
             }
+        }
+
+        private void historyOperationExel_Click(object sender, EventArgs e)
+        {
+            DataOutputInExcel newExel = new DataOutputInExcel(_db, _Id);
+            newExel.GetDataOutputInExcel(_historyOperation);
         }
     }
 }

@@ -37,6 +37,7 @@
             label3 = new Label();
             personRecipientTextBox = new TextBox();
             monthCalendar1 = new MonthCalendar();
+            historyOperationExel = new Button();
             SuspendLayout();
             // 
             // label1
@@ -69,7 +70,7 @@
             // 
             // seachButton
             // 
-            seachButton.Location = new Point(418, 485);
+            seachButton.Location = new Point(46, 327);
             seachButton.Name = "seachButton";
             seachButton.Size = new Size(424, 23);
             seachButton.TabIndex = 4;
@@ -115,11 +116,22 @@
             monthCalendar1.Name = "monthCalendar1";
             monthCalendar1.TabIndex = 9;
             // 
+            // historyOperationExel
+            // 
+            historyOperationExel.Location = new Point(579, 485);
+            historyOperationExel.Name = "historyOperationExel";
+            historyOperationExel.Size = new Size(251, 23);
+            historyOperationExel.TabIndex = 17;
+            historyOperationExel.Text = "История операций в EXCEL";
+            historyOperationExel.UseVisualStyleBackColor = true;
+            historyOperationExel.Click += historyOperationExel_Click;
+            // 
             // OperationSearch
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(854, 520);
+            Controls.Add(historyOperationExel);
             Controls.Add(monthCalendar1);
             Controls.Add(personRecipientTextBox);
             Controls.Add(label3);
@@ -145,5 +157,6 @@
         private Label label3;
         private TextBox personRecipientTextBox;
         private MonthCalendar monthCalendar1;
+        private Button historyOperationExel;
     }
 }
