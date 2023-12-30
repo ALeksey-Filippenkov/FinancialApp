@@ -1,7 +1,10 @@
 ﻿using FinancialApp.DataBase;
 using FinancialApp.Enum;
 using FinancialApp.GeneralMethods;
+using System;
+using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security.Principal;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace FinancialApp
@@ -46,7 +49,6 @@ namespace FinancialApp
                     return;
                 }
             }
-
             _db.SaveDB();
             MessageBox.Show("Изменения сохранены");
             Close();
@@ -88,8 +90,8 @@ namespace FinancialApp
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var addmoney = new AddMoney(_db, _Id);
-            addmoney.Show();
+            var addMoney = new AddMoney(_db, _Id);
+            addMoney.Show();
         }
 
         private void creatAccount_Click(object sender, EventArgs e)
@@ -114,46 +116,61 @@ namespace FinancialApp
 
             if (rub != null)
             {
-                rubLebel.Text = rub.Balance.ToString();
+                rubLebel.Text = Math.Round(rub.Balance, 2).ToString();
             }
             if (usd != null)
             {
-                usdLebel.Text = usd.Balance.ToString();
+                usdLebel.Text = Math.Round(usd.Balance, 2).ToString();
             }
             if (eur != null)
             {
-                eurLebel.Text = eur.Balance.ToString();
+                eurLebel.Text = Math.Round(eur.Balance, 2).ToString();
             }
         }
 
         public void PrintHitory()
         {
             historyOperationDataGridView.Rows.Clear();
-            foreach (var transferItem in _db.HistoryTransfers)
+
+            var operationHistorySeach = _db.HistoryTransfers.Where(h => h.SenderId == _Id || h.RecipientId == _Id).ToList();
+
+            foreach (var transferItem in operationHistorySeach)
             {
                 var personSender = _db.Persons.First(p => p.Id == transferItem.SenderId);
                 var today = DateOnly.FromDateTime(transferItem.DateTime);
                 var personRecipient = _db.Persons.FirstOrDefault(p => p.Id == transferItem.RecipientId);
 
-                if (transferItem.SenderId == _Id)
+                int index = historyOperationDataGridView.Rows.Add();
+
+                historyOperationDataGridView.Rows[index].Cells[0].Value = today;
+                historyOperationDataGridView.Rows[index].Cells[3].Value = transferItem.Type;
+                historyOperationDataGridView.Rows[index].Cells[4].Value = transferItem.MoneyTransfer;
+
+                if (transferItem.SenderId == transferItem.RecipientId)
                 {
-                    int index = historyOperationDataGridView.Rows.Add();
-                    historyOperationDataGridView.Rows[index].Cells[0].Value = today;
+                    historyOperationDataGridView.Rows[index].Cells[1].Value = TypeOfOperation.Обмен.ToString();
                     historyOperationDataGridView.Rows[index].Cells[2].Value = personSender.Name;
-                    historyOperationDataGridView.Rows[index].Cells[3].Value = transferItem.Type;
-                    historyOperationDataGridView.Rows[index].Cells[4].Value = transferItem.MoneyTransfer;
-                    if (personRecipient == null)
-                    {
-                        historyOperationDataGridView.Rows[index].Cells[1].Value = TypeOfOperation.Пополнение.ToString();
-                    }
-                    else
-                    {
-                        historyOperationDataGridView.Rows[index].Cells[1].Value = TypeOfOperation.Перевод.ToString();
-                        historyOperationDataGridView.Rows[index].Cells[5].Value = personRecipient.Name;
-                    }
+                }
+                else if (personRecipient == null)
+                {
+                    historyOperationDataGridView.Rows[index].Cells[1].Value = TypeOfOperation.Пополнение.ToString();
+                    historyOperationDataGridView.Rows[index].Cells[2].Value = personSender.Name;
+                }
+                else if (transferItem.RecipientId == _Id)
+                {
+                    historyOperationDataGridView.Rows[index].Cells[1].Value = TypeOfOperation.Перевод.ToString();
+                    historyOperationDataGridView.Rows[index].Cells[2].Value = personSender.Name;
+                    historyOperationDataGridView.Rows[index].Cells[5].Value = personRecipient.Name;
+                }
+                else if (transferItem.SenderId == _Id && personRecipient!= null)
+                {
+                    historyOperationDataGridView.Rows[index].Cells[1].Value = TypeOfOperation.Перевод.ToString();
+                    historyOperationDataGridView.Rows[index].Cells[2].Value = personSender.Name;
+                    historyOperationDataGridView.Rows[index].Cells[5].Value = personRecipient.Name;
                 }
             }
         }
+
         private void moneyTransferButton_Click(object sender, EventArgs e)
         {
             var moneyTransfer = new MoneyTransfer(_db, _Id);
@@ -162,7 +179,7 @@ namespace FinancialApp
 
         private void seachButton_Click(object sender, EventArgs e)
         {
-            var operationSearch = new OperationSearch(_db);
+            var operationSearch = new OperationSearch(_db, _Id);
             operationSearch.Show();
         }
 

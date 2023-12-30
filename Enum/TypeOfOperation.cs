@@ -3,6 +3,7 @@
     public enum TypeOfOperation
     {
         Пополнение,
-        Перевод
+        Перевод,
+        Обмен
     }
 }

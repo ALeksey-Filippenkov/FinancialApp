@@ -50,17 +50,17 @@ namespace FinancialApp
             if (moneyAccount == null)
             {
                 MessageBox.Show("Счета с таким видом валюты не найден");
+                return;
             }
             else
             {
                 moneyAccount.Balance += moneyDouble;
                 AddingMoneyToTheHistory(moneyDouble);
+                MessageBox.Show("Поздравляем! Вы успешно добавили деньги");
+                Thread.Sleep(50);
+                _db.SaveDB();
+                Close();
             }
-
-            MessageBox.Show("Поздравляем! Вы успешно добавили деньги");
-            Thread.Sleep(50);
-            _db.SaveDB();
-            Close();
         }
 
         public void AddingMoneyToTheHistory(double moneyDouble) 

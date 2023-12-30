@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            dateTimePicker1 = new DateTimePicker();
             label1 = new Label();
             operationHistory = new Label();
             exitButton = new Button();
@@ -39,13 +38,6 @@
             personRecipientTextBox = new TextBox();
             monthCalendar1 = new MonthCalendar();
             SuspendLayout();
-            // 
-            // dateTimePicker1
-            // 
-            dateTimePicker1.Location = new Point(543, 36);
-            dateTimePicker1.Name = "dateTimePicker1";
-            dateTimePicker1.Size = new Size(200, 23);
-            dateTimePicker1.TabIndex = 0;
             // 
             // label1
             // 
@@ -59,7 +51,7 @@
             // operationHistory
             // 
             operationHistory.AutoSize = true;
-            operationHistory.Location = new Point(46, 298);
+            operationHistory.Location = new Point(496, 36);
             operationHistory.Name = "operationHistory";
             operationHistory.Size = new Size(115, 15);
             operationHistory.TabIndex = 2;
@@ -137,7 +129,6 @@
             Controls.Add(exitButton);
             Controls.Add(operationHistory);
             Controls.Add(label1);
-            Controls.Add(dateTimePicker1);
             Name = "OperationSearch";
             Text = "Поиск операции";
             ResumeLayout(false);
@@ -145,8 +136,6 @@
         }
 
         #endregion
-
-        private DateTimePicker dateTimePicker1;
         private Label label1;
         private Label operationHistory;
         private Button exitButton;

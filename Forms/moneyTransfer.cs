@@ -1,14 +1,9 @@
 ﻿using FinancialApp.DataBase;
 using FinancialApp.Enum;
 using FinancialApp.GeneralMethods;
-using HtmlAgilityPack;
-using OfficeOpenXml.FormulaParsing.LexicalAnalysis;
-using System;
 using System.Data;
-using System.Drawing.Text;
 using System.Net;
-using System.Security.Principal;
-using System.Text.Json;
+using System.Windows.Forms;
 using System.Xml.Linq;
 
 namespace FinancialApp
@@ -144,11 +139,11 @@ namespace FinancialApp
 
             string dollarS = el.Where(x => x.Attribute("ID").Value == "R01235").Select(x => x.Element("Value").Value).FirstOrDefault();
             System.Globalization.CultureInfo dollar = new System.Globalization.CultureInfo("ru-Ru");
-            double _usd = Convert.ToDouble(dollarS, dollar);
+            _usd = Convert.ToDouble(dollarS, dollar);
 
             string eurS = el.Where(x => x.Attribute("ID").Value == "R01239").Select(x => x.Element("Value").Value).FirstOrDefault();
             System.Globalization.CultureInfo euro = new System.Globalization.CultureInfo("ru-Ru");
-            double _eur = Convert.ToDouble(eurS, euro);
+            _eur = Convert.ToDouble(eurS, euro);
 
             label7.Text = $"Курс основных валют\nЕвро: {_eur} Доллар: {_usd}";
         }
@@ -160,7 +155,6 @@ namespace FinancialApp
 
         private void MoneyExchange()
         {
-            ViewrichTextBoxOutData();
             var debit = debitAccountComboBox.SelectedIndex;
             var replenishment = replenishmentAccountComboBox.SelectedIndex;
             if (debit == -1 || replenishment == -1)
@@ -179,38 +173,60 @@ namespace FinancialApp
             {
                 var debitAccount = CommonMethod.GetSearchAccountOwner(_db, debit, _Id);
                 var replenishmentAccount = CommonMethod.GetSearchAccountOwner(_db, replenishment, _Id);
+                var message = string.Empty;
+                var flag = true;
+                if (debitAccount == null)
+                {
+                    message = "У вас нет счета с которого вы хотите произвести обмен.\nВы хотите создать счет?";
+                    ExchangeError(message, flag);
+                    return;
+                }
+                else if (replenishmentAccount == null)
+                {
+                    message = "У вас нет счета с которого вы хотите произвести обмен.\nВы хотите создать счет?";
+                    ExchangeError(message, flag);
+                    return;
+                }
+                else if (debitAccount.Balance == 0 || debitAccount.Balance - money <= 0)
+                {
+                    flag = false;
+                    message = "У вас недостаточно срадств на счету с которого вы хотите произвести обмен!\n Хотите пополнить счет?";
+                    ExchangeError(message, flag);
+                    return;
+                }
+
                 debitAccount.Balance -= money;
                 if ((CurrencyType)debit == CurrencyType.RUB)
                 {
                     if ((CurrencyType)replenishmentAccount.Type == CurrencyType.USD)
                     {
-                        replenishmentAccount.Balance = Math.Round(money / _usd, 2);
+                        replenishmentAccount.Balance += Math.Round(money / _usd, 2);
                     }
                     else if ((CurrencyType)replenishmentAccount.Type == CurrencyType.EUR)
                     {
-                        replenishmentAccount.Balance = Math.Round(money / _usd, 2);
+                        replenishmentAccount.Balance += Math.Round(money / _usd, 2);
                     }
                 }
                 else if ((CurrencyType)debit == CurrencyType.USD)
                 {
                     if ((CurrencyType)replenishmentAccount.Type == CurrencyType.RUB)
                     {
-                        replenishmentAccount.Balance = Math.Round(money * _usd, 2);
+                        replenishmentAccount.Balance += Math.Round(money * _usd, 2);
                     }
                     else if ((CurrencyType)replenishmentAccount.Type == CurrencyType.EUR)
                     {
-                        replenishmentAccount.Balance = Math.Round(money / _usd, 2);
+                        replenishmentAccount.Balance += Math.Round(money / _usd, 2);
                     }
                 }
                 else if ((CurrencyType)debit == CurrencyType.EUR)
                 {
                     if ((CurrencyType)replenishmentAccount.Type == CurrencyType.RUB)
                     {
-                        replenishmentAccount.Balance = Math.Round(money * _eur, 2);
+                        replenishmentAccount.Balance += Math.Round(money * _eur, 2);
                     }
                     if ((CurrencyType)replenishmentAccount.Type == CurrencyType.USD)
                     {
-                        replenishmentAccount.Balance = Math.Round(money / _usd, 2);
+                        replenishmentAccount.Balance += Math.Round(money / _usd, 2);
                     }
                 }
                 MessageBox.Show("Поздравляем! Вы успешно обменяли деньги деньги");
@@ -230,6 +246,7 @@ namespace FinancialApp
             historyTransfer.DateTime = DateTime.Now;
             historyTransfer.Type = (CurrencyType)debit;
             historyTransfer.MoneyTransfer = money;
+            historyTransfer.RecipientId = _Id;
             _db.HistoryTransfers.Add(historyTransfer);
         }
 
@@ -237,5 +254,33 @@ namespace FinancialApp
         {
             Close();
         }
+
+        private void ExchangeError(string message, bool flag)
+        {
+            DialogResult result = MessageBox.Show(
+            message,
+            "Ошибка!",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Information,
+            MessageBoxDefaultButton.Button1,
+            MessageBoxOptions.DefaultDesktopOnly);
+
+            if (result == DialogResult.Yes)
+            {
+                if (flag == true)
+                {
+                    var creatingAccount = new CreatingAccount(_db, _Id);
+                    creatingAccount.Show();
+                    this.Close();
+                }
+                else
+                {
+                    var addMoney = new AddMoney(_db, _Id);
+                    addMoney.Show();
+                    this.Close();
+                }
+            }
+        }
     }
 }
+
