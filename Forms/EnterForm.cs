@@ -1,11 +1,6 @@
 ﻿using FinancialApp.DataBase;
 using FinancialApp.Enum;
 using FinancialApp.GeneralMethods;
-using System;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Security.Principal;
-using Excel = Microsoft.Office.Interop.Excel;
 
 namespace FinancialApp
 {
@@ -14,7 +9,7 @@ namespace FinancialApp
         private Form _form;
         private DB _db;
         private Guid _Id;
-        private List<HistoryTransfer> _operationHistorySeach;
+        private List<HistoryTransfer>? _operationHistorySeach;
 
         public EnterForm(Guid Id, Form Form1, DB db)
         {

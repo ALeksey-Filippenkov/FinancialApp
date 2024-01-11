@@ -1,4 +1,3 @@
-using System.Linq;
 using FinancialApp.DataBase;
 
 namespace FinancialApp

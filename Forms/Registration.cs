@@ -14,10 +14,10 @@ namespace FinancialApp
 
         private void addButton_Click(object sender, EventArgs e)
         {
-            AddPerson();
+            CheckingTheEnteredData();
         }
 
-        public void AddPerson()
+        public void CheckingTheEnteredData()
         {
             if (ageInput.Text == null || phoneInput.Text == null)
             {
@@ -52,22 +52,35 @@ namespace FinancialApp
                     MessageBox.Show("Номер телефона должен быть в виде числа");
                     return;
                 }
-
-                var person = new Person();
-                var personId = Guid.NewGuid();
-
-                person.Id = personId;
-                person.Name = name.Text;
-                person.Surname = surnameInput.Text;
-                person.City = cityInput.Text;
-                person.Adress = adressInput.Text;
-                person.PhoneNumber = phoneNumberInt;
-                person.EmailAdress = emailInput.Text;
-                person.Login = loginInput.Text;
-                person.Password = passwordInput.Text;
-
-                _db.Persons.Add(person);
+                AddPerson(phoneNumberInt);
             }
+        }
+
+        public void AddPerson(int phoneNumberInt)
+        {
+            var person = new Person();
+            var personId = Guid.NewGuid();
+
+            person.Id = personId;
+            person.Name = name.Text;
+            person.Surname = surnameInput.Text;
+            person.City = cityInput.Text;
+            person.Adress = adressInput.Text;
+            person.PhoneNumber = phoneNumberInt;
+            person.EmailAdress = emailInput.Text;
+            foreach (var item in _db.Persons)
+            {
+                if (item.Login.Contains(loginInput.Text))
+                {
+                    MessageBox.Show("Данный логин уже используется\nПридумайте другой.");
+                    return;
+                }
+                else
+                    person.Login = loginInput.Text;
+            }
+            person.Password = passwordInput.Text;
+
+            _db.Persons.Add(person);
 
             MessageBox.Show("Поздравляем! Вы успешно прошли регистрацию");
             Thread.Sleep(50);

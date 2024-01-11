@@ -3,7 +3,8 @@ using FinancialApp.Enum;
 using FinancialApp.GeneralMethods;
 using System.Data;
 using System.Net;
-using System.Windows.Forms;
+using System.Net.Http.Json;
+using System.Text.Json;
 using System.Xml.Linq;
 
 namespace FinancialApp

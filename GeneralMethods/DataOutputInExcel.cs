@@ -1,9 +1,6 @@
 ﻿using FinancialApp.DataBase;
 using FinancialApp.Enum;
-using Microsoft.Office.Interop.Excel;
-using System.Data.Common;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace FinancialApp.GeneralMethods
@@ -75,29 +72,8 @@ namespace FinancialApp.GeneralMethods
                         worksheet.Cells[row, column + 1].Value = personSender.Name;
                         worksheet.Cells[row, column + 2].Value = TypeOfOperation.Перевод.ToString();
                         worksheet.Cells[row, column + 5].Value = personRecipient.Name;
-
                     }
                     row++;
-
-
-
-                    //if (transferItem.SenderId == _Id)
-                    //{
- 
-                    //    worksheet.Cells[row, column + 1].Value = personSender.Name;
-
-
-                    //    if (personRecipient == null)
-                    //    {
-                    //        worksheet.Cells[row, column + 2].Value = TypeOfOperation.Пополнение.ToString();
-                    //    }
-                    //    else
-                    //    {
-                    //        worksheet.Cells[row, column + 2].Value = TypeOfOperation.Перевод.ToString();
-                    //        worksheet.Cells[row, column + 5].Value = personRecipient.Name;
-                    //    }
-                    //    row++;
-                    //}
                 }
 
                 for (int i = 1; i <= worksheet.UsedRange.Columns.Count; i++)

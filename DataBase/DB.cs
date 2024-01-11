@@ -11,6 +11,8 @@ namespace FinancialApp.DataBase
             Money = new List<PersonMoney>();
 
             HistoryTransfers = new List<HistoryTransfer>();
+
+            Admins = new List<Admin>();
         }
 
         public List<Person> Persons { get; set; }
@@ -18,6 +20,8 @@ namespace FinancialApp.DataBase
         public List<PersonMoney> Money { get; set; }
 
         public List<HistoryTransfer> HistoryTransfers { get; set; }
+
+        public List<Admin> Admins { get; set; }
 
         public void SaveDB()
         {

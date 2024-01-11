@@ -1,7 +1,6 @@
 ﻿using FinancialApp.DataBase;
 using FinancialApp.Enum;
 using FinancialApp.GeneralMethods;
-using System;
 
 namespace FinancialApp
 {

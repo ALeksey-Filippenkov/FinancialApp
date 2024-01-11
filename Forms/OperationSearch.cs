@@ -2,7 +2,6 @@
 using FinancialApp.Enum;
 using FinancialApp.GeneralMethods;
 using System.Data;
-using System.Drawing.Text;
 
 namespace FinancialApp
 {
