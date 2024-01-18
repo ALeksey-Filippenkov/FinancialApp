@@ -102,6 +102,7 @@ namespace FinancialApp
 
             PrintHitory();
         }
+
         private void EnterLebelText()
         {
             this.Refresh();

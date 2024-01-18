@@ -39,6 +39,7 @@
             tabControl1 = new TabControl();
             tabPage1 = new TabPage();
             tabPage2 = new TabPage();
+            linkLabel1 = new LinkLabel();
             exchangeButton = new Button();
             label7 = new Label();
             label4 = new Label();
@@ -152,6 +153,7 @@
             // 
             // tabPage2
             // 
+            tabPage2.Controls.Add(linkLabel1);
             tabPage2.Controls.Add(exchangeButton);
             tabPage2.Controls.Add(label7);
             tabPage2.Controls.Add(label4);
@@ -165,8 +167,21 @@
             tabPage2.Padding = new Padding(3);
             tabPage2.Size = new Size(1029, 350);
             tabPage2.TabIndex = 1;
-            tabPage2.Text = "Перевод между своими считами";
+            tabPage2.Text = "Обмен денег";
             tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // linkLabel1
+            // 
+            linkLabel1.AutoSize = true;
+            linkLabel1.LinkArea = new LinkArea(35, 50);
+            linkLabel1.Location = new Point(616, 92);
+            linkLabel1.Name = "linkLabel1";
+            linkLabel1.Size = new Size(284, 21);
+            linkLabel1.TabIndex = 17;
+            linkLabel1.TabStop = true;
+            linkLabel1.Text = "Курс взят с официального сайта ЦБ: https://cbr.ru";
+            linkLabel1.UseCompatibleTextRendering = true;
+            linkLabel1.LinkClicked += linkLabel1_LinkClicked;
             // 
             // exchangeButton
             // 
@@ -277,5 +292,6 @@
         private ComboBox replenishmentAccountComboBox;
         private Label label7;
         private Button exchangeButton;
+        private LinkLabel linkLabel1;
     }
 }

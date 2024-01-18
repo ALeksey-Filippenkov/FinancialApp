@@ -13,6 +13,7 @@ namespace FinancialApp.DataBase
             HistoryTransfers = new List<HistoryTransfer>();
 
             Admins = new List<Admin>();
+
         }
 
         public List<Person> Persons { get; set; }
@@ -25,6 +26,7 @@ namespace FinancialApp.DataBase
 
         public void SaveDB()
         {
+            
             File.WriteAllText("G:\\DB", JsonSerializer.Serialize(this));
         }
 
