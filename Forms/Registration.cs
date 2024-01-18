@@ -79,7 +79,7 @@ namespace FinancialApp
                     person.Login = loginInput.Text;
             }
             person.Password = passwordInput.Text;
-
+            person.IsBanned = false;
             _db.Persons.Add(person);
 
             MessageBox.Show("Поздравляем! Вы успешно прошли регистрацию");

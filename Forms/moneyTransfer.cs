@@ -3,8 +3,6 @@ using FinancialApp.Enum;
 using FinancialApp.GeneralMethods;
 using System.Data;
 using System.Net;
-using System.Net.Http.Json;
-using System.Text.Json;
 using System.Xml.Linq;
 
 namespace FinancialApp
@@ -24,6 +22,7 @@ namespace FinancialApp
             _db = db;
             _Id = Id;
             ViewrichTextBoxOutData();
+            linkLabel1.LinkClicked += linkLabel1_LinkClicked;
         }
 
         private void transferButton_Click(object sender, EventArgs e)
@@ -281,6 +280,13 @@ namespace FinancialApp
                     this.Close();
                 }
             }
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            this.linkLabel1.LinkVisited = true;
+
+            System.Diagnostics.Process.Start("https://cbr.ru");
         }
     }
 }

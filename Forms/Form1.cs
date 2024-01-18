@@ -1,4 +1,5 @@
 using FinancialApp.DataBase;
+using FinancialApp.Forms;
 
 namespace FinancialApp
 {
@@ -26,14 +27,32 @@ namespace FinancialApp
 
         private void SeachPerson()
         {
-            var SeachAccount = _db.Persons.
-                FirstOrDefault(enterAccount => enterAccount.Login == loginInput.Text && enterAccount.Password == passwordInput.Text);
-            if (SeachAccount == null)
+            var seachAccount = _db.Persons.FirstOrDefault(enterAccount => enterAccount.Login == loginInput.Text && enterAccount.Password == passwordInput.Text);
+
+            if (seachAccount != null && !seachAccount.IsBanned )
             {
-                MessageBox.Show("Неверный логин или пароль");
+                EnterAccount(seachAccount.Id);
+            }
+            else if (seachAccount != null && seachAccount.IsBanned)
+            {
+                MessageBox.Show("Пользователь забанен");
                 return;
             }
-            EnterAccount(SeachAccount.Id);
+            else
+            {
+                var seachAdmin = _db.Admins.FirstOrDefault(admin => admin.Login == loginInput.Text && admin.Password == passwordInput.Text);
+                if (seachAdmin == null)
+                {
+                    MessageBox.Show("Неверный логин или пароль");
+                    return;
+                }
+                else
+                {
+                    var administratorsPersonalAccount = new AdministratorsPersonalAccount(seachAdmin.Id, this, _db);
+                    administratorsPersonalAccount.Show();
+                    Hide();
+                }
+            }
         }
 
         private void EnterAccount(Guid Id)
