@@ -9,7 +9,7 @@ namespace FinancialApp
         private DB _db;
         private Guid _Id;
 
-        public AddMoney(DB db, Guid Id)
+        public AddMoney(DB db, Guid Id, Form form)
         {
             InitializeComponent();
             _db = db;
@@ -69,6 +69,7 @@ namespace FinancialApp
             historyTransfer.DateTime = DateTime.Now;
             historyTransfer.Type = (CurrencyType)currencyList.SelectedIndex;
             historyTransfer.MoneyTransfer = moneyDouble;
+            historyTransfer.OperationType = TypeOfOperation.пополнение; 
             _db.HistoryTransfers.Add(historyTransfer);
         }
 

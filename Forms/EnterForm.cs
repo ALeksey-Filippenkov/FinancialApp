@@ -8,19 +8,29 @@ namespace FinancialApp
     {
         private Form _form;
         private DB _db;
-        private Guid _Id;
+        private Guid _id;
         private List<HistoryTransfer>? _operationHistorySeach;
+        private PrintHitory _printHistory;
 
-        public EnterForm(Guid Id, Form Form1, DB db)
+        public EnterForm(Guid id, Form Form1, DB db)
         {
             InitializeComponent();
-            _Id = Id;
+            _id = id;
             _form = Form1;
             _db = db;
             this.Refresh();
             tabPage2.Update();
             EnterLebelText();
-            PrintHitory();
+            _operationHistorySeach = _db.HistoryTransfers.Where(h => h.SenderId == _id || h.RecipientId == _id).ToList();
+            PrintHitory _printHistory = new PrintHitory(_db, _id, _operationHistorySeach);
+            _printHistory.GetPrintHitory(historyOperationDataGridView);
+        }
+
+        private void EnterForm_Load(object sender, EventArgs e)
+        {
+            EnterLebelText();
+            
+            _printHistory.GetPrintHitory(historyOperationDataGridView);
         }
 
         private void saveLKButton_Click(object sender, EventArgs e)
@@ -68,7 +78,7 @@ namespace FinancialApp
 
         private void tabPage1_Click(object sender, EventArgs e)
         {
-            var _person = _db.Persons.First(p => p.Id == _Id);
+            var _person = _db.Persons.First(p => p.Id == _id);
             name.Text = _person.Name;
             surname.Text = _person.Surname;
             age.Text = _person.Age.ToString();
@@ -81,35 +91,36 @@ namespace FinancialApp
         }
         private void tabPage2_Click(object sender, EventArgs e)
         {
-            var seachTransfer = _db.HistoryTransfers.FirstOrDefault(s => s.SenderId == _Id);
+            Refresh();
+            tabPage2.Update();
+            var seachTransfer = _db.HistoryTransfers.FirstOrDefault(s => s.SenderId == _id);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var addMoney = new AddMoney(_db, _Id);
+            var addMoney = new AddMoney(_db, _id, this);
             addMoney.Show();
         }
 
         private void creatAccount_Click(object sender, EventArgs e)
         {
-            var creatingAccount = new CreatingAccount(_db, _Id);
+            var creatingAccount = new CreatingAccount(_db, _id);
             creatingAccount.Show();
         }
 
         private void refreshButton_Click(object sender, EventArgs e)
         {
             EnterLebelText();
-
-            PrintHitory();
+            _printHistory.GetPrintHitory(historyOperationDataGridView);
         }
 
         private void EnterLebelText()
         {
-            this.Refresh();
+            Refresh();
             tabPage2.Update();
-            var rub = _db.Money.FirstOrDefault(p => p.PersonId == _Id && p.Type == CurrencyType.RUB);
-            var usd = _db.Money.FirstOrDefault(p => p.PersonId == _Id && p.Type == CurrencyType.USD);
-            var eur = _db.Money.FirstOrDefault(p => p.PersonId == _Id && p.Type == CurrencyType.EUR);
+            var rub = _db.Money.FirstOrDefault(p => p.PersonId == _id && p.Type == CurrencyType.RUB);
+            var usd = _db.Money.FirstOrDefault(p => p.PersonId == _id && p.Type == CurrencyType.USD);
+            var eur = _db.Money.FirstOrDefault(p => p.PersonId == _id && p.Type == CurrencyType.EUR);
 
             if (rub != null)
             {
@@ -125,65 +136,31 @@ namespace FinancialApp
             }
         }
 
-        public void PrintHitory()
-        {
-            historyOperationDataGridView.Rows.Clear();
-
-            _operationHistorySeach = _db.HistoryTransfers.Where(h => h.SenderId == _Id || h.RecipientId == _Id).ToList();
-
-            foreach (var transferItem in _operationHistorySeach)
-            {
-                var personSender = _db.Persons.First(p => p.Id == transferItem.SenderId);
-                var today = DateOnly.FromDateTime(transferItem.DateTime);
-                var personRecipient = _db.Persons.FirstOrDefault(p => p.Id == transferItem.RecipientId);
-
-                int index = historyOperationDataGridView.Rows.Add();
-
-                historyOperationDataGridView.Rows[index].Cells[0].Value = today;
-                historyOperationDataGridView.Rows[index].Cells[3].Value = transferItem.Type;
-                historyOperationDataGridView.Rows[index].Cells[4].Value = transferItem.MoneyTransfer;
-
-                if (transferItem.SenderId == transferItem.RecipientId)
-                {
-                    historyOperationDataGridView.Rows[index].Cells[1].Value = TypeOfOperation.Обмен.ToString();
-                    historyOperationDataGridView.Rows[index].Cells[2].Value = personSender.Name;
-                }
-                else if (personRecipient == null)
-                {
-                    historyOperationDataGridView.Rows[index].Cells[1].Value = TypeOfOperation.Пополнение.ToString();
-                    historyOperationDataGridView.Rows[index].Cells[2].Value = personSender.Name;
-                }
-                else if (transferItem.RecipientId == _Id)
-                {
-                    historyOperationDataGridView.Rows[index].Cells[1].Value = TypeOfOperation.Перевод.ToString();
-                    historyOperationDataGridView.Rows[index].Cells[2].Value = personSender.Name;
-                    historyOperationDataGridView.Rows[index].Cells[5].Value = personRecipient.Name;
-                }
-                else if (transferItem.SenderId == _Id && personRecipient != null)
-                {
-                    historyOperationDataGridView.Rows[index].Cells[1].Value = TypeOfOperation.Перевод.ToString();
-                    historyOperationDataGridView.Rows[index].Cells[2].Value = personSender.Name;
-                    historyOperationDataGridView.Rows[index].Cells[5].Value = personRecipient.Name;
-                }
-            }
-        }
-
         private void moneyTransferButton_Click(object sender, EventArgs e)
         {
-            var moneyTransfer = new MoneyTransfer(_db, _Id);
+            var moneyTransfer = new MoneyTransfer(_db, _id);
             moneyTransfer.Show();
         }
 
         private void seachButton_Click(object sender, EventArgs e)
         {
-            var operationSearch = new OperationSearch(_db, _Id);
+            var operationSearch = new OperationSearch(_db, _id);
             operationSearch.Show();
         }
 
         private void historyOperationExel_Click(object sender, EventArgs e)
         {
-            DataOutputInExcel newExel = new DataOutputInExcel(_db, _Id);
+            DataOutputInExcel newExel = new DataOutputInExcel(_db, _id);
             newExel.GetDataOutputInExcel(_operationHistorySeach);
         }
+
+        private void tabPage3_Click(object sender, EventArgs e)
+        {
+            Panel panel = new Panel();
+            panel.Location = new Point(30, 30);
+            panel.Visible = true;
+            tabPage3.Controls.Add(panel);
+        }
+
     }
 }

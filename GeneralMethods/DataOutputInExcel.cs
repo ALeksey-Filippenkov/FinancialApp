@@ -48,29 +48,21 @@ namespace FinancialApp.GeneralMethods
                     var personRecipient = _db.Persons.FirstOrDefault(p => p.Id == transferItem.RecipientId);
 
                     worksheet.Cells[row, column].Value = transferItem.DateTime;
+                    worksheet.Cells[row, column + 1].Value = personSender.Name;
                     worksheet.Cells[row, column + 3].Value = transferItem.Type.ToString();
                     worksheet.Cells[row, column + 4].Value = transferItem.MoneyTransfer;
 
-                    if (transferItem.SenderId == transferItem.RecipientId)
+                    if (transferItem.OperationType == TypeOfOperation.обмен)
                     {
-                        worksheet.Cells[row, column + 1].Value = personSender.Name;
-                        worksheet.Cells[row, column + 2].Value = TypeOfOperation.Обмен.ToString();
+                        worksheet.Cells[row, column + 2].Value = TypeOfOperation.обмен.ToString();
                     }
-                    else if (personRecipient == null)
+                    else if (transferItem.OperationType == TypeOfOperation.пополнение)
                     {
-                        worksheet.Cells[row, column + 1].Value = personSender.Name;
-                        worksheet.Cells[row, column + 2].Value = TypeOfOperation.Пополнение.ToString();
+                        worksheet.Cells[row, column + 2].Value = TypeOfOperation.пополнение.ToString();
                     }
-                    else if (transferItem.RecipientId == _Id)
+                    else if (transferItem.OperationType == TypeOfOperation.перевод)
                     {
-                        worksheet.Cells[row, column + 1].Value = personSender.Name;
-                        worksheet.Cells[row, column + 2].Value = TypeOfOperation.Перевод.ToString();
-                        worksheet.Cells[row, column + 5].Value = personRecipient.Name;
-                    }
-                    else if (transferItem.SenderId == _Id && personRecipient != null) 
-                    {
-                        worksheet.Cells[row, column + 1].Value = personSender.Name;
-                        worksheet.Cells[row, column + 2].Value = TypeOfOperation.Перевод.ToString();
+                        worksheet.Cells[row, column + 2].Value = TypeOfOperation.перевод.ToString();
                         worksheet.Cells[row, column + 5].Value = personRecipient.Name;
                     }
                     row++;

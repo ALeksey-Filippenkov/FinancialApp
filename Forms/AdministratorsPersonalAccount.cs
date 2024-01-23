@@ -59,12 +59,15 @@ namespace FinancialApp.Forms
 
         private void deleteUserButton_Click(object sender, EventArgs e)
         {
-
+            VisibleButtoTrue();
+            var person = SeachPerson();
+            _db.Persons.Remove(person);
         }
 
         private void findUserOperationsButton_Click(object sender, EventArgs e)
         {
-
+            var findUserOperations = new FindUserOperations(_db);
+            findUserOperations.Show();
         }
 
         private void restoreUserButton_Click(object sender, EventArgs e)
@@ -75,28 +78,36 @@ namespace FinancialApp.Forms
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            BanUnbanUser(_trueOrFalse);
+            var person = SeachPerson();
+            BanUnbanUser(person, _trueOrFalse);
         }
 
-        private void BanUnbanUser(bool item) 
+
+        private Person SeachPerson()
         {
             var sechPerson = _db.Persons.FirstOrDefault(p => p.Name == textBox1.Text);
 
             if (sechPerson == null)
             {
                 MessageBox.Show("Пользователя с таким именем нет");
-                return;
+                return null;
             }
-            else if (!item)
+            return sechPerson;
+        }
+
+
+        private void BanUnbanUser(Person person, bool item) 
+        {
+            if (!item)
             {
-                sechPerson.IsBanned = false;
+                person.IsBanned = false;
                 _db.SaveDB();
                 MessageBox.Show("Пользователь успешно разбанен");
                 VisibleButtoFalse();
             }
             else 
             {
-                sechPerson.IsBanned = true;
+                person.IsBanned = true;
                 _db.SaveDB();
                 MessageBox.Show("Пользователь успешно забанен");
                 VisibleButtoFalse();
