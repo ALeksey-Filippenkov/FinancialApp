@@ -35,7 +35,7 @@
             label2 = new Label();
             currencyTypeTextBox = new TextBox();
             label3 = new Label();
-            personRecipientTextBox = new TextBox();
+            personRecipientNameTextBox = new TextBox();
             monthCalendar1 = new MonthCalendar();
             historyOperationExel = new Button();
             SuspendLayout();
@@ -70,7 +70,7 @@
             // 
             // seachButton
             // 
-            seachButton.Location = new Point(46, 327);
+            seachButton.Location = new Point(42, 422);
             seachButton.Name = "seachButton";
             seachButton.Size = new Size(424, 23);
             seachButton.TabIndex = 4;
@@ -81,7 +81,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(46, 210);
+            label2.Location = new Point(46, 225);
             label2.Name = "label2";
             label2.Size = new Size(73, 15);
             label2.TabIndex = 5;
@@ -89,26 +89,26 @@
             // 
             // currencyTypeTextBox
             // 
-            currencyTypeTextBox.Location = new Point(302, 210);
+            currencyTypeTextBox.Location = new Point(302, 225);
             currencyTypeTextBox.Name = "currencyTypeTextBox";
-            currencyTypeTextBox.Size = new Size(100, 23);
+            currencyTypeTextBox.Size = new Size(164, 23);
             currencyTypeTextBox.TabIndex = 6;
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(46, 251);
+            label3.Location = new Point(46, 282);
             label3.Name = "label3";
             label3.Size = new Size(98, 15);
             label3.TabIndex = 7;
             label3.Text = "Имя получателя";
             // 
-            // personRecipientTextBox
+            // personRecipientNameTextBox
             // 
-            personRecipientTextBox.Location = new Point(302, 251);
-            personRecipientTextBox.Name = "personRecipientTextBox";
-            personRecipientTextBox.Size = new Size(100, 23);
-            personRecipientTextBox.TabIndex = 8;
+            personRecipientNameTextBox.Location = new Point(302, 282);
+            personRecipientNameTextBox.Name = "personRecipientNameTextBox";
+            personRecipientNameTextBox.Size = new Size(164, 23);
+            personRecipientNameTextBox.TabIndex = 8;
             // 
             // monthCalendar1
             // 
@@ -133,7 +133,7 @@
             ClientSize = new Size(854, 520);
             Controls.Add(historyOperationExel);
             Controls.Add(monthCalendar1);
-            Controls.Add(personRecipientTextBox);
+            Controls.Add(personRecipientNameTextBox);
             Controls.Add(label3);
             Controls.Add(currencyTypeTextBox);
             Controls.Add(label2);
@@ -155,7 +155,7 @@
         private Label label2;
         private TextBox currencyTypeTextBox;
         private Label label3;
-        private TextBox personRecipientTextBox;
+        private TextBox personRecipientNameTextBox;
         private MonthCalendar monthCalendar1;
         private Button historyOperationExel;
     }

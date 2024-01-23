@@ -9,5 +9,6 @@ namespace FinancialApp.DataBase
         public CurrencyType Type { get; set; }
         public double MoneyTransfer { get; set; }
         public DateTime DateTime { get; set; }
+        public TypeOfOperation OperationType { get; set; }
     }
 }

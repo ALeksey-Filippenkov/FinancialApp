@@ -47,15 +47,16 @@
             exitButton.TabIndex = 0;
             exitButton.Text = "Назад";
             exitButton.UseVisualStyleBackColor = true;
+            exitButton.Click += exitButton_Click;
             // 
             // userInformationDataGridView
             // 
             userInformationDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             userInformationDataGridView.Columns.AddRange(new DataGridViewColumn[] { numberPerson, Column1, Column2 });
-            userInformationDataGridView.Location = new Point(434, 12);
+            userInformationDataGridView.Location = new Point(287, 22);
             userInformationDataGridView.Name = "userInformationDataGridView";
             userInformationDataGridView.RowTemplate.Height = 25;
-            userInformationDataGridView.Size = new Size(566, 388);
+            userInformationDataGridView.Size = new Size(722, 474);
             userInformationDataGridView.TabIndex = 16;
             userInformationDataGridView.Visible = false;
             // 
@@ -71,17 +72,16 @@
             // Column1
             // 
             Column1.Frozen = true;
-            Column1.HeaderText = "";
+            Column1.HeaderText = "Данные";
             Column1.Name = "Column1";
             Column1.ReadOnly = true;
             // 
             // Column2
             // 
             Column2.Frozen = true;
-            Column2.HeaderText = "Значения";
+            Column2.HeaderText = "Значение";
             Column2.Name = "Column2";
-            Column2.ReadOnly = true;
-            Column2.Width = 200;
+            Column2.Width = 400;
             // 
             // nameTextBox
             // 

@@ -127,6 +127,7 @@ namespace FinancialApp
             historyTransfer.Type = (CurrencyType)currencyList.SelectedIndex;
             historyTransfer.RecipientId = personRecipient.Id;
             historyTransfer.MoneyTransfer = _moneyTransfer;
+            historyTransfer.OperationType = TypeOfOperation.перевод;
             _db.HistoryTransfers.Add(historyTransfer);
         }
 
@@ -229,6 +230,7 @@ namespace FinancialApp
                         replenishmentAccount.Balance += Math.Round(money / _usd, 2);
                     }
                 }
+
                 MessageBox.Show("Поздравляем! Вы успешно обменяли деньги деньги");
 
                 SaveMoneyExchangeHistory(debit, money);
@@ -247,6 +249,7 @@ namespace FinancialApp
             historyTransfer.Type = (CurrencyType)debit;
             historyTransfer.MoneyTransfer = money;
             historyTransfer.RecipientId = _Id;
+            historyTransfer.OperationType = TypeOfOperation.обмен;
             _db.HistoryTransfers.Add(historyTransfer);
         }
 
@@ -275,7 +278,7 @@ namespace FinancialApp
                 }
                 else
                 {
-                    var addMoney = new AddMoney(_db, _Id);
+                    var addMoney = new AddMoney(_db, _Id, this);
                     addMoney.Show();
                     this.Close();
                 }
