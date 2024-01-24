@@ -36,6 +36,7 @@
             nameTextBox = new TextBox();
             label1 = new Label();
             seachButton = new Button();
+            printExcelButton = new Button();
             ((System.ComponentModel.ISupportInitialize)userInformationDataGridView).BeginInit();
             SuspendLayout();
             // 
@@ -109,11 +110,23 @@
             seachButton.UseVisualStyleBackColor = true;
             seachButton.Click += seachButton_Click;
             // 
+            // printExcelButton
+            // 
+            printExcelButton.Location = new Point(39, 403);
+            printExcelButton.Name = "printExcelButton";
+            printExcelButton.Size = new Size(217, 23);
+            printExcelButton.TabIndex = 20;
+            printExcelButton.Text = "Выгрузить в EXCEL";
+            printExcelButton.UseVisualStyleBackColor = true;
+            printExcelButton.Visible = false;
+            printExcelButton.Click += printExcelButton_Click;
+            // 
             // ShowUserInformation
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1051, 532);
+            Controls.Add(printExcelButton);
             Controls.Add(seachButton);
             Controls.Add(label1);
             Controls.Add(nameTextBox);
@@ -136,5 +149,6 @@
         private DataGridViewTextBoxColumn numberPerson;
         private DataGridViewTextBoxColumn Column1;
         private DataGridViewTextBoxColumn Column2;
+        private Button printExcelButton;
     }
 }

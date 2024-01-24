@@ -1,5 +1,5 @@
 ﻿using FinancialApp.DataBase;
-using System.Drawing.Text;
+using FinancialApp.Enum;
 
 namespace FinancialApp.Forms
 {
@@ -8,6 +8,7 @@ namespace FinancialApp.Forms
         private Form _form;
         private Guid _id;
         private DB _db;
+        private AdministratorActionsWithUser _userActions;
         private bool _trueOrFalse;
 
         public AdministratorsPersonalAccount(Guid Id, Form form1, DB db)
@@ -54,14 +55,14 @@ namespace FinancialApp.Forms
         private void banUserButton_Click(object sender, EventArgs e)
         {
             VisibleButtoTrue();
-            _trueOrFalse = true;
+            _userActions = AdministratorActionsWithUser.забанить;
         }
 
         private void deleteUserButton_Click(object sender, EventArgs e)
         {
             VisibleButtoTrue();
             var person = SeachPerson();
-            _db.Persons.Remove(person);
+            _userActions = AdministratorActionsWithUser.удалить;
         }
 
         private void findUserOperationsButton_Click(object sender, EventArgs e)
@@ -73,46 +74,49 @@ namespace FinancialApp.Forms
         private void restoreUserButton_Click(object sender, EventArgs e)
         {
             VisibleButtoTrue();
-            _trueOrFalse = false;
+            _userActions = AdministratorActionsWithUser.разбанить;
         }
 
         private void saveButton_Click(object sender, EventArgs e)
         {
             var person = SeachPerson();
-            BanUnbanUser(person, _trueOrFalse);
+            UserActions(person, _userActions);
         }
-
 
         private Person SeachPerson()
         {
             var sechPerson = _db.Persons.FirstOrDefault(p => p.Name == textBox1.Text);
-
-            if (sechPerson == null)
-            {
-                MessageBox.Show("Пользователя с таким именем нет");
-                return null;
-            }
             return sechPerson;
         }
 
-
-        private void BanUnbanUser(Person person, bool item) 
+        private void UserActions(Person person, AdministratorActionsWithUser userActions) 
         {
-            if (!item)
+            if (person == null)
+            {
+                MessageBox.Show("Пользователя с таким именем нет");
+                return;
+            }
+            else if (userActions == AdministratorActionsWithUser.разбанить)
             {
                 person.IsBanned = false;
                 _db.SaveDB();
                 MessageBox.Show("Пользователь успешно разбанен");
                 VisibleButtoFalse();
             }
-            else 
+            else if (userActions == AdministratorActionsWithUser.забанить)
             {
                 person.IsBanned = true;
                 _db.SaveDB();
                 MessageBox.Show("Пользователь успешно забанен");
                 VisibleButtoFalse();
             }
-
+            else if (userActions == AdministratorActionsWithUser.удалить)
+            {
+                _db.Persons.Remove(person);
+                _db.SaveDB();
+                MessageBox.Show("Пользователь успешно удален");
+                VisibleButtoFalse();
+            }
         }
 
         private void VisibleButtoTrue()

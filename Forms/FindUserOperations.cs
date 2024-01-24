@@ -1,11 +1,14 @@
 ﻿using FinancialApp.DataBase;
 using FinancialApp.GeneralMethods;
+using System.Security.Cryptography;
 
 namespace FinancialApp.Forms
 {
     public partial class FindUserOperations : Form
     {
         private DB _db;
+        private Person _personId;
+        private List<HistoryTransfer> _personHistoryOperation;
 
         public FindUserOperations(DB db)
         {
@@ -18,26 +21,33 @@ namespace FinancialApp.Forms
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var startingDateSeach = DateOnly.FromDateTime(monthCalendar1.SelectionRange.Start);
-            var endDateSeach = DateOnly.FromDateTime(monthCalendar1.SelectionRange.End);
+            var startingDateSeach = monthCalendar1.SelectionRange.Start;
+            var endDateSeach = monthCalendar1.SelectionRange.End;
             var currencyTypeValue = currencyTypeTextBox.Text.ToUpper();
             var personName = personNameTextBox.Text;
 
-            var seachPerson = _db.Persons.FirstOrDefault(x => x.Name == personName);
+            _personId = _db.Persons.FirstOrDefault(x => x.Name == personName);
 
-            if (seachPerson == null)
+            if (_personId == null)
             {
-                var operationSeach = _db.HistoryTransfers;
+                MessageBox.Show("Имя пользователя обязательно для заполнения");
+                return;
             }
 
-            var person = EventSearch.GetEventSearch(_db, seachPerson.Id, startingDateSeach, endDateSeach, currencyTypeValue, personName);
-            PrintHitory printHistory = new PrintHitory(_db, person);
+            _personHistoryOperation = EventSearch.GetEventSearch(_db, _personId.Id, startingDateSeach, endDateSeach, currencyTypeValue, personName);
+            PrintHitory printHistory = new PrintHitory(_db, _personHistoryOperation);
             printHistory.GetPrintHitory(historyOperationDataGridView);
         }
 
         private void backButton_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void pritnExcelButton_Click(object sender, EventArgs e)
+        {
+            DataOutputInExcel newExel = new DataOutputInExcel(_db, _personId.Id);
+            newExel.GetDataOutputInExcel(_personHistoryOperation);
         }
     }
 }
