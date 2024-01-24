@@ -43,6 +43,7 @@
             Column5 = new DataGridViewTextBoxColumn();
             Column6 = new DataGridViewTextBoxColumn();
             backButton = new Button();
+            pritnExcelButton = new Button();
             ((System.ComponentModel.ISupportInitialize)historyOperationDataGridView).BeginInit();
             SuspendLayout();
             // 
@@ -165,11 +166,22 @@
             backButton.UseVisualStyleBackColor = true;
             backButton.Click += backButton_Click;
             // 
+            // pritnExcelButton
+            // 
+            pritnExcelButton.Location = new Point(657, 391);
+            pritnExcelButton.Name = "pritnExcelButton";
+            pritnExcelButton.Size = new Size(335, 23);
+            pritnExcelButton.TabIndex = 9;
+            pritnExcelButton.Text = "Выгрузить в Excel";
+            pritnExcelButton.UseVisualStyleBackColor = true;
+            pritnExcelButton.Click += pritnExcelButton_Click;
+            // 
             // FindUserOperations
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1108, 450);
+            Controls.Add(pritnExcelButton);
             Controls.Add(backButton);
             Controls.Add(historyOperationDataGridView);
             Controls.Add(button1);
@@ -203,5 +215,6 @@
         private DataGridViewTextBoxColumn Column5;
         private DataGridViewTextBoxColumn Column6;
         private Button backButton;
+        private Button pritnExcelButton;
     }
 }

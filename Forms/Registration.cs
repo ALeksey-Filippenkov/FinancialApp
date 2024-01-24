@@ -19,14 +19,14 @@ namespace FinancialApp
 
         public void CheckingTheEnteredData()
         {
-            if (ageInput.Text == null || phoneInput.Text == null)
+            if (ageInput.Text == string.Empty || phoneInput.Text == string.Empty)
             {
                 MessageBox.Show("Поле обязательно для заполнения");
                 return;
             }
             else
             {
-                var ageValue = Int32.TryParse(ageInput.Text, out int ageInt);
+                var ageValue = int.TryParse(ageInput.Text, out int ageInt);
                 if (ageValue == false)
                 {
                     MessageBox.Show("Возраст должен быть числом");
@@ -46,7 +46,7 @@ namespace FinancialApp
                     }
                 }
 
-                var phoneNumberValue = Int32.TryParse(phoneInput.Text, out int phoneNumberInt);
+                var phoneNumberValue = int.TryParse(phoneInput.Text, out int phoneNumberInt);
                 if (phoneNumberValue == false)
                 {
                     MessageBox.Show("Номер телефона должен быть в виде числа");

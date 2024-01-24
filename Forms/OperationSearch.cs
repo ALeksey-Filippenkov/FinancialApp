@@ -28,8 +28,8 @@ namespace FinancialApp
 
         private void seachButton_Click(object sender, EventArgs e)
         {
-            var startingDateSeach = DateOnly.FromDateTime(monthCalendar1.SelectionRange.Start);
-            var endDateSeach = DateOnly.FromDateTime(monthCalendar1.SelectionRange.End);
+            var startingDateSeach = monthCalendar1.SelectionRange.Start;
+            var endDateSeach = monthCalendar1.SelectionRange.End;
 
             var currencyTypeValue = currencyTypeTextBox.Text.ToUpper();
             var personRecipientName = personRecipientNameTextBox.Text;
