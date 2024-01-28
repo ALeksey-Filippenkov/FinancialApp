@@ -2,8 +2,8 @@
 {
     public enum AdministratorActionsWithUser
     {
-        забанить,
-        разбанить,
-        удалить
+        ban_user,
+        unban_user,
+        delete_user
     }
 }

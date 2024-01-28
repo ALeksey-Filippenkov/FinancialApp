@@ -127,7 +127,7 @@ namespace FinancialApp
             historyTransfer.Type = (CurrencyType)currencyList.SelectedIndex;
             historyTransfer.RecipientId = personRecipient.Id;
             historyTransfer.MoneyTransfer = _moneyTransfer;
-            historyTransfer.OperationType = TypeOfOperation.перевод;
+            historyTransfer.OperationType = TypeOfOperation.money_transfer;
             _db.HistoryTransfers.Add(historyTransfer);
         }
 
@@ -249,7 +249,7 @@ namespace FinancialApp
             historyTransfer.Type = (CurrencyType)debit;
             historyTransfer.MoneyTransfer = money;
             historyTransfer.RecipientId = _Id;
-            historyTransfer.OperationType = TypeOfOperation.обмен;
+            historyTransfer.OperationType = TypeOfOperation.exchange;
             _db.HistoryTransfers.Add(historyTransfer);
         }
 
