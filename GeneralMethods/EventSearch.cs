@@ -9,58 +9,51 @@ namespace FinancialApp.GeneralMethods
             var operationSeach = _db.HistoryTransfers.Where(h => h.SenderId == id || h.RecipientId == id).ToList();
             var personRecipientNameSeach = _db.Persons.FirstOrDefault(p => p.Name == personRecipientName);
 
+            List<HistoryTransfer> result;
+
             if (startingDateSeach == endDateSeach)
             {
                 if (currencyTypeValue != string.Empty && personRecipientName != string.Empty)
                 {
-                    var historyOperationDay = operationSeach.Where(s => s.DateTime == startingDateSeach && s.Type.ToString() == currencyTypeValue
-                                                                                                        && s.RecipientId == personRecipientNameSeach.Id).ToList();
-                    return historyOperationDay;
+                    result = operationSeach.Where(s => s.DateTime == startingDateSeach && s.Type.ToString() == currencyTypeValue
                 }
                 else if (currencyTypeValue != string.Empty && personRecipientName == string.Empty)
                 {
-                    var historyOperationDay = operationSeach.Where(s =>s.DateTime == startingDateSeach  && s.Type.ToString() == currencyTypeValue).ToList();
-                    return historyOperationDay;
+                    result = operationSeach.Where(s =>s.DateTime == startingDateSeach  && s.Type.ToString() == currencyTypeValue).ToList();
                 }
                 else if (currencyTypeValue == string.Empty && personRecipientName != string.Empty)
                 {
-                    var historyOperationDay = operationSeach.Where(s => s.DateTime == startingDateSeach && s.RecipientId == personRecipientNameSeach.Id).ToList();
-                    return historyOperationDay;
+                    result = operationSeach.Where(s => s.DateTime == startingDateSeach && s.RecipientId == personRecipientNameSeach.Id).ToList();
                 }
                 else
                 {
-                    var historyOperationDay = operationSeach.Where(s => s.DateTime == startingDateSeach).ToList();
-                    return historyOperationDay;
+                    result = operationSeach.Where(s => s.DateTime == startingDateSeach).ToList();
                 }
             }
             else
             {
                 if (currencyTypeValue != string.Empty && personRecipientName != string.Empty)
                 {
-                    var historyOperationDay = operationSeach.Where(s => s.DateTime >= startingDateSeach && s.DateTime <= endDateSeach
-                                                                                                        && s.Type.ToString() == currencyTypeValue
-                                                                                                        && s.RecipientId == personRecipientNameSeach.Id).ToList();
-                    return historyOperationDay;
+                    result = operationSeach.Where(s => s.DateTime >= startingDateSeach && s.DateTime <= endDateSeach
+                                                                                       && s.Type.ToString() == currencyTypeValue
+                                                                                       && s.RecipientId == personRecipientNameSeach.Id).ToList();
                 }
                 else if (currencyTypeValue != string.Empty && personRecipientName == string.Empty)
                 {
-
-                    var historyOperationDay = operationSeach.Where(s => s.DateTime >= startingDateSeach && s.DateTime <= endDateSeach
-                                                                                                        && s.Type.ToString() == currencyTypeValue).ToList();
-                    return historyOperationDay;
+                    result = operationSeach.Where(s => s.DateTime >= startingDateSeach && s.DateTime <= endDateSeach
+                                                                                       && s.Type.ToString() == currencyTypeValue).ToList();
                 }
                 else if (currencyTypeValue == string.Empty && personRecipientName != string.Empty)
                 {
-                    var historyOperationDay = operationSeach.Where(s => s.DateTime >= startingDateSeach && s.DateTime <= endDateSeach
-                                                                                                        && s.RecipientId == personRecipientNameSeach.Id).ToList();
-                    return historyOperationDay;
+                   result = operationSeach.Where(s => s.DateTime >= startingDateSeach && s.DateTime <= endDateSeach
+                                                                                      && s.RecipientId == personRecipientNameSeach.Id).ToList();
                 }
                 else
                 {
-                    var historyOperationDay = operationSeach.Where(s => s.DateTime >= startingDateSeach && s.DateTime <= endDateSeach).ToList();
-                    return historyOperationDay;
+                    result = operationSeach.Where(s => s.DateTime >= startingDateSeach && s.DateTime <= endDateSeach).ToList();
                 }
             }
+            return result;
         }
     }
 }
