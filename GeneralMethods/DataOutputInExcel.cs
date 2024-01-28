@@ -52,17 +52,17 @@ namespace FinancialApp.GeneralMethods
                     worksheet.Cells[row, column + 3].Value = transferItem.Type.ToString();
                     worksheet.Cells[row, column + 4].Value = transferItem.MoneyTransfer;
 
-                    if (transferItem.OperationType == TypeOfOperation.обмен)
+                    if (transferItem.OperationType == TypeOfOperation.exchange)
                     {
-                        worksheet.Cells[row, column + 2].Value = TypeOfOperation.обмен.ToString();
+                        worksheet.Cells[row, column + 2].Value = "обмен";
                     }
-                    else if (transferItem.OperationType == TypeOfOperation.пополнение)
+                    else if (transferItem.OperationType == TypeOfOperation.refill)
                     {
-                        worksheet.Cells[row, column + 2].Value = TypeOfOperation.пополнение.ToString();
+                        worksheet.Cells[row, column + 2].Value = "попоплненение";
                     }
-                    else if (transferItem.OperationType == TypeOfOperation.перевод)
+                    else if (transferItem.OperationType == TypeOfOperation.money_transfer)
                     {
-                        worksheet.Cells[row, column + 2].Value = TypeOfOperation.перевод.ToString();
+                        worksheet.Cells[row, column + 2].Value = "перевод";
                         worksheet.Cells[row, column + 5].Value = personRecipient.Name;
                     }
                     row++;

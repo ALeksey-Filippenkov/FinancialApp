@@ -9,7 +9,7 @@ namespace FinancialApp
         private Form _form;
         private DB _db;
         private Guid _id;
-        private List<HistoryTransfer>? _operationHistorySeach;
+        private List<HistoryTransfer> _operationHistorySeach;
         private PrintHitory _printHistory;
 
         public EnterForm(Guid id, Form Form1, DB db)
@@ -161,6 +161,5 @@ namespace FinancialApp
             panel.Visible = true;
             tabPage3.Controls.Add(panel);
         }
-
     }
 }

@@ -29,7 +29,7 @@ namespace FinancialApp
         {
             var seachAccount = _db.Persons.FirstOrDefault(enterAccount => enterAccount.Login == loginInput.Text && enterAccount.Password == passwordInput.Text);
 
-            if (seachAccount != null && !seachAccount.IsBanned )
+            if (seachAccount != null && !seachAccount.IsBanned)
             {
                 EnterAccount(seachAccount.Id);
             }
@@ -40,18 +40,30 @@ namespace FinancialApp
             }
             else
             {
-                var seachAdmin = _db.Admins.FirstOrDefault(admin => admin.Login == loginInput.Text && admin.Password == passwordInput.Text);
-                if (seachAdmin == null)
+                var generalAdmin = new Admin() { Password = "admin", Login = "admin" };
+
+                if (generalAdmin.Password == "admin" && generalAdmin.Login == "admin")
                 {
-                    MessageBox.Show("Неверный логин или пароль");
-                    return;
-                }
-                else
-                {
-                    var administratorsPersonalAccount = new AdministratorsPersonalAccount(seachAdmin.Id, this, _db);
+                    var administratorsPersonalAccount = new AdministratorsPersonalAccount(true, this, _db);
                     administratorsPersonalAccount.Show();
                     Hide();
                 }
+                else
+                {
+                    var seachAdmin = _db.Admins.FirstOrDefault(admin => admin.Login == loginInput.Text && admin.Password == passwordInput.Text);
+                    if (seachAdmin == null)
+                    {
+                        MessageBox.Show("Неверный логин или пароль");
+                        return;
+                    }
+                    else 
+                    {
+                        var administratorsPersonalAccount = new AdministratorsPersonalAccount(false, this, _db);
+                        administratorsPersonalAccount.Show();
+                        Hide();
+                    }
+
+                }               
             }
         }
 

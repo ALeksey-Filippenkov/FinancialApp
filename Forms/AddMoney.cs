@@ -69,7 +69,7 @@ namespace FinancialApp
             historyTransfer.DateTime = DateTime.Now;
             historyTransfer.Type = (CurrencyType)currencyList.SelectedIndex;
             historyTransfer.MoneyTransfer = moneyDouble;
-            historyTransfer.OperationType = TypeOfOperation.пополнение; 
+            historyTransfer.OperationType = TypeOfOperation.refill; 
             _db.HistoryTransfers.Add(historyTransfer);
         }
 

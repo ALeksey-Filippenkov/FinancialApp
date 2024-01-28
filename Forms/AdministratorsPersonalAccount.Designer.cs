@@ -40,6 +40,12 @@
             deleteUserButton = new Button();
             findUserOperationsButton = new Button();
             restoreUserButton = new Button();
+            workingWithAdministratorButton = new Button();
+            searchAdministratorActionsButton = new Button();
+            deleteAdministratorButton = new Button();
+            showAdministratorDataButton = new Button();
+            addAdministratorButrron = new Button();
+            comboBox1 = new ComboBox();
             SuspendLayout();
             // 
             // button1
@@ -82,7 +88,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(344, 18);
+            label1.Location = new Point(306, 18);
             label1.Name = "label1";
             label1.Size = new Size(113, 15);
             label1.TabIndex = 5;
@@ -165,11 +171,79 @@
             restoreUserButton.Visible = false;
             restoreUserButton.Click += restoreUserButton_Click;
             // 
+            // workingWithAdministratorButton
+            // 
+            workingWithAdministratorButton.Location = new Point(41, 102);
+            workingWithAdministratorButton.Name = "workingWithAdministratorButton";
+            workingWithAdministratorButton.Size = new Size(202, 23);
+            workingWithAdministratorButton.TabIndex = 13;
+            workingWithAdministratorButton.Text = "Работа с администраторами";
+            workingWithAdministratorButton.UseVisualStyleBackColor = true;
+            workingWithAdministratorButton.Visible = false;
+            workingWithAdministratorButton.Click += workingWithAdministratorButton_Click;
+            // 
+            // searchAdministratorActionsButton
+            // 
+            searchAdministratorActionsButton.Location = new Point(306, 194);
+            searchAdministratorActionsButton.Name = "searchAdministratorActionsButton";
+            searchAdministratorActionsButton.Size = new Size(204, 23);
+            searchAdministratorActionsButton.TabIndex = 17;
+            searchAdministratorActionsButton.Text = "Найти операции администратора";
+            searchAdministratorActionsButton.UseVisualStyleBackColor = true;
+            searchAdministratorActionsButton.Visible = false;
+            // 
+            // deleteAdministratorButton
+            // 
+            deleteAdministratorButton.Location = new Point(306, 146);
+            deleteAdministratorButton.Name = "deleteAdministratorButton";
+            deleteAdministratorButton.Size = new Size(207, 23);
+            deleteAdministratorButton.TabIndex = 16;
+            deleteAdministratorButton.Text = "Удалить администратора";
+            deleteAdministratorButton.UseVisualStyleBackColor = true;
+            deleteAdministratorButton.Visible = false;
+            // 
+            // showAdministratorDataButton
+            // 
+            showAdministratorDataButton.Location = new Point(306, 59);
+            showAdministratorDataButton.Name = "showAdministratorDataButton";
+            showAdministratorDataButton.Size = new Size(207, 23);
+            showAdministratorDataButton.TabIndex = 14;
+            showAdministratorDataButton.Text = "Показать данные администратора";
+            showAdministratorDataButton.UseVisualStyleBackColor = true;
+            showAdministratorDataButton.Visible = false;
+            // 
+            // addAdministratorButrron
+            // 
+            addAdministratorButrron.Location = new Point(306, 102);
+            addAdministratorButrron.Name = "addAdministratorButrron";
+            addAdministratorButrron.Size = new Size(207, 23);
+            addAdministratorButrron.TabIndex = 15;
+            addAdministratorButrron.Text = "Добавить администратора";
+            addAdministratorButrron.UseVisualStyleBackColor = true;
+            addAdministratorButrron.Visible = false;
+            addAdministratorButrron.Click += addAdministratorButrron_Click;
+            // 
+            // comboBox1
+            // 
+            comboBox1.FormattingEnabled = true;
+            comboBox1.Items.AddRange(new object[] { "Доавить администратора из пользователей", "Добавить нового администратора" });
+            comboBox1.Location = new Point(576, 102);
+            comboBox1.Name = "comboBox1";
+            comboBox1.Size = new Size(312, 23);
+            comboBox1.TabIndex = 18;
+            comboBox1.Visible = false;
+            // 
             // AdministratorsPersonalAccount
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1153, 450);
+            Controls.Add(comboBox1);
+            Controls.Add(searchAdministratorActionsButton);
+            Controls.Add(deleteAdministratorButton);
+            Controls.Add(addAdministratorButrron);
+            Controls.Add(showAdministratorDataButton);
+            Controls.Add(workingWithAdministratorButton);
             Controls.Add(restoreUserButton);
             Controls.Add(findUserOperationsButton);
             Controls.Add(deleteUserButton);
@@ -202,5 +276,11 @@
         private Button deleteUserButton;
         private Button findUserOperationsButton;
         private Button restoreUserButton;
+        private Button workingWithAdministratorButton;
+        private Button searchAdministratorActionsButton;
+        private Button deleteAdministratorButton;
+        private Button showAdministratorDataButton;
+        private Button addAdministratorButrron;
+        private ComboBox comboBox1;
     }
 }

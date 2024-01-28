@@ -2,8 +2,8 @@
 {
     public enum TypeOfOperation
     {
-        пополнение,
-        перевод,
-        обмен
+        refill,
+        money_transfer,
+        exchange
     }
 }

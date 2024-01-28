@@ -38,19 +38,19 @@ namespace FinancialApp.GeneralMethods
                 historyOperationDataGridView.Rows[index].Cells[3].Value = transferItem.Type;
                 historyOperationDataGridView.Rows[index].Cells[4].Value = transferItem.MoneyTransfer;
 
-                if (transferItem.OperationType == TypeOfOperation.обмен)
+                if (transferItem.OperationType == TypeOfOperation.exchange)
                 {
-                    historyOperationDataGridView.Rows[index].Cells[1].Value = TypeOfOperation.обмен.ToString();
+                    historyOperationDataGridView.Rows[index].Cells[1].Value = "обмен";
                     historyOperationDataGridView.Rows[index].Cells[2].Value = personSender.Name;
                 }
-                else if (transferItem.OperationType == TypeOfOperation.пополнение)
+                else if (transferItem.OperationType == TypeOfOperation.refill)
                 {
-                    historyOperationDataGridView.Rows[index].Cells[1].Value = TypeOfOperation.пополнение.ToString();
+                    historyOperationDataGridView.Rows[index].Cells[1].Value = "пополненеие";
                     historyOperationDataGridView.Rows[index].Cells[2].Value = personSender.Name;
                 }
-                else if (transferItem.OperationType == TypeOfOperation.перевод)
+                else if (transferItem.OperationType == TypeOfOperation.money_transfer)
                 {
-                    historyOperationDataGridView.Rows[index].Cells[1].Value = TypeOfOperation.перевод.ToString();
+                    historyOperationDataGridView.Rows[index].Cells[1].Value = "перевод";
                     historyOperationDataGridView.Rows[index].Cells[2].Value = personSender.Name;
                     historyOperationDataGridView.Rows[index].Cells[5].Value = personRecipient.Name;
                 }
