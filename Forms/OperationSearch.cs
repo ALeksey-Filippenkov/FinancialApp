@@ -45,15 +45,25 @@ namespace FinancialApp
                 _historyOperation = EventSearch.GetEventSearch(_db, operationSeach, startingDateSeach, endDateSeach, currencyTypeValue, personRecipientName);
             }
 
-            if (_historyOperation != null)
-            {
-                operationHistory.Text = "История операций";
-                PrintEvet(_historyOperation);
-            }
-            else
+            if (_historyOperation == null)
             {
                 operationHistory.Text = "История операций";
                 operationHistory.Text += $"\nОпераций с пользователем {personRecipientName} не найдены";
+                return;
+            }
+            else 
+            {
+                if (_historyOperation.Count == 0)
+                {
+                    operationHistory.Text = "История операций";
+                    operationHistory.Text += $"\n{DateOnly.FromDateTime(startingDateSeach)} небыло произведено операций";
+                    return;
+                }
+                else if (_historyOperation != null)
+                {
+                    operationHistory.Text = "История операций";
+                    PrintEvet(_historyOperation);
+                }
             }
         }
 
@@ -63,6 +73,7 @@ namespace FinancialApp
             if (historyOperation.Count == 0)
             {
                 operationHistory.Text += $"\nЕще небыло произведено операций";
+                return;
             }
             else
             {

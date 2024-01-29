@@ -6,8 +6,6 @@ namespace FinancialApp.GeneralMethods
     {
         public static List<HistoryTransfer> GetEventSearch(DB _db, List<HistoryTransfer> operationSeach, DateTime startingDateSeach, DateTime endDateSeach, string currencyTypeValue, string personRecipientName)
         {
-            //var operationSeach = _db.HistoryTransfers.Where(h => h.SenderId == id || h.RecipientId == id).ToList();
-
             var seachPersonRecipientName = _db.Persons.FirstOrDefault(p => p.Name == personRecipientName);     
   
             List<HistoryTransfer> result;
