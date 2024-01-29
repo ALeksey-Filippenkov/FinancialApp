@@ -37,7 +37,7 @@ namespace FinancialApp
             if (operationSeach.Count == 0)
             {
                 operationHistory.Text = "История операций";
-                operationHistory.Text += $"\nУ Вас еще небыло операций";
+                operationHistory.Text += $"\nУ Вас еще небыло операций!";
                 return;
             }
             else
@@ -48,7 +48,7 @@ namespace FinancialApp
             if (_historyOperation == null)
             {
                 operationHistory.Text = "История операций";
-                operationHistory.Text += $"\nОпераций с пользователем {personRecipientName} не найдены";
+                operationHistory.Text += $"\nОпераций с пользователем {personRecipientName} не найдены!";
                 return;
             }
             else 
@@ -56,7 +56,7 @@ namespace FinancialApp
                 if (_historyOperation.Count == 0)
                 {
                     operationHistory.Text = "История операций";
-                    operationHistory.Text += $"\n{DateOnly.FromDateTime(startingDateSeach)} небыло произведено операций";
+                    operationHistory.Text += $"\n{DateOnly.FromDateTime(startingDateSeach)} небыло произведено операций!";
                     return;
                 }
                 else if (_historyOperation != null)
