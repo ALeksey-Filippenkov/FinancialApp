@@ -33,7 +33,6 @@
             label3 = new Label();
             currencyTypeTextBox = new TextBox();
             personNameTextBox = new TextBox();
-            monthCalendar1 = new MonthCalendar();
             button1 = new Button();
             historyOperationDataGridView = new DataGridView();
             Column1 = new DataGridViewTextBoxColumn();
@@ -44,6 +43,7 @@
             Column6 = new DataGridViewTextBoxColumn();
             backButton = new Button();
             pritnExcelButton = new Button();
+            monthCalendar1 = new MonthCalendar();
             ((System.ComponentModel.ISupportInitialize)historyOperationDataGridView).BeginInit();
             SuspendLayout();
             // 
@@ -87,12 +87,6 @@
             personNameTextBox.Name = "personNameTextBox";
             personNameTextBox.Size = new Size(164, 23);
             personNameTextBox.TabIndex = 4;
-            // 
-            // monthCalendar1
-            // 
-            monthCalendar1.Location = new Point(207, 30);
-            monthCalendar1.Name = "monthCalendar1";
-            monthCalendar1.TabIndex = 5;
             // 
             // button1
             // 
@@ -176,16 +170,22 @@
             pritnExcelButton.UseVisualStyleBackColor = true;
             pritnExcelButton.Click += pritnExcelButton_Click;
             // 
+            // monthCalendar1
+            // 
+            monthCalendar1.Location = new Point(207, 30);
+            monthCalendar1.Name = "monthCalendar1";
+            monthCalendar1.TabIndex = 10;
+            // 
             // FindUserOperations
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1108, 450);
+            Controls.Add(monthCalendar1);
             Controls.Add(pritnExcelButton);
             Controls.Add(backButton);
             Controls.Add(historyOperationDataGridView);
             Controls.Add(button1);
-            Controls.Add(monthCalendar1);
             Controls.Add(personNameTextBox);
             Controls.Add(currencyTypeTextBox);
             Controls.Add(label3);
@@ -205,7 +205,6 @@
         private Label label3;
         private TextBox currencyTypeTextBox;
         private TextBox personNameTextBox;
-        private MonthCalendar monthCalendar1;
         private Button button1;
         private DataGridView historyOperationDataGridView;
         private DataGridViewTextBoxColumn Column1;
@@ -216,5 +215,6 @@
         private DataGridViewTextBoxColumn Column6;
         private Button backButton;
         private Button pritnExcelButton;
+        private MonthCalendar monthCalendar1;
     }
 }

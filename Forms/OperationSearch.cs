@@ -1,7 +1,6 @@
 ﻿using FinancialApp.DataBase;
 using FinancialApp.Enum;
 using FinancialApp.GeneralMethods;
-using System.Data;
 
 namespace FinancialApp
 {
@@ -28,20 +27,38 @@ namespace FinancialApp
 
         private void seachButton_Click(object sender, EventArgs e)
         {
-            var startingDateSeach = monthCalendar1.SelectionRange.Start;
-            var endDateSeach = monthCalendar1.SelectionRange.End;
-
+            var startingDateSeach = monthCalendar1.SelectionRange.Start.Date;
+            var endDateSeach = monthCalendar1.SelectionRange.End.Date;
             var currencyTypeValue = currencyTypeTextBox.Text.ToUpper();
             var personRecipientName = personRecipientNameTextBox.Text;
-           
-            _historyOperation = EventSearch.GetEventSearch(_db, _id, startingDateSeach, endDateSeach, currencyTypeValue, personRecipientName);
 
-            PrintEvet(_historyOperation);
+            var operationSeach = _db.HistoryTransfers.Where(h => h.SenderId == _id || h.RecipientId == _id).ToList();
+
+            if (operationSeach.Count == 0)
+            {
+                operationHistory.Text = "История операций";
+                operationHistory.Text += $"\nУ Вас еще небыло операций";
+                return;
+            }
+            else
+            {
+                _historyOperation = EventSearch.GetEventSearch(_db, operationSeach, startingDateSeach, endDateSeach, currencyTypeValue, personRecipientName);
+            }
+
+            if (_historyOperation != null)
+            {
+                operationHistory.Text = "История операций";
+                PrintEvet(_historyOperation);
+            }
+            else
+            {
+                operationHistory.Text = "История операций";
+                operationHistory.Text += $"\nОпераций с пользователем {personRecipientName} не найдены";
+            }
         }
 
         private void PrintEvet(List<HistoryTransfer> historyOperation)
         {
-            operationHistory.Text = "История операций";
 
             if (historyOperation.Count == 0)
             {
@@ -56,14 +73,14 @@ namespace FinancialApp
 
                     switch (transferItem.OperationType)
                     {
-                        case TypeOfOperation.пополнение:
-                            operationHistory.Text += $"\n{personSender.Name} {transferItem.DateTime} произвел {TypeOfOperation.пополнение.ToString()}  {transferItem.Type} на {transferItem.MoneyTransfer}";
+                        case TypeOfOperation.refill:
+                            operationHistory.Text += $"\n{personSender.Name} {transferItem.DateTime} произвел пополнение  {transferItem.Type} на {transferItem.MoneyTransfer}";
                             break;
-                        case TypeOfOperation.перевод:
-                            operationHistory.Text += $"\n{personSender.Name} {transferItem.DateTime} произвел {TypeOfOperation.перевод.ToString()}  {transferItem.MoneyTransfer} {transferItem.Type} {personRecipient.Name}";
+                        case TypeOfOperation.money_transfer:
+                            operationHistory.Text += $"\n{personSender.Name} {transferItem.DateTime} произвел перевод  {transferItem.MoneyTransfer} {transferItem.Type} {personRecipient.Name}";
                             break;
-                        case TypeOfOperation.обмен:
-                            operationHistory.Text += $"\n{personSender.Name} {transferItem.DateTime} произвел {TypeOfOperation.обмен.ToString()}  {transferItem.Type} на {transferItem.MoneyTransfer}";
+                        case TypeOfOperation.exchange:
+                            operationHistory.Text += $"\n{personSender.Name} {transferItem.DateTime} произвел обмен  {transferItem.Type} на {transferItem.MoneyTransfer}";
                             break;
                         default:
                             break;
