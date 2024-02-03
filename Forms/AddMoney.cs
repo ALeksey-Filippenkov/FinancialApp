@@ -14,6 +14,7 @@ namespace FinancialApp
             InitializeComponent();
             _db = db;
             _Id = Id;
+			
         }
 
         private void addMoneyButton_Click(object sender, EventArgs e)
