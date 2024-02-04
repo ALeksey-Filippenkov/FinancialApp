@@ -2,7 +2,7 @@
 
 namespace FinancialApp.DataBase
 {
-    public class HistoryActionsWithUsers
+    public class HistoryActionsWithUser
     {
         public Guid IdAdministrator { get; set; }
 

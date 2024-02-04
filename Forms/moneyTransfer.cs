@@ -127,7 +127,7 @@ namespace FinancialApp
             historyTransfer.Type = (CurrencyType)currencyList.SelectedIndex;
             historyTransfer.RecipientId = personRecipient.Id;
             historyTransfer.MoneyTransfer = _moneyTransfer;
-            historyTransfer.OperationType = TypeOfOperation.money_transfer;
+            historyTransfer.OperationType = TypeOfOperation.moneyTransfer;
             _db.HistoryTransfers.Add(historyTransfer);
         }
 
@@ -164,7 +164,7 @@ namespace FinancialApp
                 return;
             }
 
-            var moneyValue = Double.TryParse(moneyTextBox.Text, out double money);
+            var moneyValue = double.TryParse(moneyTextBox.Text, out double money);
             if (!moneyValue)
             {
                 MessageBox.Show("Вы ввели не число.");
@@ -199,33 +199,33 @@ namespace FinancialApp
                 debitAccount.Balance -= money;
                 if ((CurrencyType)debit == CurrencyType.RUB)
                 {
-                    if ((CurrencyType)replenishmentAccount.Type == CurrencyType.USD)
+                    if (replenishmentAccount.Type == CurrencyType.USD)
                     {
                         replenishmentAccount.Balance += Math.Round(money / _usd, 2);
                     }
-                    else if ((CurrencyType)replenishmentAccount.Type == CurrencyType.EUR)
+                    else if (replenishmentAccount.Type == CurrencyType.EUR)
                     {
                         replenishmentAccount.Balance += Math.Round(money / _usd, 2);
                     }
                 }
                 else if ((CurrencyType)debit == CurrencyType.USD)
                 {
-                    if ((CurrencyType)replenishmentAccount.Type == CurrencyType.RUB)
+                    if (replenishmentAccount.Type == CurrencyType.RUB)
                     {
                         replenishmentAccount.Balance += Math.Round(money * _usd, 2);
                     }
-                    else if ((CurrencyType)replenishmentAccount.Type == CurrencyType.EUR)
+                    else if (replenishmentAccount.Type == CurrencyType.EUR)
                     {
                         replenishmentAccount.Balance += Math.Round(money / _usd, 2);
                     }
                 }
                 else if ((CurrencyType)debit == CurrencyType.EUR)
                 {
-                    if ((CurrencyType)replenishmentAccount.Type == CurrencyType.RUB)
+                    if (replenishmentAccount.Type == CurrencyType.RUB)
                     {
                         replenishmentAccount.Balance += Math.Round(money * _eur, 2);
                     }
-                    if ((CurrencyType)replenishmentAccount.Type == CurrencyType.USD)
+                    if (replenishmentAccount.Type == CurrencyType.USD)
                     {
                         replenishmentAccount.Balance += Math.Round(money / _usd, 2);
                     }

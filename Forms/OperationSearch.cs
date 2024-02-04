@@ -87,7 +87,7 @@ namespace FinancialApp
                         case TypeOfOperation.refill:
                             operationHistory.Text += $"\n{personSender.Name} {transferItem.DateTime} произвел пополнение  {transferItem.Type} на {transferItem.MoneyTransfer}";
                             break;
-                        case TypeOfOperation.money_transfer:
+                        case TypeOfOperation.moneyTransfer:
                             operationHistory.Text += $"\n{personSender.Name} {transferItem.DateTime} произвел перевод  {transferItem.MoneyTransfer} {transferItem.Type} {personRecipient.Name}";
                             break;
                         case TypeOfOperation.exchange:

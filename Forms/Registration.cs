@@ -68,16 +68,25 @@ namespace FinancialApp
             person.Adress = adressInput.Text;
             person.PhoneNumber = phoneNumberInt;
             person.EmailAdress = emailInput.Text;
-            foreach (var item in _db.Persons)
+
+            if (_db.Persons.Count != 0)
             {
-                if (item.Login.Contains(loginInput.Text))
+                foreach (var item in _db.Persons)
                 {
-                    MessageBox.Show("Данный логин уже используется\nПридумайте другой.");
-                    return;
+                    if (item.Login.Contains(loginInput.Text))
+                    {
+                        MessageBox.Show("Данный логин уже используется\nПридумайте другой.");
+                        return;
+                    }
+                    else
+                        person.Login = loginInput.Text;
                 }
-                else
-                    person.Login = loginInput.Text;
             }
+            else
+            {
+                person.Login = loginInput.Text;
+            }
+
             person.Password = passwordInput.Text;
             person.IsBanned = false;
             _db.Persons.Add(person);
