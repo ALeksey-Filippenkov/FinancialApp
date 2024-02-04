@@ -37,7 +37,7 @@ namespace FinancialApp
             if (operationSeach.Count == 0)
             {
                 operationHistory.Text = "История операций";
-                operationHistory.Text += $"\nУ Вас еще небыло операций";
+                operationHistory.Text += $"\nУ Вас еще небыло операций!";
                 return;
             }
             else
@@ -45,15 +45,25 @@ namespace FinancialApp
                 _historyOperation = EventSearch.GetEventSearch(_db, operationSeach, startingDateSeach, endDateSeach, currencyTypeValue, personRecipientName);
             }
 
-            if (_historyOperation != null)
+            if (_historyOperation == null)
             {
                 operationHistory.Text = "История операций";
-                PrintEvet(_historyOperation);
+                operationHistory.Text += $"\nОпераций с пользователем {personRecipientName} не найдены!";
+                return;
             }
-            else
+            else 
             {
-                operationHistory.Text = "История операций";
-                operationHistory.Text += $"\nОпераций с пользователем {personRecipientName} не найдены";
+                if (_historyOperation.Count == 0)
+                {
+                    operationHistory.Text = "История операций";
+                    operationHistory.Text += $"\n{DateOnly.FromDateTime(startingDateSeach)} небыло произведено операций!";
+                    return;
+                }
+                else if (_historyOperation != null)
+                {
+                    operationHistory.Text = "История операций";
+                    PrintEvet(_historyOperation);
+                }
             }
         }
 
@@ -63,6 +73,7 @@ namespace FinancialApp
             if (historyOperation.Count == 0)
             {
                 operationHistory.Text += $"\nЕще небыло произведено операций";
+                return;
             }
             else
             {
@@ -76,7 +87,7 @@ namespace FinancialApp
                         case TypeOfOperation.refill:
                             operationHistory.Text += $"\n{personSender.Name} {transferItem.DateTime} произвел пополнение  {transferItem.Type} на {transferItem.MoneyTransfer}";
                             break;
-                        case TypeOfOperation.money_transfer:
+                        case TypeOfOperation.moneyTransfer:
                             operationHistory.Text += $"\n{personSender.Name} {transferItem.DateTime} произвел перевод  {transferItem.MoneyTransfer} {transferItem.Type} {personRecipient.Name}";
                             break;
                         case TypeOfOperation.exchange:

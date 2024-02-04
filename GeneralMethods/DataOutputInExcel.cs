@@ -60,7 +60,7 @@ namespace FinancialApp.GeneralMethods
                     {
                         worksheet.Cells[row, column + 2].Value = "попоплненение";
                     }
-                    else if (transferItem.OperationType == TypeOfOperation.money_transfer)
+                    else if (transferItem.OperationType == TypeOfOperation.moneyTransfer)
                     {
                         worksheet.Cells[row, column + 2].Value = "перевод";
                         worksheet.Cells[row, column + 5].Value = personRecipient.Name;

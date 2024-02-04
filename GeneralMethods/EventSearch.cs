@@ -6,11 +6,9 @@ namespace FinancialApp.GeneralMethods
     {
         public static List<HistoryTransfer> GetEventSearch(DB _db, List<HistoryTransfer> operationSeach, DateTime startingDateSeach, DateTime endDateSeach, string currencyTypeValue, string personRecipientName)
         {
-            //var operationSeach = _db.HistoryTransfers.Where(h => h.SenderId == id || h.RecipientId == id).ToList();
+            var seachPersonRecipientName = _db.Persons.FirstOrDefault(p => p.Name == personRecipientName);
 
-            var seachPersonRecipientName = _db.Persons.FirstOrDefault(p => p.Name == personRecipientName);     
-  
-            List<HistoryTransfer> result;
+            List<HistoryTransfer> result = null;
 
             if (startingDateSeach == endDateSeach)
             {
@@ -28,11 +26,7 @@ namespace FinancialApp.GeneralMethods
                     if (seachPersonRecipientName != null)
                     {
                         result = operationSeach.Where(s => s.DateTime.Date == startingDateSeach && s.RecipientId == seachPersonRecipientName.Id).ToList();
-                    }
-                    else
-                    {
-                        result = null;
-                    }                   
+                    }                 
                 }
                 else
                 {
@@ -58,10 +52,6 @@ namespace FinancialApp.GeneralMethods
                     {
                         result = operationSeach.Where(s => s.DateTime.Date >= startingDateSeach && s.DateTime <= endDateSeach
                                                                                                 && s.RecipientId == seachPersonRecipientName.Id).ToList();
-                    }
-                    else 
-                    {
-                        result = null;
                     }
                 }
                 else

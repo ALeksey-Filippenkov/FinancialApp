@@ -26,7 +26,6 @@ namespace FinancialApp.Forms
             var currencyTypeValue = currencyTypeTextBox.Text.ToUpper();
             var personName = personNameTextBox.Text;
 
-
             if (personName != string.Empty)
             {
                 _personRecipient = _db.Persons.FirstOrDefault(x => x.Name == personName);
@@ -48,10 +47,16 @@ namespace FinancialApp.Forms
 
             _personHistoryOperation = EventSearch.GetEventSearch(_db, _operationPersonRecipient, startingDateSeach, endDateSeach, currencyTypeValue, personName);
 
-            if (_personHistoryOperation != null)
+            if (_personHistoryOperation.Count != 0)
             {
                 PrintHitory printHistory = new PrintHitory(_db, _personHistoryOperation);
                 printHistory.GetPrintHitory(historyOperationDataGridView);
+            }
+            else 
+            {
+                historyOperationDataGridView.Rows.Clear();
+                MessageBox.Show($"{DateOnly.FromDateTime(startingDateSeach)} небыло произведено операций");
+                return;
             }
         }
 

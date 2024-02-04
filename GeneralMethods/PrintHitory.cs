@@ -6,7 +6,6 @@ namespace FinancialApp.GeneralMethods
     public class PrintHitory
     {
         private DB _db;
-        private Guid _id;
         private List<HistoryTransfer> _operationHistorySeach;
 
         public PrintHitory(DB db, List<HistoryTransfer> operationHistorySeach)
@@ -18,7 +17,6 @@ namespace FinancialApp.GeneralMethods
         public PrintHitory(DB db, Guid id, List<HistoryTransfer> operationHistorySeach)
         {
             _db = db;
-            _id = id;
             _operationHistorySeach = operationHistorySeach;
         }
 
@@ -48,7 +46,7 @@ namespace FinancialApp.GeneralMethods
                     historyOperationDataGridView.Rows[index].Cells[1].Value = "пополненеие";
                     historyOperationDataGridView.Rows[index].Cells[2].Value = personSender.Name;
                 }
-                else if (transferItem.OperationType == TypeOfOperation.money_transfer)
+                else if (transferItem.OperationType == TypeOfOperation.moneyTransfer)
                 {
                     historyOperationDataGridView.Rows[index].Cells[1].Value = "перевод";
                     historyOperationDataGridView.Rows[index].Cells[2].Value = personSender.Name;

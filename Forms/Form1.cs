@@ -40,11 +40,11 @@ namespace FinancialApp
             }
             else
             {
-                var generalAdmin = new Admin() { Password = "admin", Login = "admin" };
+                var generalAdmin = new Admin() { Password = "admin", Login = "admin", Id = Guid.NewGuid()};
 
-                if (generalAdmin.Password == "admin" && generalAdmin.Login == "admin")
+                if (generalAdmin.Password == passwordInput.Text && generalAdmin.Login == loginInput.Text)
                 {
-                    var administratorsPersonalAccount = new AdministratorsPersonalAccount(true, this, _db);
+                    var administratorsPersonalAccount = new AdministratorsPersonalAccount(true, this, _db, generalAdmin.Id);
                     administratorsPersonalAccount.Show();
                     Hide();
                 }
@@ -58,7 +58,7 @@ namespace FinancialApp
                     }
                     else 
                     {
-                        var administratorsPersonalAccount = new AdministratorsPersonalAccount(false, this, _db);
+                        var administratorsPersonalAccount = new AdministratorsPersonalAccount(false, this, _db, seachAdmin.Id);
                         administratorsPersonalAccount.Show();
                         Hide();
                     }

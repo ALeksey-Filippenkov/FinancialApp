@@ -23,7 +23,7 @@ namespace FinancialApp.DataBase
 
         public List<Admin> Admins { get; set; }
 
-        public List<HistoryActionsWithUsers> ActionsWithUsers { get; set; }
+        public List<HistoryActionsWithUser> HistoryActionsWithUsers { get; set; }
 
         public void SaveDB()
         {           

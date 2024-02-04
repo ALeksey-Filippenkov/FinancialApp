@@ -2,8 +2,8 @@
 {
     public enum TypeOfOperation
     {
-        refill,
-        money_transfer,
-        exchange
+        refill = 0,
+        moneyTransfer = 1,
+        exchange = 2
     }
 }

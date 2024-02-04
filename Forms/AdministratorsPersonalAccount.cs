@@ -1,9 +1,6 @@
 ﻿using FinancialApp.DataBase;
 using FinancialApp.Enum;
-using System;
-using System.Security.Cryptography;
 using System.Text;
-
 
 namespace FinancialApp.Forms
 {
@@ -11,11 +8,11 @@ namespace FinancialApp.Forms
     {
         private Form _form;
         private DB _db;
+        private Guid _id;
         private AdministratorActionsWithUser _userActions;
         private bool _isGeneralAdmin;
 
-
-        public AdministratorsPersonalAccount(bool isGeneralAdmin, Form form1, DB db)
+        public AdministratorsPersonalAccount(bool isGeneralAdmin, Form form1, DB db, Guid id)
         {
             InitializeComponent();
 
@@ -30,6 +27,7 @@ namespace FinancialApp.Forms
             }
             _form = form1;
             _db = db;
+            _id = id;
             dateTime.Text = DateOnly.FromDateTime(DateTime.Now).ToString();
         }
 
@@ -68,14 +66,14 @@ namespace FinancialApp.Forms
         private void banUserButton_Click(object sender, EventArgs e)
         {
             VisibleButtoTrue();
-            _userActions = AdministratorActionsWithUser.ban_user;
+            _userActions = AdministratorActionsWithUser.banUser;
         }
 
         private void deleteUserButton_Click(object sender, EventArgs e)
         {
             VisibleButtoTrue();
             var person = SeachPerson();
-            _userActions = AdministratorActionsWithUser.delete_user;
+            _userActions = AdministratorActionsWithUser.deleteUser;
         }
 
         private void findUserOperationsButton_Click(object sender, EventArgs e)
@@ -87,7 +85,7 @@ namespace FinancialApp.Forms
         private void restoreUserButton_Click(object sender, EventArgs e)
         {
             VisibleButtoTrue();
-            _userActions = AdministratorActionsWithUser.unban_user;
+            _userActions = AdministratorActionsWithUser.unbanUser;
         }
 
         private void saveButton_Click(object sender, EventArgs e)
@@ -101,9 +99,6 @@ namespace FinancialApp.Forms
                 else if (comboBox1.SelectedIndex == 1)
                 {
                     СreatingAdministrator();
-                    MessageBox.Show("Поздравляем! Вы успешно прошли регистрацию");
-                    Thread.Sleep(50);
-                    _db.SaveDB();
                 }
             }
             else
@@ -126,25 +121,28 @@ namespace FinancialApp.Forms
                 MessageBox.Show("Пользователя с таким именем нет");
                 return;
             }
-            else if (userActions == AdministratorActionsWithUser.unban_user)
+            else if (userActions == AdministratorActionsWithUser.unbanUser)
             {
                 person.IsBanned = false;
-                _db.SaveDB();
+                SaveHistoryActionWhithUser(person.Id, userActions, _id);
                 MessageBox.Show("Пользователь успешно разбанен");
+                _db.SaveDB();
                 VisibleButtoFalse();
             }
-            else if (userActions == AdministratorActionsWithUser.ban_user)
+            else if (userActions == AdministratorActionsWithUser.banUser)
             {
                 person.IsBanned = true;
-                _db.SaveDB();
+                SaveHistoryActionWhithUser(person.Id, userActions, _id);
                 MessageBox.Show("Пользователь успешно забанен");
+                _db.SaveDB();
                 VisibleButtoFalse();
             }
-            else if (userActions == AdministratorActionsWithUser.delete_user)
+            else if (userActions == AdministratorActionsWithUser.deleteUser)
             {
                 _db.Persons.Remove(person);
-                _db.SaveDB();
+                SaveHistoryActionWhithUser(person.Id, userActions, _id);
                 MessageBox.Show("Пользователь успешно удален");
+                _db.SaveDB();
                 VisibleButtoFalse();
             }
         }
@@ -184,7 +182,14 @@ namespace FinancialApp.Forms
             admin.Login = CreatingLogin();
             admin.Password = CreatingPasswod();
             admin.Id = Guid.NewGuid();
+
             _db.Admins.Add(admin);
+
+            MessageBox.Show("Поздравляем! Вы успешно прошли регистрацию");
+            Thread.Sleep(50);
+
+            _db.SaveDB();
+
         }
 
         public string CreatingLogin()
@@ -193,13 +198,13 @@ namespace FinancialApp.Forms
             char[] vowels = "aeuoyi".ToCharArray();
             char[] consonants = "qwrtpsdfghjklzxcvbnm".ToCharArray();
 
-            Random rand = new Random();
+            var rand = new Random();
 
-            StringBuilder newNick = new StringBuilder();
+            var newNick = new StringBuilder();
 
             while (newNick.Length < nameLen)
             {
-                bool firstVowel = rand.Next(0, 2) == 0 ? true : false;
+                var firstVowel = rand.Next(0, 2) == 0 ? true : false;
 
                 if (firstVowel)
                 {
@@ -219,15 +224,26 @@ namespace FinancialApp.Forms
 
         public string CreatingPasswod()
         {
-            int length = 8;
+            var length = 8;
             const string valid = "abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-            StringBuilder res = new StringBuilder();
-            Random rnd = new Random();
+            var res = new StringBuilder();
+            var rnd = new Random();
             while (0 < length--)
             {
                 res.Append(valid[rnd.Next(valid.Length)]);
             }
             return res.ToString();
+        }
+
+        public void SaveHistoryActionWhithUser(Guid Id, AdministratorActionsWithUser userActions, Guid _id)
+        {
+            var historyActionWithUser = new HistoryActionsWithUser();
+            historyActionWithUser.IdAdministrator = _id;
+            historyActionWithUser.IdPerson = Id;
+            historyActionWithUser.TypeActionsWithUser = userActions;
+            historyActionWithUser.DateTime = DateTime.Now;
+
+            _db.HistoryActionsWithUsers.Add(historyActionWithUser);
         }
     }
 }
