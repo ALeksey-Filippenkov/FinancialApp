@@ -103,7 +103,7 @@
             Controls.Add(addMoneyBox);
             Controls.Add(currencyList);
             Name = "AddMoney";
-            Text = "AddMoney";
+            Text = "Добавление денег на счет";
             ResumeLayout(false);
             PerformLayout();
         }

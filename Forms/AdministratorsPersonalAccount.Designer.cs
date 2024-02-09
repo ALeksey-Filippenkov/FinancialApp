@@ -226,7 +226,7 @@
             // comboBox1
             // 
             comboBox1.FormattingEnabled = true;
-            comboBox1.Items.AddRange(new object[] { "Доавить администратора из пользователей", "Добавить нового администратора" });
+            comboBox1.Items.AddRange(new object[] { "Добавить администратора из пользователей", "Добавить нового администратора" });
             comboBox1.Location = new Point(576, 102);
             comboBox1.Name = "comboBox1";
             comboBox1.Size = new Size(312, 23);

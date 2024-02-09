@@ -1,6 +1,5 @@
 ﻿using FinancialApp.DataBase;
 using FinancialApp.GeneralMethods;
-using OfficeOpenXml.Style;
 using System.Runtime.InteropServices;
 using Excel = Microsoft.Office.Interop.Excel;
 
@@ -11,6 +10,7 @@ namespace FinancialApp.Forms
         private DB _db;
         private List<Person> _user;
         private List<string> _personData;
+        private Person _changedUserData;
 
         public ShowUserInformation(DB db)
         {
@@ -95,13 +95,11 @@ namespace FinancialApp.Forms
             PrintExcel(_user);
         }
 
-        private void PrintExcel(List<Person> users) 
+        private void PrintExcel(List<Person> users)
         {
             Excel.Application application = null;
             Excel.Workbook workbook = null;
             Excel.Worksheet worksheet = null;
-
-            var index = _personData.Count;
 
             try
             {
@@ -114,49 +112,41 @@ namespace FinancialApp.Forms
                 worksheet = workbook.Worksheets.Item[1];
 
                 worksheet.Cells[1, 1].Value = "# Пользователя";
-                worksheet.Cells[1, 2].Value = "Данные";
-                worksheet.Cells[1, 3].Value = "Значение";
 
-                int rowsPersonData = 2;
-                for (int i = 0, j = 2; i < users.Count; i++)
+                var amountUsers = _db.Persons.Count;
+
+                for (int i = 0, rows = 1, cols = 2; i < _personData.Count; i++, cols++)
                 {
-                    worksheet.Cells[j, 1] = $"Пользователь #{i + 1}";
-
-                    for (int k = 0; k < index; k++)
-                    {
-                        worksheet.Cells[rowsPersonData, 2].Value = _personData[k];
-                        rowsPersonData++;
-                    }
-                    j += index;
+                    worksheet.Cells[rows, cols].Value = _personData[i];
                 }
 
-                int rowsUser = 2, columnUser = 3;
-                foreach (var item in users)
+                for (int userNumber = 0, rows = 2, cols = 1; rows < amountUsers + 2; userNumber++, rows++)
                 {
-                    worksheet.Cells[rowsUser, columnUser].Value = item.Name;
-                    worksheet.Cells[rowsUser+1, columnUser].Value = item.Surname;
-                    worksheet.Cells[rowsUser+2, columnUser].Value = item.Age;
-                    worksheet.Cells[rowsUser+3, columnUser].Value = item.City;
-                    worksheet.Cells[rowsUser+4, columnUser].Value = item.Adress;
-                    worksheet.Cells[rowsUser+5, columnUser].Value = item.PhoneNumber;
-                    worksheet.Cells[rowsUser+6, columnUser].Value = item.EmailAdress;
-                    worksheet.Cells[rowsUser+7, columnUser].Value = item.Login;
-                    worksheet.Cells[rowsUser+8, columnUser].Value = item.Password;
-                    worksheet.Cells[rowsUser+9, columnUser].Value = String.Join("-", item.Id);
-                    if (item.IsBanned)
+                    var person = _db.Persons[userNumber];
+
+                    worksheet.Cells[rows, cols].Value = userNumber + 1;
+                    worksheet.Cells[rows, cols + 1].Value = person.Name;
+                    worksheet.Cells[rows, cols + 2].Value = person.Surname;
+                    worksheet.Cells[rows, cols + 3].Value = person.Age;
+                    worksheet.Cells[rows, cols + 4].Value = person.City;
+                    worksheet.Cells[rows, cols + 5].Value = person.Adress;
+                    worksheet.Cells[rows, cols + 6].Value = person.PhoneNumber;
+                    worksheet.Cells[rows, cols + 7].Value = person.EmailAdress;
+                    worksheet.Cells[rows, cols + 8].Value = person.Login;
+                    worksheet.Cells[rows, cols + 9].Value = person.Password;
+                    worksheet.Cells[rows, cols + 10].Value = String.Join("-", person.Id);
+                    if (person.IsBanned)
                     {
-                        worksheet.Cells[rowsUser + 10, columnUser].Value = "Да";
+                        worksheet.Cells[rows, cols + 11].Value = "Да";
                     }
                     else
-                        worksheet.Cells[rowsUser+10, columnUser].Value = "Нет";
-
-                    rowsUser += index;                   
+                        worksheet.Cells[rows, cols + 11].Value = "Нет";
                 }
 
                 for (int i = 1; i <= worksheet.UsedRange.Columns.Count; i++)
                 {
                     worksheet.Columns[i].AutoFit();
-                    worksheet.Columns[i].HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                    worksheet.Columns[i].HorizontalAlignment = Excel.Constants.xlCenter;                    
                 }
                 worksheet.Protect();
             }
