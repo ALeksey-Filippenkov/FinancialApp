@@ -61,7 +61,6 @@ namespace FinancialApp
             var person = new Person();
             var personId = Guid.NewGuid();
 
-            person.Id = personId;
             person.Name = name.Text;
             person.Surname = surnameInput.Text;
             person.City = cityInput.Text;
@@ -73,7 +72,7 @@ namespace FinancialApp
             {
                 foreach (var item in _db.Persons)
                 {
-                    if (item.Login.Contains(loginInput.Text))
+                    if (item.Login.Equals(loginInput.Text))
                     {
                         MessageBox.Show("Данный логин уже используется\nПридумайте другой.");
                         return;
@@ -88,6 +87,7 @@ namespace FinancialApp
             }
 
             person.Password = passwordInput.Text;
+            person.Id = personId;
             person.IsBanned = false;
             _db.Persons.Add(person);
 

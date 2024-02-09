@@ -42,7 +42,7 @@
             // 
             // exitButton
             // 
-            exitButton.Location = new Point(12, 497);
+            exitButton.Location = new Point(39, 497);
             exitButton.Name = "exitButton";
             exitButton.Size = new Size(75, 23);
             exitButton.TabIndex = 0;
@@ -54,10 +54,10 @@
             // 
             userInformationDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             userInformationDataGridView.Columns.AddRange(new DataGridViewColumn[] { numberPerson, Column1, Column2 });
-            userInformationDataGridView.Location = new Point(287, 22);
+            userInformationDataGridView.Location = new Point(39, 51);
             userInformationDataGridView.Name = "userInformationDataGridView";
             userInformationDataGridView.RowTemplate.Height = 25;
-            userInformationDataGridView.Size = new Size(722, 474);
+            userInformationDataGridView.Size = new Size(961, 428);
             userInformationDataGridView.TabIndex = 16;
             userInformationDataGridView.Visible = false;
             // 
@@ -86,9 +86,9 @@
             // 
             // nameTextBox
             // 
-            nameTextBox.Location = new Point(39, 54);
+            nameTextBox.Location = new Point(287, 22);
             nameTextBox.Name = "nameTextBox";
-            nameTextBox.Size = new Size(217, 23);
+            nameTextBox.Size = new Size(616, 23);
             nameTextBox.TabIndex = 17;
             // 
             // label1
@@ -102,7 +102,7 @@
             // 
             // seachButton
             // 
-            seachButton.Location = new Point(39, 93);
+            seachButton.Location = new Point(925, 22);
             seachButton.Name = "seachButton";
             seachButton.Size = new Size(75, 23);
             seachButton.TabIndex = 19;
@@ -112,7 +112,7 @@
             // 
             // printExcelButton
             // 
-            printExcelButton.Location = new Point(39, 403);
+            printExcelButton.Location = new Point(783, 497);
             printExcelButton.Name = "printExcelButton";
             printExcelButton.Size = new Size(217, 23);
             printExcelButton.TabIndex = 20;
