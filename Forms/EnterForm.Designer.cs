@@ -432,6 +432,7 @@ namespace FinancialApp
             historyOperationDataGridView.RowTemplate.Height = 25;
             historyOperationDataGridView.Size = new Size(605, 388);
             historyOperationDataGridView.TabIndex = 15;
+            historyOperationDataGridView.Click += EnterForm_Load;
             // 
             // date
             // 

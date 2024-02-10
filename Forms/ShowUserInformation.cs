@@ -1,6 +1,7 @@
 ﻿using FinancialApp.DataBase;
 using FinancialApp.GeneralMethods;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace FinancialApp.Forms
@@ -10,79 +11,146 @@ namespace FinancialApp.Forms
         private DB _db;
         private List<Person> _user;
         private List<string> _personData;
-        private Person _changedUserData;
+        private int _index;
 
         public ShowUserInformation(DB db)
         {
-            InitializeComponent();
             _db = db;
             _personData = PersonalData.GetUserData();
+            InitializeComponent();
+            RefreshDataGridView();
         }
 
-        private void seachButton_Click(object sender, EventArgs e)
+        private void nameTextBox_TextChanged(object sender, EventArgs e)
         {
-            userInformationDataGridView.Visible = true;
+            RefreshDataGridView();
+        }
 
-            var person = _db.Persons.Where(p => p.Name == nameTextBox.Text).ToList();
-            if (person == null)
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _index = userStatusComboBox.SelectedIndex;
+            RefreshDataGridView();
+        }
+
+        private void ShowUserInformation_Load(object sender, EventArgs e)
+        {
+            RefreshDataGridView();
+        }
+
+        private List<Person> GetFilteredPersons()
+        {
+            var searchString = nameTextBox.Text.ToLower();
+
+
+            var seachInfo = _db.Persons.Where(p => p.Name.ToLower().Contains(searchString) && p.Name.Length > 0 ||
+                       p.Surname.ToLower().Contains(searchString) && p.Surname.Length > 0 ||
+                       p.City.ToLower().Contains(searchString) && p.City.Length > 0 ||
+                       p.Adress.ToLower().Contains(searchString) && p.Adress.Length > 0 ||
+                       p.Age.ToString().Contains(searchString)).ToList();
+
+            if (searchString.Length != 0 && _index == -1 || _index == 0)
             {
-                MessageBox.Show("Пользователь с таким именем не найден");
-                return;
+                _user = seachInfo;
+                return _user;
             }
-            else
-                printExcelButton.Visible = true;
-
-            userInformationDataGridView.Rows.Clear();
-
-            if (person.Count == 0)
+            else if (searchString.Length != 0 && _index == 1)
+            {
+                _user = seachInfo.Where(i => i.IsBanned == true).ToList();
+                return _user;
+            }
+            else if (searchString.Length != 0 && _index == 2)
+            {
+                _user = seachInfo.Where(i => i.IsBanned == false).ToList();
+                return _user;
+            }
+            else if (searchString.Length == 0 && _index == -1 || _index == 0)
             {
                 _user = _db.Persons;
-                PrintUsers(_personData, _user, userInformationDataGridView);
+                return _user;
+            }
+            else if (searchString.Length == 0 && _index == 1)
+            {
+                _user = _db.Persons.Where(s => s.IsBanned == true).ToList();
+                return _user;
             }
             else
             {
-                _user = person;
-                PrintUsers(_personData, _user, userInformationDataGridView);
+                _user = _db.Persons.Where(s => s.IsBanned == false).ToList();
+                return _user;
             }
         }
-        public void PrintUsers(List<string> personData, List<Person> users, DataGridView userInformationDataGridView)
+
+        private void RefreshDataGridView()
         {
-            var index = personData.Count;
-            var rows = users.Count * index;
 
-            userInformationDataGridView.Rows.Add(rows);
+            userInformationDataGridView.DataSource = null;
+            userInformationDataGridView.DataSource = GetFilteredPersons();
 
-            int r = 0;
+            userInformationDataGridView.Columns["Name"].HeaderText = "Имя";
+            userInformationDataGridView.Columns["Name"].Width = 100;
+            userInformationDataGridView.Columns["Surname"].HeaderText = "Фамилия";
+            userInformationDataGridView.Columns["Surname"].Width = 200;
+            userInformationDataGridView.Columns["Age"].HeaderText = "Возраст";
+            userInformationDataGridView.Columns["Age"].Width = 100;
+            userInformationDataGridView.Columns["City"].HeaderText = "Город";
+            userInformationDataGridView.Columns["City"].Width = 100;
+            userInformationDataGridView.Columns["Adress"].HeaderText = "Адрес";
+            userInformationDataGridView.Columns["Adress"].Width = 200;
+            userInformationDataGridView.Columns["PhoneNumber"].HeaderText = "Номер телефона";
+            userInformationDataGridView.Columns["PhoneNumber"].Width = 100;
+            userInformationDataGridView.Columns["EmailAdress"].HeaderText = "Электронная почта";
+            userInformationDataGridView.Columns["EmailAdress"].Width = 200;
+            userInformationDataGridView.Columns["Login"].HeaderText = "Логин";
+            userInformationDataGridView.Columns["Login"].Width = 100;
+            userInformationDataGridView.Columns["Login"].ReadOnly = true;
+            userInformationDataGridView.Columns["Password"].HeaderText = "Пароль";
+            userInformationDataGridView.Columns["Password"].Width = 100;
+            userInformationDataGridView.Columns["Password"].ReadOnly = true;
+            userInformationDataGridView.Columns["Id"].Width = 300;
+            userInformationDataGridView.Columns["Id"].ReadOnly = true;
+            userInformationDataGridView.Columns["IsBanned"].HeaderText = "Статус бана";
+            userInformationDataGridView.Columns["IsBanned"].Width = 100;
+            userInformationDataGridView.Columns["IsBanned"].ReadOnly = true;
+        }
 
-            for (int i = 0, j = 0; i < users.Count; i++)
+        private void DataGridViewBooks_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            var row = e.RowIndex;
+            var col = e.ColumnIndex;
+
+            DataGridViewCell cell = userInformationDataGridView[col, row];
+
+            object cellValue = cell.Value;
+
+            var person = _user[row];
+            switch (col)
             {
-                userInformationDataGridView.Rows[j].Cells[0].Value = $"Пользователь #{i + 1}";
-
-                for (int k = 0; k < index; k++)
-                {
-                    userInformationDataGridView.Rows[r].Cells[1].Value = personData[k];
-                    r++;
-                }
-                j += index;
+                case 0:
+                    person.Name = (string)cellValue;
+                    break;
+                case 1:
+                    person.Surname = (string)cellValue;
+                    break;
+                case 2:
+                    person.Age = (int)cellValue;
+                    break;
+                case 3:
+                    person.City = (string)cellValue;
+                    break;
+                case 4:
+                    person.Adress = (string)cellValue;
+                    break;
+                case 5:
+                    person.PhoneNumber = (int)cellValue;
+                    break;
+                case 6:
+                    person.EmailAdress = (string)cellValue;
+                    break;
+                default:
+                    MessageBox.Show("Поля нельзя редактировать");
+                    break;
             }
-
-            int l = 0;
-
-            foreach (var item in users)
-            {
-                userInformationDataGridView.Rows[0 + l].Cells[2].Value = item.Name;
-                userInformationDataGridView.Rows[1 + l].Cells[2].Value = item.Surname;
-                userInformationDataGridView.Rows[2 + l].Cells[2].Value = item.Age;
-                userInformationDataGridView.Rows[3 + l].Cells[2].Value = item.City;
-                userInformationDataGridView.Rows[4 + l].Cells[2].Value = item.Adress;
-                userInformationDataGridView.Rows[5 + l].Cells[2].Value = item.PhoneNumber;
-                userInformationDataGridView.Rows[6 + l].Cells[2].Value = item.EmailAdress;
-                userInformationDataGridView.Rows[7 + l].Cells[2].Value = item.Login;
-                userInformationDataGridView.Rows[8 + l].Cells[2].Value = item.Password;
-                userInformationDataGridView.Rows[9 + l].Cells[2].Value = item.Id;
-                userInformationDataGridView.Rows[10 + l].Cells[2].Value = item.IsBanned.ToString();
-                l += index;
-            }
+            _db.SaveDB();
         }
 
         private void exitButton_Click(object sender, EventArgs e)
@@ -92,10 +160,10 @@ namespace FinancialApp.Forms
 
         private void printExcelButton_Click(object sender, EventArgs e)
         {
-            PrintExcel(_user);
+            PrintExcel();
         }
 
-        private void PrintExcel(List<Person> users)
+        private void PrintExcel()
         {
             Excel.Application application = null;
             Excel.Workbook workbook = null;
@@ -113,7 +181,7 @@ namespace FinancialApp.Forms
 
                 worksheet.Cells[1, 1].Value = "# Пользователя";
 
-                var amountUsers = _db.Persons.Count;
+                var amountUsers = _user.Count;
 
                 for (int i = 0, rows = 1, cols = 2; i < _personData.Count; i++, cols++)
                 {
@@ -122,7 +190,7 @@ namespace FinancialApp.Forms
 
                 for (int userNumber = 0, rows = 2, cols = 1; rows < amountUsers + 2; userNumber++, rows++)
                 {
-                    var person = _db.Persons[userNumber];
+                    var person = _user[userNumber];
 
                     worksheet.Cells[rows, cols].Value = userNumber + 1;
                     worksheet.Cells[rows, cols + 1].Value = person.Name;
@@ -146,7 +214,7 @@ namespace FinancialApp.Forms
                 for (int i = 1; i <= worksheet.UsedRange.Columns.Count; i++)
                 {
                     worksheet.Columns[i].AutoFit();
-                    worksheet.Columns[i].HorizontalAlignment = Excel.Constants.xlCenter;                    
+                    worksheet.Columns[i].HorizontalAlignment = Excel.Constants.xlCenter;
                 }
                 worksheet.Protect();
             }
