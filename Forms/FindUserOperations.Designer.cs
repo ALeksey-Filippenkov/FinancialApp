@@ -96,7 +96,7 @@
             button1.TabIndex = 6;
             button1.Text = "Поиск";
             button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            button1.Click += Button1_Click;
             // 
             // historyOperationDataGridView
             // 
@@ -158,7 +158,7 @@
             backButton.TabIndex = 8;
             backButton.Text = "Назад";
             backButton.UseVisualStyleBackColor = true;
-            backButton.Click += backButton_Click;
+            backButton.Click += BackButton_Click;
             // 
             // pritnExcelButton
             // 
@@ -168,7 +168,7 @@
             pritnExcelButton.TabIndex = 9;
             pritnExcelButton.Text = "Выгрузить в Excel";
             pritnExcelButton.UseVisualStyleBackColor = true;
-            pritnExcelButton.Click += pritnExcelButton_Click;
+            pritnExcelButton.Click += PrintExcelButton_Click;
             // 
             // monthCalendar1
             // 

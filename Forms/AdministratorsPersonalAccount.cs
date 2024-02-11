@@ -6,11 +6,12 @@ namespace FinancialApp.Forms
 {
     public partial class AdministratorsPersonalAccount : Form
     {
-        private Form _form;
-        private DB _db;
-        private Guid _id;
+        private readonly Form _form;
+        private readonly DB _db;
+        private readonly Guid _id;
         private AdministratorActionsWithUser _userActions;
-        private bool _isGeneralAdmin;
+        private readonly bool _isGeneralAdmin;
+        private FormData _formData;
 
         public AdministratorsPersonalAccount(bool isGeneralAdmin, Form form1, DB db, Guid id)
         {
@@ -29,25 +30,24 @@ namespace FinancialApp.Forms
             _db = db;
             _id = id;
             dateTime.Text = DateOnly.FromDateTime(DateTime.Now).ToString();
+            _formData = new FormData();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void Button1_Click(object sender, EventArgs e)
         {
-            DialogResult result = MessageBox.Show(
+            var result = MessageBox.Show(
     "Вы действительно хотите выйти?",
     "Подтверждение выхода",
     MessageBoxButtons.YesNo,
     MessageBoxIcon.Information,
     MessageBoxDefaultButton.Button1,
     MessageBoxOptions.DefaultDesktopOnly);
-            if (result == DialogResult.Yes)
-            {
-                _form.Show();
-                Close();
-            }
+            if (result != DialogResult.Yes) return;
+            _form.Show();
+            Close();
         }
 
-        private void workingWithUserButton_Click(object sender, EventArgs e)
+        private void WorkingWithUserButton_Click(object sender, EventArgs e)
         {
             showUserPersonalDataButton.Visible = true;
             banUserButton.Visible = true;
@@ -55,63 +55,68 @@ namespace FinancialApp.Forms
             findUserOperationsButton.Visible = true;
             restoreUserButton.Visible = true;
             label1.Visible = true;
+
+            showAdministratorDataButton.Visible = false;
+            addAdministratorButton.Visible = false;
+            deleteAdministratorButton.Visible = false;
+            searchAdministratorActionsButton.Visible = false;
         }
 
-        private void showUserPersonalDataButton_Click(object sender, EventArgs e)
+        private void ShowUserPersonalDataButton_Click(object sender, EventArgs e)
         {
             var showUserInformation = new ShowUserInformation(_db);
             showUserInformation.Show();
         }
 
-        private void banUserButton_Click(object sender, EventArgs e)
+        private void BanUserButton_Click(object sender, EventArgs e)
         {
-            VisibleButtoTrue();
+            VisibleButtonTrue();
             _userActions = AdministratorActionsWithUser.banUser;
         }
 
-        private void deleteUserButton_Click(object sender, EventArgs e)
+        private void DeleteUserButton_Click(object sender, EventArgs e)
         {
-            VisibleButtoTrue();
-            var person = SeachPerson();
+            VisibleButtonTrue();
+            var person = SearchPerson();
             _userActions = AdministratorActionsWithUser.deleteUser;
         }
 
-        private void findUserOperationsButton_Click(object sender, EventArgs e)
+        private void FindUserOperationsButton_Click(object sender, EventArgs e)
         {
-            var findUserOperations = new FindUserOperations(_db);
+            var findUserOperations = new FindUserOperations(_db, _formData);
             findUserOperations.Show();
         }
 
-        private void restoreUserButton_Click(object sender, EventArgs e)
+        private void RestoreUserButton_Click(object sender, EventArgs e)
         {
-            VisibleButtoTrue();
+            VisibleButtonTrue();
             _userActions = AdministratorActionsWithUser.unbanUser;
         }
 
-        private void saveButton_Click(object sender, EventArgs e)
+        private void SaveButton_Click(object sender, EventArgs e)
         {
             if (comboBox1.Visible == true)
             {
-                if (comboBox1.SelectedIndex == 0)
+                switch (comboBox1.SelectedIndex)
                 {
-
-                }
-                else if (comboBox1.SelectedIndex == 1)
-                {
-                    СreatingAdministrator();
+                    case 0:
+                        break;
+                    case 1:
+                        СreateAdministrator();
+                        break;
                 }
             }
             else
             {
-                var person = SeachPerson();
+                var person = SearchPerson();
                 UserActions(person, _userActions);
             }
         }
 
-        private Person SeachPerson()
+        private Person SearchPerson()
         {
-            var sechPerson = _db.Persons.FirstOrDefault(p => p.Name == textBox1.Text);
-            return sechPerson;
+            var searchPerson = _db.Persons.FirstOrDefault(p => p.Name == textBox1.Text);
+            return searchPerson;
         }
 
         private void UserActions(Person person, AdministratorActionsWithUser userActions)
@@ -121,67 +126,78 @@ namespace FinancialApp.Forms
                 MessageBox.Show("Пользователя с таким именем нет");
                 return;
             }
-            else if (userActions == AdministratorActionsWithUser.unbanUser)
+
+            switch (userActions)
             {
-                person.IsBanned = false;
-                SaveHistoryActionWhithUser(person.Id, userActions, _id);
-                MessageBox.Show("Пользователь успешно разбанен");
-                _db.SaveDB();
-                VisibleButtoFalse();
-            }
-            else if (userActions == AdministratorActionsWithUser.banUser)
-            {
-                person.IsBanned = true;
-                SaveHistoryActionWhithUser(person.Id, userActions, _id);
-                MessageBox.Show("Пользователь успешно забанен");
-                _db.SaveDB();
-                VisibleButtoFalse();
-            }
-            else if (userActions == AdministratorActionsWithUser.deleteUser)
-            {
-                _db.Persons.Remove(person);
-                SaveHistoryActionWhithUser(person.Id, userActions, _id);
-                MessageBox.Show("Пользователь успешно удален");
-                _db.SaveDB();
-                VisibleButtoFalse();
+                case AdministratorActionsWithUser.unbanUser:
+                    person.IsBanned = false;
+                    SaveHistoryActionWithUser(person.Id, userActions, _id);
+                    MessageBox.Show("Пользователь успешно разбанен");
+                    _db.SaveDB();
+                    VisibleButtonFalse();
+                    break;
+                case AdministratorActionsWithUser.banUser:
+                    person.IsBanned = true;
+                    SaveHistoryActionWithUser(person.Id, userActions, _id);
+                    MessageBox.Show("Пользователь успешно забанен");
+                    _db.SaveDB();
+                    VisibleButtonFalse();
+                    break;
+                case AdministratorActionsWithUser.deleteUser:
+                    _db.Persons.Remove(person);
+                    SaveHistoryActionWithUser(person.Id, userActions, _id);
+                    MessageBox.Show("Пользователь успешно удален");
+                    _db.SaveDB();
+                    VisibleButtonFalse();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(userActions), userActions, null);
             }
         }
 
-        private void VisibleButtoTrue()
+        private void VisibleButtonTrue()
         {
             textBox1.Visible = true;
             label2.Visible = true;
             saveButton.Visible = true;
         }
 
-        private void VisibleButtoFalse()
+        private void VisibleButtonFalse()
         {
             textBox1.Visible = false;
             label2.Visible = false;
             saveButton.Visible = false;
         }
 
-        private void workingWithAdministratorButton_Click(object sender, EventArgs e)
+        private void WorkingWithAdministratorButton_Click(object sender, EventArgs e)
         {
+            label1.Visible = true;
             showAdministratorDataButton.Visible = true;
-            addAdministratorButrron.Visible = true;
+            addAdministratorButton.Visible = true;
             deleteAdministratorButton.Visible = true;
             searchAdministratorActionsButton.Visible = true;
+
+            showUserPersonalDataButton.Visible = false;
+            banUserButton.Visible = false;
+            deleteUserButton.Visible = false;
+            findUserOperationsButton.Visible = false;
+            restoreUserButton.Visible = false;
         }
 
-        private void addAdministratorButrron_Click(object sender, EventArgs e)
+        private void AddAdministratorButton_Click(object sender, EventArgs e)
         {
             comboBox1.Visible = true;
             saveButton.Visible = true;
         }
 
-        public void СreatingAdministrator()
+        public void СreateAdministrator()
         {
-            var admin = new Admin();
-
-            admin.Login = CreatingLogin();
-            admin.Password = CreatingPasswod();
-            admin.Id = Guid.NewGuid();
+            var admin = new Admin
+            {
+                Login = CreatingLogin(),
+                Password = СreatePassword(),
+                Id = Guid.NewGuid()
+            };
 
             _db.Admins.Add(admin);
 
@@ -194,9 +210,9 @@ namespace FinancialApp.Forms
 
         public string CreatingLogin()
         {
-            int nameLen = 6;
-            char[] vowels = "aeuoyi".ToCharArray();
-            char[] consonants = "qwrtpsdfghjklzxcvbnm".ToCharArray();
+            const int nameLen = 6;
+            var vowels = "aeuoyi".ToCharArray();
+            var consonants = "qwrtpsdfghjklzxcvbnm".ToCharArray();
 
             var rand = new Random();
 
@@ -204,7 +220,7 @@ namespace FinancialApp.Forms
 
             while (newNick.Length < nameLen)
             {
-                var firstVowel = rand.Next(0, 2) == 0 ? true : false;
+                var firstVowel = rand.Next(0, 2) == 0;
 
                 if (firstVowel)
                 {
@@ -222,7 +238,7 @@ namespace FinancialApp.Forms
             return newNick.ToString();
         }
 
-        public string CreatingPasswod()
+        public string СreatePassword()
         {
             var length = 8;
             const string valid = "abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
@@ -235,13 +251,15 @@ namespace FinancialApp.Forms
             return res.ToString();
         }
 
-        public void SaveHistoryActionWhithUser(Guid Id, AdministratorActionsWithUser userActions, Guid _id)
+        public void SaveHistoryActionWithUser(Guid id, AdministratorActionsWithUser userActions, Guid _id)
         {
-            var historyActionWithUser = new HistoryActionsWithUser();
-            historyActionWithUser.IdAdministrator = _id;
-            historyActionWithUser.IdPerson = Id;
-            historyActionWithUser.TypeActionsWithUser = userActions;
-            historyActionWithUser.DateTime = DateTime.Now;
+            var historyActionWithUser = new HistoryActionsWithUser
+            {
+                IdAdministrator = _id,
+                IdPerson = id,
+                TypeActionsWithUser = userActions,
+                DateTime = DateTime.Now
+            };
 
             _db.HistoryActionsWithUsers.Add(historyActionWithUser);
         }

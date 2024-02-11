@@ -1,4 +1,4 @@
-﻿namespace FinancialApp
+﻿namespace FinancialApp.Forms
 {
     partial class Registration
     {
@@ -202,7 +202,7 @@
             backButton.TabIndex = 18;
             backButton.Text = "Назад";
             backButton.UseVisualStyleBackColor = true;
-            backButton.Click += backButton_Click;
+            backButton.Click += BackButton_Click;
             // 
             // addButton
             // 
@@ -212,7 +212,7 @@
             addButton.TabIndex = 19;
             addButton.Text = "Добавить";
             addButton.UseVisualStyleBackColor = true;
-            addButton.Click += addButton_Click;
+            addButton.Click += AddButton_Click;
             // 
             // Registration
             // 

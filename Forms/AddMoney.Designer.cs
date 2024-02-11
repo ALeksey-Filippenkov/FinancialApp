@@ -1,4 +1,4 @@
-﻿namespace FinancialApp
+﻿namespace FinancialApp.Forms
 {
     partial class AddMoney
     {
@@ -61,7 +61,7 @@
             addMoneyButton.TabIndex = 2;
             addMoneyButton.Text = "Добавить";
             addMoneyButton.UseVisualStyleBackColor = true;
-            addMoneyButton.Click += addMoneyButton_Click;
+            addMoneyButton.Click += AddMoneyButton_Click;
             // 
             // label1
             // 
@@ -89,7 +89,7 @@
             exitButton.TabIndex = 5;
             exitButton.Text = "Назад";
             exitButton.UseVisualStyleBackColor = true;
-            exitButton.Click += exitButton_Click;
+            exitButton.Click += ExitButton_Click;
             // 
             // AddMoney
             // 

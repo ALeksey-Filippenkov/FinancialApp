@@ -1,4 +1,4 @@
-﻿namespace FinancialApp
+﻿namespace FinancialApp.Forms
 {
     partial class MoneyTransfer
     {
@@ -112,7 +112,7 @@
             exitButton.TabIndex = 6;
             exitButton.Text = "Назад";
             exitButton.UseVisualStyleBackColor = true;
-            exitButton.Click += exitButton_Click;
+            exitButton.Click += ExitButton_Click;
             // 
             // transferButton
             // 
@@ -122,7 +122,7 @@
             transferButton.TabIndex = 7;
             transferButton.Text = "Перевести деньги";
             transferButton.UseVisualStyleBackColor = true;
-            transferButton.Click += transferButton_Click;
+            transferButton.Click += TransferButton_Click;
             // 
             // tabControl1
             // 
@@ -181,7 +181,7 @@
             linkLabel1.TabStop = true;
             linkLabel1.Text = "Курс взят с официального сайта ЦБ: https://cbr.ru";
             linkLabel1.UseCompatibleTextRendering = true;
-            linkLabel1.LinkClicked += linkLabel1_LinkClicked;
+            linkLabel1.LinkClicked += LinkLabel1_LinkClicked;
             // 
             // exchangeButton
             // 
@@ -191,7 +191,7 @@
             exchangeButton.TabIndex = 16;
             exchangeButton.Text = "Перевести деньги";
             exchangeButton.UseVisualStyleBackColor = true;
-            exchangeButton.Click += exchangeButton_Click;
+            exchangeButton.Click += ExchangeButton_Click;
             // 
             // label7
             // 

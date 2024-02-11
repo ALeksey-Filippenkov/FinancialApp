@@ -1,11 +1,10 @@
 using FinancialApp.DataBase;
-using FinancialApp.Forms;
 
-namespace FinancialApp
+namespace FinancialApp.Forms
 {
     public partial class Form1 : Form
     {
-        private DB _db;
+        private readonly DB _db;
 
         public Form1()
         {
@@ -14,62 +13,60 @@ namespace FinancialApp
             _db = _db.ReadDB();
         }
 
-        private void enterButton_Click(object sender, EventArgs e)
+        private void EnterButton_Click(object sender, EventArgs e)
         {
-            SeachPerson();
+            SearchPerson();
         }
 
-        private void registrationButton_Click(object sender, EventArgs e)
+        private void RegistrationButton_Click(object sender, EventArgs e)
         {
             var registrationForms = new Registration(_db);
             registrationForms.Show();
         }
 
-        private void SeachPerson()
+        private void SearchPerson()
         {
-            var seachAccount = _db.Persons.FirstOrDefault(enterAccount => enterAccount.Login == loginInput.Text && enterAccount.Password == passwordInput.Text);
+            var searchAccount = _db.Persons.FirstOrDefault(enterAccount => enterAccount.Login == loginInput.Text && enterAccount.Password == passwordInput.Text);
 
-            if (seachAccount != null && !seachAccount.IsBanned)
+            switch (searchAccount)
             {
-                EnterAccount(seachAccount.Id);
-            }
-            else if (seachAccount != null && seachAccount.IsBanned)
-            {
-                MessageBox.Show("Пользователь забанен");
-                return;
-            }
-            else
-            {
-                var generalAdmin = new Admin() { Password = "admin", Login = "admin", Id = Guid.NewGuid()};
+                case { IsBanned: false }:
+                    EnterAccount(searchAccount.Id);
+                    break;
+                case { IsBanned: true }:
+                    MessageBox.Show("Пользователь забанен");
+                    return;
+                default:
+                {
+                    var generalAdmin = new Admin() { Password = "admin", Login = "admin", Id = Guid.NewGuid()};
 
-                if (generalAdmin.Password == passwordInput.Text && generalAdmin.Login == loginInput.Text)
-                {
-                    var administratorsPersonalAccount = new AdministratorsPersonalAccount(true, this, _db, generalAdmin.Id);
-                    administratorsPersonalAccount.Show();
-                    Hide();
-                }
-                else
-                {
-                    var seachAdmin = _db.Admins.FirstOrDefault(admin => admin.Login == loginInput.Text && admin.Password == passwordInput.Text);
-                    if (seachAdmin == null)
+                    if (generalAdmin.Password == passwordInput.Text && generalAdmin.Login == loginInput.Text)
                     {
-                        MessageBox.Show("Неверный логин или пароль");
-                        return;
-                    }
-                    else 
-                    {
-                        var administratorsPersonalAccount = new AdministratorsPersonalAccount(false, this, _db, seachAdmin.Id);
+                        var administratorsPersonalAccount = new AdministratorsPersonalAccount(true, this, _db, generalAdmin.Id);
                         administratorsPersonalAccount.Show();
                         Hide();
                     }
+                    else
+                    {
+                        var searchAdmin = _db.Admins.FirstOrDefault(admin => admin.Login == loginInput.Text && admin.Password == passwordInput.Text);
+                        if (searchAdmin == null)
+                        {
+                            MessageBox.Show("Неверный логин или пароль");
+                            return;
+                        }
 
-                }               
+                        var administratorsPersonalAccount = new AdministratorsPersonalAccount(false, this, _db, searchAdmin.Id);
+                        administratorsPersonalAccount.Show();
+                        Hide();
+                    }
+                    break;
+                }
             }
         }
 
-        private void EnterAccount(Guid Id)
+        private void EnterAccount(Guid id)
         {
-            var enterForms = new EnterForm(Id, this, _db);
+            var enterForms = new EnterForm(id, this, _db);
             enterForms.Show();
             Hide();
         }

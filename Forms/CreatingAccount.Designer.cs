@@ -1,4 +1,4 @@
-﻿namespace FinancialApp
+﻿namespace FinancialApp.Forms
 {
     partial class CreatingAccount
     {
@@ -52,7 +52,7 @@
             creatingCashAccount.TabIndex = 6;
             creatingCashAccount.Text = "Создать счет";
             creatingCashAccount.UseVisualStyleBackColor = true;
-            creatingCashAccount.Click += creatingCashAccount_Click;
+            creatingCashAccount.Click += CreatingCashAccount_Click;
             // 
             // label1
             // 
@@ -71,7 +71,7 @@
             exit.TabIndex = 8;
             exit.Text = "Назад";
             exit.UseVisualStyleBackColor = true;
-            exit.Click += exit_Click;
+            exit.Click += Exit_Click;
             // 
             // CreatingAccount
             // 

@@ -1,10 +1,10 @@
 ﻿using FinancialApp.DataBase;
 
-namespace FinancialApp
+namespace FinancialApp.Forms
 {
     public partial class Registration : Form
     {
-        private DB _db;
+        private readonly DB _db;
 
         public Registration(DB db)
         {
@@ -12,7 +12,7 @@ namespace FinancialApp
             _db = db;
         }
 
-        private void addButton_Click(object sender, EventArgs e)
+        private void AddButton_Click(object sender, EventArgs e)
         {
             CheckingTheEnteredData();
         }
@@ -32,18 +32,15 @@ namespace FinancialApp
                     MessageBox.Show("Возраст должен быть числом");
                     return;
                 }
-                else
+
+                switch (ageInt)
                 {
-                    if (ageInt <= 0)
-                    {
+                    case <= 0:
                         MessageBox.Show("Возраст не может быть меньше 0");
                         return;
-                    }
-                    else if (ageInt > 200)
-                    {
+                    case > 200:
                         MessageBox.Show("Возраст не может быть больше 200 лет");
                         return;
-                    }
                 }
 
                 var phoneNumberValue = int.TryParse(phoneInput.Text, out int phoneNumberInt);
@@ -58,15 +55,17 @@ namespace FinancialApp
 
         public void AddPerson(int phoneNumberInt)
         {
-            var person = new Person();
+            
             var personId = Guid.NewGuid();
-
-            person.Name = name.Text;
-            person.Surname = surnameInput.Text;
-            person.City = cityInput.Text;
-            person.Adress = adressInput.Text;
-            person.PhoneNumber = phoneNumberInt;
-            person.EmailAdress = emailInput.Text;
+            var person = new Person
+            {
+                Name = name.Text,
+                Surname = surnameInput.Text,
+                City = cityInput.Text,
+                Adress = adressInput.Text,
+                PhoneNumber = phoneNumberInt,
+                EmailAdress = emailInput.Text
+            };
 
             if (_db.Persons.Count != 0)
             {
@@ -77,8 +76,7 @@ namespace FinancialApp
                         MessageBox.Show("Данный логин уже используется\nПридумайте другой.");
                         return;
                     }
-                    else
-                        person.Login = loginInput.Text;
+                    person.Login = loginInput.Text;
                 }
             }
             else
@@ -97,7 +95,7 @@ namespace FinancialApp
             Close();
         }
 
-        private void backButton_Click(object sender, EventArgs e)
+        private void BackButton_Click(object sender, EventArgs e)
         {
             Close();
         }

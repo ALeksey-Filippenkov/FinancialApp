@@ -1,16 +1,15 @@
 ﻿using FinancialApp.DataBase;
 using FinancialApp.GeneralMethods;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace FinancialApp.Forms
 {
     public partial class ShowUserInformation : Form
     {
-        private DB _db;
+        private readonly DB _db;
         private List<Person> _user;
-        private List<string> _personData;
+        private readonly List<string> _personData;
         private int _index;
 
         public ShowUserInformation(DB db)
@@ -21,12 +20,12 @@ namespace FinancialApp.Forms
             RefreshDataGridView();
         }
 
-        private void nameTextBox_TextChanged(object sender, EventArgs e)
+        private void NameTextBox_TextChanged(object sender, EventArgs e)
         {
             RefreshDataGridView();
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             _index = userStatusComboBox.SelectedIndex;
             RefreshDataGridView();
@@ -41,8 +40,7 @@ namespace FinancialApp.Forms
         {
             var searchString = nameTextBox.Text.ToLower();
 
-
-            var seachInfo = _db.Persons.Where(p => p.Name.ToLower().Contains(searchString) && p.Name.Length > 0 ||
+            var searchInfo = _db.Persons.Where(p => p.Name.ToLower().Contains(searchString) && p.Name.Length > 0 ||
                        p.Surname.ToLower().Contains(searchString) && p.Surname.Length > 0 ||
                        p.City.ToLower().Contains(searchString) && p.City.Length > 0 ||
                        p.Adress.ToLower().Contains(searchString) && p.Adress.Length > 0 ||
@@ -50,39 +48,40 @@ namespace FinancialApp.Forms
 
             if (searchString.Length != 0 && _index == -1 || _index == 0)
             {
-                _user = seachInfo;
+                _user = searchInfo;
                 return _user;
             }
-            else if (searchString.Length != 0 && _index == 1)
+
+            if (searchString.Length != 0 && _index == 1)
             {
-                _user = seachInfo.Where(i => i.IsBanned == true).ToList();
+                _user = searchInfo.Where(i => i.IsBanned == true).ToList();
                 return _user;
             }
-            else if (searchString.Length != 0 && _index == 2)
+
+            if (searchString.Length != 0 && _index == 2)
             {
-                _user = seachInfo.Where(i => i.IsBanned == false).ToList();
+                _user = searchInfo.Where(i => i.IsBanned == false).ToList();
                 return _user;
             }
-            else if (searchString.Length == 0 && _index == -1 || _index == 0)
+
+            if (searchString.Length == 0 && _index == -1 || _index == 0)
             {
                 _user = _db.Persons;
                 return _user;
             }
-            else if (searchString.Length == 0 && _index == 1)
+
+            if (searchString.Length == 0 && _index == 1)
             {
                 _user = _db.Persons.Where(s => s.IsBanned == true).ToList();
                 return _user;
             }
-            else
-            {
-                _user = _db.Persons.Where(s => s.IsBanned == false).ToList();
-                return _user;
-            }
+
+            _user = _db.Persons.Where(s => s.IsBanned == false).ToList();
+            return _user;
         }
 
         private void RefreshDataGridView()
         {
-
             userInformationDataGridView.DataSource = null;
             userInformationDataGridView.DataSource = GetFilteredPersons();
 
@@ -118,9 +117,9 @@ namespace FinancialApp.Forms
             var row = e.RowIndex;
             var col = e.ColumnIndex;
 
-            DataGridViewCell cell = userInformationDataGridView[col, row];
+            var cell = userInformationDataGridView[col, row];
 
-            object cellValue = cell.Value;
+            var cellValue = cell.Value;
 
             var person = _user[row];
             switch (col)
@@ -153,12 +152,12 @@ namespace FinancialApp.Forms
             _db.SaveDB();
         }
 
-        private void exitButton_Click(object sender, EventArgs e)
+        private void ExitButton_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void printExcelButton_Click(object sender, EventArgs e)
+        private void PrintExcelButton_Click(object sender, EventArgs e)
         {
             PrintExcel();
         }
@@ -202,16 +201,12 @@ namespace FinancialApp.Forms
                     worksheet.Cells[rows, cols + 7].Value = person.EmailAdress;
                     worksheet.Cells[rows, cols + 8].Value = person.Login;
                     worksheet.Cells[rows, cols + 9].Value = person.Password;
-                    worksheet.Cells[rows, cols + 10].Value = String.Join("-", person.Id);
-                    if (person.IsBanned)
-                    {
-                        worksheet.Cells[rows, cols + 11].Value = "Да";
-                    }
-                    else
-                        worksheet.Cells[rows, cols + 11].Value = "Нет";
+                    worksheet.Cells[rows, cols + 10].Value = string.Join("-", person.Id);
+
+                    worksheet.Cells[rows, cols + 11].Value = person.IsBanned ? "Да" : "Нет";
                 }
 
-                for (int i = 1; i <= worksheet.UsedRange.Columns.Count; i++)
+                for (var i = 1; i <= worksheet.UsedRange.Columns.Count; i++)
                 {
                     worksheet.Columns[i].AutoFit();
                     worksheet.Columns[i].HorizontalAlignment = Excel.Constants.xlCenter;

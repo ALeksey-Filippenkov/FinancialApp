@@ -4,59 +4,59 @@ namespace FinancialApp.GeneralMethods
 {
     public static class EventSearch
     {
-        public static List<HistoryTransfer> GetEventSearch(DB _db, List<HistoryTransfer> operationSeach, DateTime startingDateSeach, DateTime endDateSeach, string currencyTypeValue, string personRecipientName)
+        public static List<HistoryTransfer> GetEventSearch(DB db, List<HistoryTransfer> operationSearch, DateTime startingDateSearch, DateTime endDateSearch, string currencyTypeValue, string personRecipientName)
         {
-            var seachPersonRecipientName = _db.Persons.FirstOrDefault(p => p.Name == personRecipientName);
+            var searchPersonRecipientName = db.Persons.FirstOrDefault(p => p.Name == personRecipientName);
 
-            List<HistoryTransfer> result = null;
+            List<HistoryTransfer>? result = null;
 
-            if (startingDateSeach == endDateSeach)
+            if (startingDateSearch == endDateSearch)
             {
                 if (currencyTypeValue != string.Empty && personRecipientName != string.Empty)
                 {
-                    result = operationSeach.Where(s => s.DateTime.Date == startingDateSeach && s.Type.ToString() == currencyTypeValue
-                                                                                            && s.RecipientId == seachPersonRecipientName.Id).ToList();
+                    result = operationSearch.Where(s => s.DateTime.Date == startingDateSearch && s.Type.ToString() == currencyTypeValue
+                                                                                            && s.RecipientId == searchPersonRecipientName.Id).ToList();
                 }
                 else if (currencyTypeValue != string.Empty && personRecipientName == string.Empty)
                 {
-                    result = operationSeach.Where(s => s.DateTime.Date == startingDateSeach && s.Type.ToString() == currencyTypeValue).ToList();
+                    result = operationSearch.Where(s => s.DateTime.Date == startingDateSearch && s.Type.ToString() == currencyTypeValue).ToList();
                 }
                 else if (currencyTypeValue == string.Empty && personRecipientName != string.Empty)
                 {
-                    if (seachPersonRecipientName != null)
+                    if (searchPersonRecipientName != null)
                     {
-                        result = operationSeach.Where(s => s.DateTime.Date == startingDateSeach && s.RecipientId == seachPersonRecipientName.Id).ToList();
+                        result = operationSearch.Where(s => s.DateTime.Date == startingDateSearch && s.RecipientId == searchPersonRecipientName.Id).ToList();
                     }                 
                 }
                 else
                 {
-                    result = operationSeach.Where(s => s.DateTime.Date == startingDateSeach).ToList();
+                    result = operationSearch.Where(s => s.DateTime.Date == startingDateSearch).ToList();
                 }
             }
             else
             {
                 if (currencyTypeValue != string.Empty && personRecipientName != string.Empty)
                 {
-                    result = operationSeach.Where(s => s.DateTime.Date >= startingDateSeach && s.DateTime <= endDateSeach
+                    result = operationSearch.Where(s => s.DateTime.Date >= startingDateSearch && s.DateTime <= endDateSearch
                                                                                             && s.Type.ToString() == currencyTypeValue
-                                                                                            && s.RecipientId == seachPersonRecipientName.Id).ToList();
+                                                                                            && s.RecipientId == searchPersonRecipientName.Id).ToList();
                 }
                 else if (currencyTypeValue != string.Empty && personRecipientName == string.Empty)
                 {
-                    result = operationSeach.Where(s => s.DateTime.Date >= startingDateSeach && s.DateTime <= endDateSeach
+                    result = operationSearch.Where(s => s.DateTime.Date >= startingDateSearch && s.DateTime <= endDateSearch
                                                                                             && s.Type.ToString() == currencyTypeValue).ToList();
                 }
                 else if (currencyTypeValue == string.Empty && personRecipientName != string.Empty)
                 {
-                    if (seachPersonRecipientName != null)
+                    if (searchPersonRecipientName != null)
                     {
-                        result = operationSeach.Where(s => s.DateTime.Date >= startingDateSeach && s.DateTime <= endDateSeach
-                                                                                                && s.RecipientId == seachPersonRecipientName.Id).ToList();
+                        result = operationSearch.Where(s => s.DateTime.Date >= startingDateSearch && s.DateTime <= endDateSearch
+                                                                                                && s.RecipientId == searchPersonRecipientName.Id).ToList();
                     }
                 }
                 else
                 {
-                    result = operationSeach.Where(s => s.DateTime.Date >= startingDateSeach && s.DateTime <= endDateSeach).ToList();
+                    result = operationSearch.Where(s => s.DateTime.Date >= startingDateSearch && s.DateTime <= endDateSearch).ToList();
                 }
             }
             return result;

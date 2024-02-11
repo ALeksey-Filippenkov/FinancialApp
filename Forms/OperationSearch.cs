@@ -2,12 +2,12 @@
 using FinancialApp.Enum;
 using FinancialApp.GeneralMethods;
 
-namespace FinancialApp
+namespace FinancialApp.Forms
 {
     public partial class OperationSearch : Form
     {
-        private DB _db;
-        private Guid _id;
+        private readonly DB _db;
+        private readonly Guid _id;
         private List<HistoryTransfer> _historyOperation;
 
         public OperationSearch(DB db, Guid id)
@@ -20,21 +20,21 @@ namespace FinancialApp
             _id = id;
         }
 
-        private void exitButton_Click(object sender, EventArgs e)
+        private void ExitButton_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void seachButton_Click(object sender, EventArgs e)
+        private void SearchButton_Click(object sender, EventArgs e)
         {
-            var startingDateSeach = monthCalendar1.SelectionRange.Start.Date;
-            var endDateSeach = monthCalendar1.SelectionRange.End.Date;
+            var startingDateSearch = monthCalendar1.SelectionRange.Start.Date;
+            var endDateSearch = monthCalendar1.SelectionRange.End.Date;
             var currencyTypeValue = currencyTypeTextBox.Text.ToUpper();
             var personRecipientName = personRecipientNameTextBox.Text;
 
-            var operationSeach = _db.HistoryTransfers.Where(h => h.SenderId == _id || h.RecipientId == _id).ToList();
+            var operationSearch = _db.HistoryTransfers.Where(h => h.SenderId == _id || h.RecipientId == _id).ToList();
 
-            if (operationSeach.Count == 0)
+            if (operationSearch.Count == 0)
             {
                 operationHistory.Text = "История операций";
                 operationHistory.Text += $"\nУ Вас еще небыло операций!";
@@ -42,7 +42,7 @@ namespace FinancialApp
             }
             else
             {
-                _historyOperation = EventSearch.GetEventSearch(_db, operationSeach, startingDateSeach, endDateSeach, currencyTypeValue, personRecipientName);
+                _historyOperation = EventSearch.GetEventSearch(_db, operationSearch, startingDateSearch, endDateSearch, currencyTypeValue, personRecipientName);
             }
 
             if (_historyOperation == null)
@@ -51,23 +51,22 @@ namespace FinancialApp
                 operationHistory.Text += $"\nОпераций с пользователем {personRecipientName} не найдены!";
                 return;
             }
-            else 
+            else
             {
                 if (_historyOperation.Count == 0)
                 {
                     operationHistory.Text = "История операций";
-                    operationHistory.Text += $"\n{DateOnly.FromDateTime(startingDateSeach)} небыло произведено операций!";
+                    operationHistory.Text += $"\n{DateOnly.FromDateTime(startingDateSearch)} небыло произведено операций!";
                     return;
                 }
-                else if (_historyOperation != null)
-                {
-                    operationHistory.Text = "История операций";
-                    PrintEvet(_historyOperation);
-                }
+
+                if (_historyOperation == null) return;
+                operationHistory.Text = "История операций";
+                PrintEvent(_historyOperation);
             }
         }
 
-        private void PrintEvet(List<HistoryTransfer> historyOperation)
+        private void PrintEvent(List<HistoryTransfer> historyOperation)
         {
 
             if (historyOperation.Count == 0)
@@ -82,28 +81,21 @@ namespace FinancialApp
                     var personSender = _db.Persons.First(p => p.Id == transferItem.SenderId);
                     var personRecipient = _db.Persons.FirstOrDefault(p => p.Id == transferItem.RecipientId);
 
-                    switch (transferItem.OperationType)
+                    operationHistory.Text += transferItem.OperationType switch
                     {
-                        case TypeOfOperation.refill:
-                            operationHistory.Text += $"\n{personSender.Name} {transferItem.DateTime} произвел пополнение  {transferItem.Type} на {transferItem.MoneyTransfer}";
-                            break;
-                        case TypeOfOperation.moneyTransfer:
-                            operationHistory.Text += $"\n{personSender.Name} {transferItem.DateTime} произвел перевод  {transferItem.MoneyTransfer} {transferItem.Type} {personRecipient.Name}";
-                            break;
-                        case TypeOfOperation.exchange:
-                            operationHistory.Text += $"\n{personSender.Name} {transferItem.DateTime} произвел обмен  {transferItem.Type} на {transferItem.MoneyTransfer}";
-                            break;
-                        default:
-                            break;
-                    }
+                        TypeOfOperation.refill => $"\n{personSender.Name} {transferItem.DateTime} произвел пополнение  {transferItem.Type} на {transferItem.MoneyTransfer}",
+                        TypeOfOperation.moneyTransfer => $"\n{personSender.Name} {transferItem.DateTime} произвел перевод  {transferItem.MoneyTransfer} {transferItem.Type} {personRecipient.Name}",
+                        TypeOfOperation.exchange => $"\n{personSender.Name} {transferItem.DateTime} произвел обмен  {transferItem.Type} на {transferItem.MoneyTransfer}",
+                        _ => throw new ArgumentOutOfRangeException(),
+                    };
                 }
             }
         }
 
-        private void historyOperationExel_Click(object sender, EventArgs e)
+        private void HistoryOperationExcel_Click(object sender, EventArgs e)
         {
-            DataOutputInExcel newExel = new DataOutputInExcel(_db, _id);
-            newExel.GetDataOutputInExcel(_historyOperation);
+            var newExcel = new DataOutputInExcel(_db);
+            newExcel.GetDataOutputInExcel(_historyOperation);
         }
     }
 }
