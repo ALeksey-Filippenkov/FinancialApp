@@ -1,4 +1,4 @@
-﻿namespace FinancialApp
+﻿namespace FinancialApp.Forms
 {
     partial class Form1
     {
@@ -76,7 +76,7 @@
             enterButton.TabIndex = 4;
             enterButton.Text = "Войти";
             enterButton.UseVisualStyleBackColor = true;
-            enterButton.Click += enterButton_Click;
+            enterButton.Click += EnterButton_Click;
             // 
             // registrationButton
             // 
@@ -86,7 +86,7 @@
             registrationButton.TabIndex = 5;
             registrationButton.Text = "Зарегистрироваться";
             registrationButton.UseVisualStyleBackColor = true;
-            registrationButton.Click += registrationButton_Click;
+            registrationButton.Click += RegistrationButton_Click;
             // 
             // Form1
             // 

@@ -1,4 +1,4 @@
-﻿namespace FinancialApp
+﻿namespace FinancialApp.Forms
 {
     partial class OperationSearch
     {
@@ -31,13 +31,13 @@
             label1 = new Label();
             operationHistory = new Label();
             exitButton = new Button();
-            seachButton = new Button();
+            searchButton = new Button();
             label2 = new Label();
             currencyTypeTextBox = new TextBox();
             label3 = new Label();
             personRecipientNameTextBox = new TextBox();
             monthCalendar1 = new MonthCalendar();
-            historyOperationExel = new Button();
+            HistoryOperationExcel = new Button();
             SuspendLayout();
             // 
             // label1
@@ -66,17 +66,17 @@
             exitButton.TabIndex = 3;
             exitButton.Text = "Назад";
             exitButton.UseVisualStyleBackColor = true;
-            exitButton.Click += exitButton_Click;
+            exitButton.Click += ExitButton_Click;
             // 
-            // seachButton
+            // searchButton
             // 
-            seachButton.Location = new Point(42, 422);
-            seachButton.Name = "seachButton";
-            seachButton.Size = new Size(424, 23);
-            seachButton.TabIndex = 4;
-            seachButton.Text = "Поиск";
-            seachButton.UseVisualStyleBackColor = true;
-            seachButton.Click += seachButton_Click;
+            searchButton.Location = new Point(42, 422);
+            searchButton.Name = "searchButton";
+            searchButton.Size = new Size(424, 23);
+            searchButton.TabIndex = 4;
+            searchButton.Text = "Поиск";
+            searchButton.UseVisualStyleBackColor = true;
+            searchButton.Click += SearchButton_Click;
             // 
             // label2
             // 
@@ -116,28 +116,28 @@
             monthCalendar1.Name = "monthCalendar1";
             monthCalendar1.TabIndex = 9;
             // 
-            // historyOperationExel
+            // HistoryOperationExcel
             // 
-            historyOperationExel.Location = new Point(579, 485);
-            historyOperationExel.Name = "historyOperationExel";
-            historyOperationExel.Size = new Size(251, 23);
-            historyOperationExel.TabIndex = 17;
-            historyOperationExel.Text = "История операций в EXCEL";
-            historyOperationExel.UseVisualStyleBackColor = true;
-            historyOperationExel.Click += historyOperationExel_Click;
+            HistoryOperationExcel.Location = new Point(579, 485);
+            HistoryOperationExcel.Name = "HistoryOperationExcel";
+            HistoryOperationExcel.Size = new Size(251, 23);
+            HistoryOperationExcel.TabIndex = 17;
+            HistoryOperationExcel.Text = "История операций в EXCEL";
+            HistoryOperationExcel.UseVisualStyleBackColor = true;
+            HistoryOperationExcel.Click += HistoryOperationExcel_Click;
             // 
             // OperationSearch
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(854, 520);
-            Controls.Add(historyOperationExel);
+            Controls.Add(HistoryOperationExcel);
             Controls.Add(monthCalendar1);
             Controls.Add(personRecipientNameTextBox);
             Controls.Add(label3);
             Controls.Add(currencyTypeTextBox);
             Controls.Add(label2);
-            Controls.Add(seachButton);
+            Controls.Add(searchButton);
             Controls.Add(exitButton);
             Controls.Add(operationHistory);
             Controls.Add(label1);
@@ -151,12 +151,12 @@
         private Label label1;
         private Label operationHistory;
         private Button exitButton;
-        private Button seachButton;
+        private Button searchButton;
         private Label label2;
         private TextBox currencyTypeTextBox;
         private Label label3;
         private TextBox personRecipientNameTextBox;
         private MonthCalendar monthCalendar1;
-        private Button historyOperationExel;
+        private Button HistoryOperationExcel;
     }
 }

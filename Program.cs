@@ -1,3 +1,5 @@
+using FinancialApp.Forms;
+
 namespace FinancialApp
 {
     internal static class Program

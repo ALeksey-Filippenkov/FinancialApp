@@ -7,13 +7,11 @@ namespace FinancialApp.GeneralMethods
 {
     public class DataOutputInExcel
     {
-        private DB _db;
-        private Guid _Id;
+        private readonly DB _db;
 
-        public DataOutputInExcel(DB db, Guid Id)
+        public DataOutputInExcel(DB db)
         {
             _db = db;
-            _Id = Id;
         }
 
         public void GetDataOutputInExcel(List<HistoryTransfer> operationHistory)
@@ -33,7 +31,7 @@ namespace FinancialApp.GeneralMethods
                 worksheet = workbook.Worksheets.Item[1];
 
                 var row = 2;
-                var column = 1;
+                const int column = 1;
  
                 worksheet.Cells[1, column].Value = HeadlinesTypes.Дата.ToString();
                 worksheet.Cells[1, column + 1].Value = HeadlinesTypes.Отправитель.ToString();
@@ -52,23 +50,25 @@ namespace FinancialApp.GeneralMethods
                     worksheet.Cells[row, column + 3].Value = transferItem.Type.ToString();
                     worksheet.Cells[row, column + 4].Value = transferItem.MoneyTransfer;
 
-                    if (transferItem.OperationType == TypeOfOperation.exchange)
+                    switch (transferItem.OperationType)
                     {
-                        worksheet.Cells[row, column + 2].Value = "обмен";
-                    }
-                    else if (transferItem.OperationType == TypeOfOperation.refill)
-                    {
-                        worksheet.Cells[row, column + 2].Value = "попоплненение";
-                    }
-                    else if (transferItem.OperationType == TypeOfOperation.moneyTransfer)
-                    {
-                        worksheet.Cells[row, column + 2].Value = "перевод";
-                        worksheet.Cells[row, column + 5].Value = personRecipient.Name;
+                        case TypeOfOperation.exchange:
+                            worksheet.Cells[row, column + 2].Value = "обмен";
+                            break;
+                        case TypeOfOperation.refill:
+                            worksheet.Cells[row, column + 2].Value = "попоплненение";
+                            break;
+                        case TypeOfOperation.moneyTransfer:
+                            worksheet.Cells[row, column + 2].Value = "перевод";
+                            worksheet.Cells[row, column + 5].Value = personRecipient.Name;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
                     }
                     row++;
                 }
 
-                for (int i = 1; i <= worksheet.UsedRange.Columns.Count; i++)
+                for (var i = 1; i <= worksheet.UsedRange.Columns.Count; i++)
                 {
                     worksheet.Columns[i].AutoFit();
                 }

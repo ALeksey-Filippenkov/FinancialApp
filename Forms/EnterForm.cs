@@ -1,39 +1,47 @@
 ﻿using FinancialApp.DataBase;
-using FinancialApp.Enum;
 using FinancialApp.GeneralMethods;
 
-namespace FinancialApp
+namespace FinancialApp.Forms
 {
     public partial class EnterForm : Form
     {
-        private Form _form;
-        private DB _db;
-        private Guid _id;
-        private List<HistoryTransfer> _operationHistorySeach;
-        private PrintHitory _printHistory;
+        private readonly Form _form;
+        private readonly DB _db;
+        private readonly Guid _id;
+        private FormData _formDataData;
 
-        public EnterForm(Guid id, Form Form1, DB db)
+        public EnterForm(Guid id, Form form, DB db)
         {
             InitializeComponent();
             _id = id;
-            _form = Form1;
+            _form = form;
             _db = db;
-            this.Refresh();
-            tabPage2.Update();
-            EnterLebelText();
-            _operationHistorySeach = _db.HistoryTransfers.Where(h => h.SenderId == _id || h.RecipientId == _id).ToList();
-            PrintHitory _printHistory = new PrintHitory(_db, _id, _operationHistorySeach);
-            _printHistory.GetPrintHitory(historyOperationDataGridView);
+            _formDataData = new FormData
+            {
+                HistoryOperationDataGridView = historyOperationDataGridView,
+                RubLebel = rubLebel,
+                UsdLebel = usdLebel,
+                EurLebel = eurLebel
+            };
         }
 
         private void EnterForm_Load(object sender, EventArgs e)
         {
-            EnterLebelText();
-            
-            _printHistory.GetPrintHitory(historyOperationDataGridView);
+            var person = _db.Persons.First(p => p.Id == _id);
+            name.Text = person.Name;
+            surname.Text = person.Surname;
+            age.Text = person.Age.ToString();
+            city.Text = person.City;
+            adress.Text = person.Adress;
+            phone.Text = person.PhoneNumber.ToString();
+            email.Text = person.EmailAdress;
+            login.Text = person.Login;
+            password.Text = person.Password;
+            CommonMethod.GetHistoryTransfer(_db, _id);
+            RefreshDataGridView();
         }
 
-        private void saveLKButton_Click(object sender, EventArgs e)
+        private void SaveLKButton_Click(object sender, EventArgs e)
         {
             if (age.Text == null || phone.Text == null)
             {
@@ -42,13 +50,13 @@ namespace FinancialApp
             }
             else
             {
-                var ageValue = Int32.TryParse(age.Text, out int ageInt);
+                var ageValue = int.TryParse(age.Text, out var ageInt);
                 if (ageValue == false)
                 {
                     MessageBox.Show("Возраст должен быть числом");
                     return;
                 }
-                var phoneNumberValue = Int32.TryParse(phone.Text, out int phoneNumberInt);
+                var phoneNumberValue = int.TryParse(phone.Text, out var phoneNumberInt);
                 if (phoneNumberValue == false)
                 {
                     MessageBox.Show("Номер телефона должен быть в виде числа");
@@ -60,106 +68,77 @@ namespace FinancialApp
             Close();
         }
 
-        private void exitButton_Click(object sender, EventArgs e)
+        private void ExitButton_Click(object sender, EventArgs e)
         {
-            DialogResult result = MessageBox.Show(
+            var result = MessageBox.Show(
                 "Вы действительно хотите выйти?",
                 "Подтверждение выхода",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Information,
                 MessageBoxDefaultButton.Button1,
                 MessageBoxOptions.DefaultDesktopOnly);
-            if (result == DialogResult.Yes)
-            {
-                _form.Show();
-                Close();
-            }
+            if (result != DialogResult.Yes) return;
+            _form.Show();
+            Close();
         }
 
-        private void tabPage1_Click(object sender, EventArgs e)
+        private void TabPage2_Click(object sender, EventArgs e)
         {
-            var _person = _db.Persons.First(p => p.Id == _id);
-            name.Text = _person.Name;
-            surname.Text = _person.Surname;
-            age.Text = _person.Age.ToString();
-            city.Text = _person.City;
-            adress.Text = _person.Adress;
-            phone.Text = _person.PhoneNumber.ToString();
-            email.Text = _person.EmailAdress;
-            login.Text = _person.Login;
-            password.Text = _person.Password;
-        }
-        private void tabPage2_Click(object sender, EventArgs e)
-        {
-            Refresh();
-            tabPage2.Update();
-            var seachTransfer = _db.HistoryTransfers.FirstOrDefault(s => s.SenderId == _id);
+            EnterLabelText();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void Button1_Click(object sender, EventArgs e)
         {
-            var addMoney = new AddMoney(_db, _id, this);
+            var addMoney = new AddMoney(_db, _id, _formDataData);
             addMoney.Show();
         }
 
-        private void creatAccount_Click(object sender, EventArgs e)
+        private void CreateAccount_Click(object sender, EventArgs e)
         {
             var creatingAccount = new CreatingAccount(_db, _id);
             creatingAccount.Show();
         }
-
-        private void refreshButton_Click(object sender, EventArgs e)
+        
+        private void EnterLabelText()
         {
-            EnterLebelText();
-            _printHistory.GetPrintHitory(historyOperationDataGridView);
+            RebootLabelText.LabelText(_db, _id, _formDataData);
         }
 
-        private void EnterLebelText()
+        private void MoneyTransferButton_Click(object sender, EventArgs e)
         {
-            Refresh();
-            tabPage2.Update();
-            var rub = _db.Money.FirstOrDefault(p => p.PersonId == _id && p.Type == CurrencyType.RUB);
-            var usd = _db.Money.FirstOrDefault(p => p.PersonId == _id && p.Type == CurrencyType.USD);
-            var eur = _db.Money.FirstOrDefault(p => p.PersonId == _id && p.Type == CurrencyType.EUR);
-
-            if (rub != null)
-            {
-                rubLebel.Text = Math.Round(rub.Balance, 2).ToString();
-            }
-            if (usd != null)
-            {
-                usdLebel.Text = Math.Round(usd.Balance, 2).ToString();
-            }
-            if (eur != null)
-            {
-                eurLebel.Text = Math.Round(eur.Balance, 2).ToString();
-            }
-        }
-
-        private void moneyTransferButton_Click(object sender, EventArgs e)
-        {
-            var moneyTransfer = new MoneyTransfer(_db, _id);
+            var moneyTransfer = new MoneyTransfer(_db, _id, _formDataData);
             moneyTransfer.Show();
         }
 
-        private void seachButton_Click(object sender, EventArgs e)
+        private void SearchButton_Click(object sender, EventArgs e)
         {
             var operationSearch = new OperationSearch(_db, _id);
             operationSearch.Show();
         }
 
-        private void historyOperationExel_Click(object sender, EventArgs e)
+        private void HistoryOperationExcel_Click(object sender, EventArgs e)
         {
-            DataOutputInExcel newExel = new DataOutputInExcel(_db, _id);
-            newExel.GetDataOutputInExcel(_operationHistorySeach);
+            var newExcel = new DataOutputInExcel(_db);
+            newExcel.GetDataOutputInExcel(CommonMethod.GetHistoryTransfer(_db, _id));
         }
 
-        private void tabPage3_Click(object sender, EventArgs e)
+        private void TabPage3_Click(object sender, EventArgs e)
         {
-            Panel panel = new Panel();
-            panel.Location = new Point(30, 30);
-            panel.Visible = true;
+            CommonMethod.GetHistoryTransfer(_db, _id);
+            EnterLabelText();
+            RefreshDataGridView();
+            var panel = new Panel
+            {
+                Location = new Point(30, 30),
+                Visible = true
+            };
             tabPage3.Controls.Add(panel);
         }
+
+        private void RefreshDataGridView()
+        {
+            PrintHistory.GetPrintHistory(_db, CommonMethod.GetHistoryTransfer(_db, _id), _formDataData);
+        }
+
     }
 }

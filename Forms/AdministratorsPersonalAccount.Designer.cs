@@ -44,7 +44,7 @@
             searchAdministratorActionsButton = new Button();
             deleteAdministratorButton = new Button();
             showAdministratorDataButton = new Button();
-            addAdministratorButrron = new Button();
+            addAdministratorButton = new Button();
             comboBox1 = new ComboBox();
             SuspendLayout();
             // 
@@ -56,7 +56,7 @@
             button1.TabIndex = 0;
             button1.Text = "Выход";
             button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            button1.Click += Button1_Click;
             // 
             // dateTime
             // 
@@ -75,7 +75,7 @@
             workingWithUserButton.TabIndex = 2;
             workingWithUserButton.Text = "Работа с пользователями";
             workingWithUserButton.UseVisualStyleBackColor = true;
-            workingWithUserButton.Click += workingWithUserButton_Click;
+            workingWithUserButton.Click += WorkingWithUserButton_Click;
             // 
             // textBox1
             // 
@@ -114,7 +114,7 @@
             saveButton.Text = "Сохранить";
             saveButton.UseVisualStyleBackColor = true;
             saveButton.Visible = false;
-            saveButton.Click += saveButton_Click;
+            saveButton.Click += SaveButton_Click;
             // 
             // showUserPersonalDataButton
             // 
@@ -125,7 +125,7 @@
             showUserPersonalDataButton.Text = "Показать личные данные пользоавателя";
             showUserPersonalDataButton.UseVisualStyleBackColor = true;
             showUserPersonalDataButton.Visible = false;
-            showUserPersonalDataButton.Click += showUserPersonalDataButton_Click;
+            showUserPersonalDataButton.Click += ShowUserPersonalDataButton_Click;
             // 
             // banUserButton
             // 
@@ -136,7 +136,7 @@
             banUserButton.Text = "Забанить пользователя";
             banUserButton.UseVisualStyleBackColor = true;
             banUserButton.Visible = false;
-            banUserButton.Click += banUserButton_Click;
+            banUserButton.Click += BanUserButton_Click;
             // 
             // deleteUserButton
             // 
@@ -147,7 +147,7 @@
             deleteUserButton.Text = "Удалить пользователя";
             deleteUserButton.UseVisualStyleBackColor = true;
             deleteUserButton.Visible = false;
-            deleteUserButton.Click += deleteUserButton_Click;
+            deleteUserButton.Click += DeleteUserButton_Click;
             // 
             // findUserOperationsButton
             // 
@@ -158,7 +158,7 @@
             findUserOperationsButton.Text = "Найти операции пользователя";
             findUserOperationsButton.UseVisualStyleBackColor = true;
             findUserOperationsButton.Visible = false;
-            findUserOperationsButton.Click += findUserOperationsButton_Click;
+            findUserOperationsButton.Click += FindUserOperationsButton_Click;
             // 
             // restoreUserButton
             // 
@@ -169,7 +169,7 @@
             restoreUserButton.Text = "Восстановить пользователя";
             restoreUserButton.UseVisualStyleBackColor = true;
             restoreUserButton.Visible = false;
-            restoreUserButton.Click += restoreUserButton_Click;
+            restoreUserButton.Click += RestoreUserButton_Click;
             // 
             // workingWithAdministratorButton
             // 
@@ -180,7 +180,7 @@
             workingWithAdministratorButton.Text = "Работа с администраторами";
             workingWithAdministratorButton.UseVisualStyleBackColor = true;
             workingWithAdministratorButton.Visible = false;
-            workingWithAdministratorButton.Click += workingWithAdministratorButton_Click;
+            workingWithAdministratorButton.Click += WorkingWithAdministratorButton_Click;
             // 
             // searchAdministratorActionsButton
             // 
@@ -212,16 +212,16 @@
             showAdministratorDataButton.UseVisualStyleBackColor = true;
             showAdministratorDataButton.Visible = false;
             // 
-            // addAdministratorButrron
+            // addAdministratorButton
             // 
-            addAdministratorButrron.Location = new Point(306, 102);
-            addAdministratorButrron.Name = "addAdministratorButrron";
-            addAdministratorButrron.Size = new Size(207, 23);
-            addAdministratorButrron.TabIndex = 15;
-            addAdministratorButrron.Text = "Добавить администратора";
-            addAdministratorButrron.UseVisualStyleBackColor = true;
-            addAdministratorButrron.Visible = false;
-            addAdministratorButrron.Click += addAdministratorButrron_Click;
+            addAdministratorButton.Location = new Point(306, 102);
+            addAdministratorButton.Name = "addAdministratorButton";
+            addAdministratorButton.Size = new Size(207, 23);
+            addAdministratorButton.TabIndex = 15;
+            addAdministratorButton.Text = "Добавить администратора";
+            addAdministratorButton.UseVisualStyleBackColor = true;
+            addAdministratorButton.Visible = false;
+            addAdministratorButton.Click += AddAdministratorButton_Click;
             // 
             // comboBox1
             // 
@@ -241,7 +241,7 @@
             Controls.Add(comboBox1);
             Controls.Add(searchAdministratorActionsButton);
             Controls.Add(deleteAdministratorButton);
-            Controls.Add(addAdministratorButrron);
+            Controls.Add(addAdministratorButton);
             Controls.Add(showAdministratorDataButton);
             Controls.Add(workingWithAdministratorButton);
             Controls.Add(restoreUserButton);
@@ -280,7 +280,7 @@
         private Button searchAdministratorActionsButton;
         private Button deleteAdministratorButton;
         private Button showAdministratorDataButton;
-        private Button addAdministratorButrron;
+        private Button addAdministratorButton;
         private ComboBox comboBox1;
     }
 }

@@ -46,7 +46,7 @@
             exitButton.TabIndex = 0;
             exitButton.Text = "Назад";
             exitButton.UseVisualStyleBackColor = true;
-            exitButton.Click += exitButton_Click;
+            exitButton.Click += ExitButton_Click;
             // 
             // userInformationDataGridView
             // 
@@ -64,7 +64,7 @@
             nameTextBox.Name = "nameTextBox";
             nameTextBox.Size = new Size(456, 23);
             nameTextBox.TabIndex = 17;
-            nameTextBox.TextChanged += nameTextBox_TextChanged;
+            nameTextBox.TextChanged += NameTextBox_TextChanged;
             // 
             // label1
             // 
@@ -83,7 +83,7 @@
             printExcelButton.TabIndex = 20;
             printExcelButton.Text = "Выгрузить в EXCEL";
             printExcelButton.UseVisualStyleBackColor = true;
-            printExcelButton.Click += printExcelButton_Click;
+            printExcelButton.Click += PrintExcelButton_Click;
             // 
             // userStatusComboBox
             // 
@@ -94,7 +94,7 @@
             userStatusComboBox.Name = "userStatusComboBox";
             userStatusComboBox.Size = new Size(121, 23);
             userStatusComboBox.TabIndex = 23;
-            userStatusComboBox.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
+            userStatusComboBox.SelectedIndexChanged += ComboBox1_SelectedIndexChanged;
             // 
             // label2
             // 
