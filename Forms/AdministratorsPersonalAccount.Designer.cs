@@ -31,9 +31,9 @@
             button1 = new Button();
             dateTime = new Label();
             workingWithUserButton = new Button();
-            textBox1 = new TextBox();
+            nameTextBox = new TextBox();
             label1 = new Label();
-            label2 = new Label();
+            nameLabel = new Label();
             saveButton = new Button();
             showUserPersonalDataButton = new Button();
             banUserButton = new Button();
@@ -46,6 +46,9 @@
             showAdministratorDataButton = new Button();
             addAdministratorButton = new Button();
             comboBox1 = new ComboBox();
+            surnameLabel = new Label();
+            surnameTextBox = new TextBox();
+            nameAdministration = new Label();
             SuspendLayout();
             // 
             // button1
@@ -69,7 +72,7 @@
             // 
             // workingWithUserButton
             // 
-            workingWithUserButton.Location = new Point(41, 59);
+            workingWithUserButton.Location = new Point(41, 95);
             workingWithUserButton.Name = "workingWithUserButton";
             workingWithUserButton.Size = new Size(202, 23);
             workingWithUserButton.TabIndex = 2;
@@ -77,37 +80,37 @@
             workingWithUserButton.UseVisualStyleBackColor = true;
             workingWithUserButton.Click += WorkingWithUserButton_Click;
             // 
-            // textBox1
+            // nameTextBox
             // 
-            textBox1.Location = new Point(727, 93);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(161, 23);
-            textBox1.TabIndex = 4;
-            textBox1.Visible = false;
+            nameTextBox.Location = new Point(916, 138);
+            nameTextBox.Name = "nameTextBox";
+            nameTextBox.Size = new Size(161, 23);
+            nameTextBox.TabIndex = 4;
+            nameTextBox.Visible = false;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(306, 18);
+            label1.Location = new Point(306, 64);
             label1.Name = "label1";
             label1.Size = new Size(113, 15);
             label1.TabIndex = 5;
             label1.Text = "Выберите действие";
             label1.Visible = false;
             // 
-            // label2
+            // nameLabel
             // 
-            label2.AutoSize = true;
-            label2.Location = new Point(727, 63);
-            label2.Name = "label2";
-            label2.Size = new Size(75, 15);
-            label2.TabIndex = 6;
-            label2.Text = "Введите имя";
-            label2.Visible = false;
+            nameLabel.AutoSize = true;
+            nameLabel.Location = new Point(916, 95);
+            nameLabel.Name = "nameLabel";
+            nameLabel.Size = new Size(75, 15);
+            nameLabel.TabIndex = 6;
+            nameLabel.Text = "Введите имя";
+            nameLabel.Visible = false;
             // 
             // saveButton
             // 
-            saveButton.Location = new Point(727, 140);
+            saveButton.Location = new Point(916, 291);
             saveButton.Name = "saveButton";
             saveButton.Size = new Size(161, 23);
             saveButton.TabIndex = 7;
@@ -118,7 +121,7 @@
             // 
             // showUserPersonalDataButton
             // 
-            showUserPersonalDataButton.Location = new Point(344, 59);
+            showUserPersonalDataButton.Location = new Point(344, 95);
             showUserPersonalDataButton.Name = "showUserPersonalDataButton";
             showUserPersonalDataButton.Size = new Size(207, 23);
             showUserPersonalDataButton.TabIndex = 8;
@@ -129,7 +132,7 @@
             // 
             // banUserButton
             // 
-            banUserButton.Location = new Point(344, 102);
+            banUserButton.Location = new Point(344, 138);
             banUserButton.Name = "banUserButton";
             banUserButton.Size = new Size(207, 23);
             banUserButton.TabIndex = 9;
@@ -140,7 +143,7 @@
             // 
             // deleteUserButton
             // 
-            deleteUserButton.Location = new Point(344, 146);
+            deleteUserButton.Location = new Point(344, 182);
             deleteUserButton.Name = "deleteUserButton";
             deleteUserButton.Size = new Size(207, 23);
             deleteUserButton.TabIndex = 10;
@@ -151,7 +154,7 @@
             // 
             // findUserOperationsButton
             // 
-            findUserOperationsButton.Location = new Point(344, 194);
+            findUserOperationsButton.Location = new Point(344, 230);
             findUserOperationsButton.Name = "findUserOperationsButton";
             findUserOperationsButton.Size = new Size(204, 23);
             findUserOperationsButton.TabIndex = 11;
@@ -162,7 +165,7 @@
             // 
             // restoreUserButton
             // 
-            restoreUserButton.Location = new Point(344, 238);
+            restoreUserButton.Location = new Point(344, 274);
             restoreUserButton.Name = "restoreUserButton";
             restoreUserButton.Size = new Size(204, 23);
             restoreUserButton.TabIndex = 12;
@@ -173,7 +176,7 @@
             // 
             // workingWithAdministratorButton
             // 
-            workingWithAdministratorButton.Location = new Point(41, 102);
+            workingWithAdministratorButton.Location = new Point(41, 138);
             workingWithAdministratorButton.Name = "workingWithAdministratorButton";
             workingWithAdministratorButton.Size = new Size(202, 23);
             workingWithAdministratorButton.TabIndex = 13;
@@ -184,17 +187,18 @@
             // 
             // searchAdministratorActionsButton
             // 
-            searchAdministratorActionsButton.Location = new Point(306, 194);
+            searchAdministratorActionsButton.Location = new Point(306, 230);
             searchAdministratorActionsButton.Name = "searchAdministratorActionsButton";
             searchAdministratorActionsButton.Size = new Size(204, 23);
             searchAdministratorActionsButton.TabIndex = 17;
             searchAdministratorActionsButton.Text = "Найти операции администратора";
             searchAdministratorActionsButton.UseVisualStyleBackColor = true;
             searchAdministratorActionsButton.Visible = false;
+            searchAdministratorActionsButton.Click += SearchAdministratorActionsButton_Click;
             // 
             // deleteAdministratorButton
             // 
-            deleteAdministratorButton.Location = new Point(306, 146);
+            deleteAdministratorButton.Location = new Point(306, 182);
             deleteAdministratorButton.Name = "deleteAdministratorButton";
             deleteAdministratorButton.Size = new Size(207, 23);
             deleteAdministratorButton.TabIndex = 16;
@@ -204,7 +208,7 @@
             // 
             // showAdministratorDataButton
             // 
-            showAdministratorDataButton.Location = new Point(306, 59);
+            showAdministratorDataButton.Location = new Point(306, 95);
             showAdministratorDataButton.Name = "showAdministratorDataButton";
             showAdministratorDataButton.Size = new Size(207, 23);
             showAdministratorDataButton.TabIndex = 14;
@@ -214,7 +218,7 @@
             // 
             // addAdministratorButton
             // 
-            addAdministratorButton.Location = new Point(306, 102);
+            addAdministratorButton.Location = new Point(306, 138);
             addAdministratorButton.Name = "addAdministratorButton";
             addAdministratorButton.Size = new Size(207, 23);
             addAdministratorButton.TabIndex = 15;
@@ -225,19 +229,51 @@
             // 
             // comboBox1
             // 
+            comboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox1.FormattingEnabled = true;
             comboBox1.Items.AddRange(new object[] { "Добавить администратора из пользователей", "Добавить нового администратора" });
-            comboBox1.Location = new Point(576, 102);
+            comboBox1.Location = new Point(573, 138);
             comboBox1.Name = "comboBox1";
             comboBox1.Size = new Size(312, 23);
             comboBox1.TabIndex = 18;
             comboBox1.Visible = false;
+            comboBox1.SelectedIndexChanged += ComboBox1_SelectedIndexChanged;
+            // 
+            // surnameLabel
+            // 
+            surnameLabel.AutoSize = true;
+            surnameLabel.Location = new Point(912, 182);
+            surnameLabel.Name = "surnameLabel";
+            surnameLabel.Size = new Size(108, 15);
+            surnameLabel.TabIndex = 19;
+            surnameLabel.Text = "Введите фамилию";
+            surnameLabel.Visible = false;
+            // 
+            // surnameTextBox
+            // 
+            surnameTextBox.Location = new Point(916, 230);
+            surnameTextBox.Name = "surnameTextBox";
+            surnameTextBox.Size = new Size(161, 23);
+            surnameTextBox.TabIndex = 20;
+            surnameTextBox.Visible = false;
+            // 
+            // nameAdministration
+            // 
+            nameAdministration.AutoSize = true;
+            nameAdministration.Location = new Point(41, 46);
+            nameAdministration.Name = "nameAdministration";
+            nameAdministration.Size = new Size(38, 15);
+            nameAdministration.TabIndex = 21;
+            nameAdministration.Text = "label2";
             // 
             // AdministratorsPersonalAccount
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1153, 450);
+            Controls.Add(nameAdministration);
+            Controls.Add(surnameTextBox);
+            Controls.Add(surnameLabel);
             Controls.Add(comboBox1);
             Controls.Add(searchAdministratorActionsButton);
             Controls.Add(deleteAdministratorButton);
@@ -250,9 +286,9 @@
             Controls.Add(banUserButton);
             Controls.Add(showUserPersonalDataButton);
             Controls.Add(saveButton);
-            Controls.Add(label2);
+            Controls.Add(nameLabel);
             Controls.Add(label1);
-            Controls.Add(textBox1);
+            Controls.Add(nameTextBox);
             Controls.Add(workingWithUserButton);
             Controls.Add(dateTime);
             Controls.Add(button1);
@@ -267,9 +303,9 @@
         private Button button1;
         private Label dateTime;
         private Button workingWithUserButton;
-        private TextBox textBox1;
+        private TextBox nameTextBox;
         private Label label1;
-        private Label label2;
+        private Label nameLabel;
         private Button saveButton;
         private Button showUserPersonalDataButton;
         private Button banUserButton;
@@ -282,5 +318,8 @@
         private Button showAdministratorDataButton;
         private Button addAdministratorButton;
         private ComboBox comboBox1;
+        private Label surnameLabel;
+        private TextBox surnameTextBox;
+        private Label nameAdministration;
     }
 }

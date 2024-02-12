@@ -83,9 +83,9 @@ namespace FinancialApp.Forms
 
                     operationHistory.Text += transferItem.OperationType switch
                     {
-                        TypeOfOperation.refill => $"\n{personSender.Name} {transferItem.DateTime} произвел пополнение  {transferItem.Type} на {transferItem.MoneyTransfer}",
-                        TypeOfOperation.moneyTransfer => $"\n{personSender.Name} {transferItem.DateTime} произвел перевод  {transferItem.MoneyTransfer} {transferItem.Type} {personRecipient.Name}",
-                        TypeOfOperation.exchange => $"\n{personSender.Name} {transferItem.DateTime} произвел обмен  {transferItem.Type} на {transferItem.MoneyTransfer}",
+                        TypeOfOperation.refill => $"\n{personSender.Name} {transferItem.DateTime} произвел {TypeOperation.GetTypeOfOperation(TypeOfOperation.refill)}  {transferItem.Type} на {transferItem.MoneyTransfer}",
+                        TypeOfOperation.moneyTransfer => $"\n{personSender.Name} {transferItem.DateTime} произвел {TypeOperation.GetTypeOfOperation(TypeOfOperation.moneyTransfer)}  {transferItem.MoneyTransfer} {transferItem.Type} {personRecipient.Name}",
+                        TypeOfOperation.exchange => $"\n{personSender.Name} {transferItem.DateTime} произвел {TypeOperation.GetTypeOfOperation(TypeOfOperation.exchange)}  {transferItem.Type} на {transferItem.MoneyTransfer}",
                         _ => throw new ArgumentOutOfRangeException(),
                     };
                 }

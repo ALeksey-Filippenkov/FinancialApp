@@ -52,14 +52,14 @@ namespace FinancialApp.Forms
 
             if (currencyList.SelectedIndex == -1)
             {
-                MessageBox.Show("Вы не выбрали валюту для перевода");
+                MessageBox.Show($"Вы не выбрали валюту для {TypeOperation.GetTypeOfOperation(TypeOfOperation.moneyTransfer).ToLower()}а");
                 return;
             }
 
             var moneyTransferValue = int.TryParse(moneyTransfer, out var moneyTransferDouble);
             if (moneyTransferInput.Text == string.Empty)
             {
-                MessageBox.Show("Вы не ввели сумму для перевода");
+                MessageBox.Show($"Вы не ввели сумму для {TypeOperation.GetTypeOfOperation(TypeOfOperation.moneyTransfer).ToLower()}а");
                 return;
             }
 
@@ -185,14 +185,14 @@ namespace FinancialApp.Forms
             var flag = true;
             if (debitAccount == null)
             {
-                message = "У вас нет счета с которого вы хотите произвести обмен.\nВы хотите создать счет?";
+                message = $"У вас нет счета с которого вы хотите произвести {TypeOperation.GetTypeOfOperation(TypeOfOperation.exchange)}.\nВы хотите создать счет?";
                 ExchangeError(message, flag);
                 return;
             }
 
             if (replenishmentAccount == null)
             {
-                message = "У вас нет счета с которого вы хотите произвести обмен.\nВы хотите создать счет?";
+                message = $"У вас нет счета с которого вы хотите произвести {TypeOperation.GetTypeOfOperation(TypeOfOperation.exchange)}.\nВы хотите создать счет?";
                 ExchangeError(message, flag);
                 return;
             }
@@ -201,7 +201,7 @@ namespace FinancialApp.Forms
             {
                 flag = false;
                 message =
-                    "У вас недостаточно срадств на счету с которого вы хотите произвести обмен!\n Хотите пополнить счет?";
+                    $"У вас недостаточно срадств на счету с которого вы хотите произвести {TypeOperation.GetTypeOfOperation(TypeOfOperation.exchange)}!\n Хотите пополнить счет?";
                 ExchangeError(message, flag);
                 return;
             }
@@ -241,7 +241,7 @@ namespace FinancialApp.Forms
 
         private void SaveMoneyExchangeHistory(int debit, double money)
         {
-            MessageBox.Show("Поздравляем! Вы успешно обменяли деньги деньги");
+            MessageBox.Show($"Поздравляем! Вы успешно {TypeOperation.GetTypeOfOperation(TypeOfOperation.exchange)} деньги");
             var historyTransfer = new HistoryTransfer
             {
                 SenderId = _id,

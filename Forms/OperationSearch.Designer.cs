@@ -54,9 +54,8 @@
             operationHistory.AutoSize = true;
             operationHistory.Location = new Point(496, 36);
             operationHistory.Name = "operationHistory";
-            operationHistory.Size = new Size(115, 15);
+            operationHistory.Size = new Size(0, 15);
             operationHistory.TabIndex = 2;
-            operationHistory.Text = "История переводов";
             // 
             // exitButton
             // 
@@ -142,7 +141,7 @@
             Controls.Add(operationHistory);
             Controls.Add(label1);
             Name = "OperationSearch";
-            Text = "Поиск операции";
+            Text = "Поиск операции:";
             ResumeLayout(false);
             PerformLayout();
         }

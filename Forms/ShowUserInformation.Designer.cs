@@ -28,14 +28,21 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             exitButton = new Button();
             userInformationDataGridView = new DataGridView();
+            ContextMenuStripForGrid = new ContextMenuStrip(components);
+            BanUser = new ToolStripMenuItem();
+            RestoreUser = new ToolStripMenuItem();
+            MakeAdministrator = new ToolStripMenuItem();
+            ShowHistoryOperations = new ToolStripMenuItem();
             nameTextBox = new TextBox();
             label1 = new Label();
             printExcelButton = new Button();
             userStatusComboBox = new ComboBox();
             label2 = new Label();
             ((System.ComponentModel.ISupportInitialize)userInformationDataGridView).BeginInit();
+            ContextMenuStripForGrid.SuspendLayout();
             SuspendLayout();
             // 
             // exitButton
@@ -51,12 +58,49 @@
             // userInformationDataGridView
             // 
             userInformationDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            userInformationDataGridView.ContextMenuStrip = ContextMenuStripForGrid;
             userInformationDataGridView.Location = new Point(12, 51);
             userInformationDataGridView.Name = "userInformationDataGridView";
             userInformationDataGridView.RowTemplate.Height = 25;
             userInformationDataGridView.Size = new Size(1206, 428);
             userInformationDataGridView.TabIndex = 21;
             userInformationDataGridView.CellEndEdit += DataGridViewBooks_CellEndEdit;
+            userInformationDataGridView.MouseDown += UserInformationDataGridView_MouseDown;
+            // 
+            // ContextMenuStripForGrid
+            // 
+            ContextMenuStripForGrid.Items.AddRange(new ToolStripItem[] { BanUser, RestoreUser, MakeAdministrator, ShowHistoryOperations });
+            ContextMenuStripForGrid.Name = "contextMenuStrip1";
+            ContextMenuStripForGrid.Size = new Size(234, 92);
+            ContextMenuStripForGrid.Opening += ContextMenuStripForGrid_Opening;
+            // 
+            // BanUser
+            // 
+            BanUser.Name = "BanUser";
+            BanUser.Size = new Size(233, 22);
+            BanUser.Text = "&Забанить пользователя";
+            BanUser.Click += BanUser_Click;
+            // 
+            // RestoreUser
+            // 
+            RestoreUser.Name = "RestoreUser";
+            RestoreUser.Size = new Size(233, 22);
+            RestoreUser.Text = "&Восстановить пользователя";
+            RestoreUser.Click += RestoreUser_Click;
+            // 
+            // MakeAdministrator
+            // 
+            MakeAdministrator.Name = "MakeAdministrator";
+            MakeAdministrator.Size = new Size(233, 22);
+            MakeAdministrator.Text = "&Сделать администратором";
+            MakeAdministrator.Click += MakeAdministrator_Click;
+            // 
+            // ShowHistoryOperations
+            // 
+            ShowHistoryOperations.Name = "ShowHistoryOperations";
+            ShowHistoryOperations.Size = new Size(233, 22);
+            ShowHistoryOperations.Text = "&Показать историю операций";
+            ShowHistoryOperations.Click += ShowHistoryOperations_Click;
             // 
             // nameTextBox
             // 
@@ -121,6 +165,7 @@
             Text = "Информация о пользователе";
             Load += ShowUserInformation_Load;
             ((System.ComponentModel.ISupportInitialize)userInformationDataGridView).EndInit();
+            ContextMenuStripForGrid.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -134,5 +179,10 @@
         private Button printExcelButton;
         private ComboBox userStatusComboBox;
         private Label label2;
+        private ContextMenuStrip ContextMenuStripForGrid;
+        private ToolStripMenuItem BanUser;
+        private ToolStripMenuItem RestoreUser;
+        private ToolStripMenuItem MakeAdministrator;
+        private ToolStripMenuItem ShowHistoryOperations;
     }
 }

@@ -33,12 +33,12 @@ namespace FinancialApp.GeneralMethods
                 var row = 2;
                 const int column = 1;
  
-                worksheet.Cells[1, column].Value = HeadlinesTypes.Дата.ToString();
-                worksheet.Cells[1, column + 1].Value = HeadlinesTypes.Отправитель.ToString();
-                worksheet.Cells[1, column + 2].Value = HeadlinesTypes.Тип_операции.ToString();
-                worksheet.Cells[1, column + 3].Value = HeadlinesTypes.Тип_валюты.ToString();
-                worksheet.Cells[1, column + 4].Value = HeadlinesTypes.Деньги.ToString();
-                worksheet.Cells[1, column + 5].Value = HeadlinesTypes.Получатель.ToString();
+                worksheet.Cells[1, column].Value = Headlines.GetHeadlinesTypes(HeadlinesTypes.Date);
+                worksheet.Cells[1, column + 1].Value = Headlines.GetHeadlinesTypes(HeadlinesTypes.Sender);
+                worksheet.Cells[1, column + 2].Value = Headlines.GetHeadlinesTypes(HeadlinesTypes.TypeOfOperation);
+                worksheet.Cells[1, column + 3].Value = Headlines.GetHeadlinesTypes(HeadlinesTypes.CurrencyType);
+                worksheet.Cells[1, column + 4].Value = Headlines.GetHeadlinesTypes(HeadlinesTypes.Money);
+                worksheet.Cells[1, column + 5].Value = Headlines.GetHeadlinesTypes(HeadlinesTypes.Recipient);
 
                 foreach (var transferItem in operationHistory)
                 {
@@ -53,13 +53,13 @@ namespace FinancialApp.GeneralMethods
                     switch (transferItem.OperationType)
                     {
                         case TypeOfOperation.exchange:
-                            worksheet.Cells[row, column + 2].Value = "обмен";
+                            worksheet.Cells[row, column + 2].Value = TypeOperation.GetTypeOfOperation(TypeOfOperation.exchange);
                             break;
                         case TypeOfOperation.refill:
-                            worksheet.Cells[row, column + 2].Value = "попоплненение";
+                            worksheet.Cells[row, column + 2].Value = TypeOperation.GetTypeOfOperation(TypeOfOperation.refill);
                             break;
                         case TypeOfOperation.moneyTransfer:
-                            worksheet.Cells[row, column + 2].Value = "перевод";
+                            worksheet.Cells[row, column + 2].Value = TypeOperation.GetTypeOfOperation(TypeOfOperation.moneyTransfer);
                             worksheet.Cells[row, column + 5].Value = personRecipient.Name;
                             break;
                         default:

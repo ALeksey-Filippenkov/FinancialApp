@@ -6,15 +6,4 @@
        USD = 1,
        EUR = 2
     }
-
-    //public static class EnumService
-    //{
-    //    public static string GetName(CurrencyType type)
-    //    {
-    //        switch (type)
-    //        {
-                
-    //        }
-    //    }
-    //}
 }

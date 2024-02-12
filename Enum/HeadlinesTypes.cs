@@ -2,11 +2,28 @@
 {
     public enum HeadlinesTypes
     {
-        Дата = 0,
-        Отправитель = 1,
-        Тип_операции = 2,
-        Тип_валюты = 3,
-        Деньги = 4,
-        Получатель = 5
+        Date = 0,
+        Sender = 1,
+        TypeOfOperation = 2,
+        CurrencyType = 3,
+        Money = 4,
+        Recipient = 5
+    }
+
+    public static class Headlines
+    {
+        public static string GetHeadlinesTypes(HeadlinesTypes type)
+        {
+            return type switch
+            {
+                HeadlinesTypes.Date => "Дата",
+                HeadlinesTypes.Sender => "Отправитель",
+                HeadlinesTypes.TypeOfOperation => "Тип операции",
+                HeadlinesTypes.CurrencyType => "Тип валюты",
+                HeadlinesTypes.Money => "Сумма",
+                HeadlinesTypes.Recipient => "Получатель",
+                _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+            };
+        }
     }
 }

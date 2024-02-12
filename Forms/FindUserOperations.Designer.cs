@@ -192,7 +192,7 @@
             Controls.Add(label2);
             Controls.Add(label1);
             Name = "FindUserOperations";
-            Text = "FindUserOperations";
+            Text = "Поиcк операций пользователя";
             ((System.ComponentModel.ISupportInitialize)historyOperationDataGridView).EndInit();
             ResumeLayout(false);
             PerformLayout();
