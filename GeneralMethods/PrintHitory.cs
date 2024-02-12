@@ -27,15 +27,15 @@ namespace FinancialApp.GeneralMethods
                 switch (transferItem.OperationType)
                 {
                     case TypeOfOperation.exchange:
-                        historyOperationDataGridView.Rows[index].Cells[1].Value = "обмен";
+                        historyOperationDataGridView.Rows[index].Cells[1].Value = TypeOperation.GetTypeOfOperation(TypeOfOperation.exchange);
                         historyOperationDataGridView.Rows[index].Cells[2].Value = personSender.Name;
                         break;
                     case TypeOfOperation.refill:
-                        historyOperationDataGridView.Rows[index].Cells[1].Value = "пополненеие";
+                        historyOperationDataGridView.Rows[index].Cells[1].Value = TypeOperation.GetTypeOfOperation(TypeOfOperation.refill);
                         historyOperationDataGridView.Rows[index].Cells[2].Value = personSender.Name;
                         break;
                     case TypeOfOperation.moneyTransfer:
-                        historyOperationDataGridView.Rows[index].Cells[1].Value = "перевод";
+                        historyOperationDataGridView.Rows[index].Cells[1].Value = TypeOperation.GetTypeOfOperation(TypeOfOperation.moneyTransfer);
                         historyOperationDataGridView.Rows[index].Cells[2].Value = personSender.Name;
                         historyOperationDataGridView.Rows[index].Cells[5].Value = personRecipient.Name;
                         break;

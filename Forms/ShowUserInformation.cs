@@ -1,4 +1,5 @@
 ﻿using FinancialApp.DataBase;
+using FinancialApp.Enum;
 using FinancialApp.GeneralMethods;
 using System.Runtime.InteropServices;
 using Excel = Microsoft.Office.Interop.Excel;
@@ -8,16 +9,21 @@ namespace FinancialApp.Forms
     public partial class ShowUserInformation : Form
     {
         private readonly DB _db;
+        private readonly Guid _id;
         private List<Person> _user;
         private readonly List<string> _personData;
         private int _index;
+        private bool cancelContextMenu = false;
+        private readonly FormData _formData;
 
-        public ShowUserInformation(DB db)
+        public ShowUserInformation(DB db, Guid id)
         {
             _db = db;
+            _id = id;
             _personData = PersonalData.GetUserData();
             InitializeComponent();
             RefreshDataGridView();
+            _formData = new FormData();
         }
 
         private void NameTextBox_TextChanged(object sender, EventArgs e)
@@ -41,10 +47,11 @@ namespace FinancialApp.Forms
             var searchString = nameTextBox.Text.ToLower();
 
             var searchInfo = _db.Persons.Where(p => p.Name.ToLower().Contains(searchString) && p.Name.Length > 0 ||
-                       p.Surname.ToLower().Contains(searchString) && p.Surname.Length > 0 ||
-                       p.City.ToLower().Contains(searchString) && p.City.Length > 0 ||
-                       p.Adress.ToLower().Contains(searchString) && p.Adress.Length > 0 ||
-                       p.Age.ToString().Contains(searchString)).ToList();
+                                                    p.Surname.ToLower().Contains(searchString) &&
+                                                    p.Surname.Length > 0 ||
+                                                    p.City.ToLower().Contains(searchString) && p.City.Length > 0 ||
+                                                    p.Adress.ToLower().Contains(searchString) && p.Adress.Length > 0 ||
+                                                    p.Age.ToString().Contains(searchString)).ToList();
 
             if (searchString.Length != 0 && _index == -1 || _index == 0)
             {
@@ -149,6 +156,7 @@ namespace FinancialApp.Forms
                     MessageBox.Show("Поля нельзя редактировать");
                     break;
             }
+
             _db.SaveDB();
         }
 
@@ -211,6 +219,7 @@ namespace FinancialApp.Forms
                     worksheet.Columns[i].AutoFit();
                     worksheet.Columns[i].HorizontalAlignment = Excel.Constants.xlCenter;
                 }
+
                 worksheet.Protect();
             }
 
@@ -219,6 +228,122 @@ namespace FinancialApp.Forms
                 Marshal.ReleaseComObject(worksheet);
                 Marshal.ReleaseComObject(workbook);
                 Marshal.ReleaseComObject(application);
+            }
+        }
+
+        private void UserInformationDataGridView_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right) return;
+            var hitTestInfo = userInformationDataGridView.HitTest(e.X, e.Y);
+            if (hitTestInfo.RowIndex >= 0 && hitTestInfo.ColumnIndex >= 0)
+            {
+                userInformationDataGridView.ClearSelection();
+                userInformationDataGridView.Rows[hitTestInfo.RowIndex].Selected = true;
+                cancelContextMenu = false;
+            }
+            else
+            {
+                cancelContextMenu = true;
+            }
+        }
+
+        private void ContextMenuStripForGrid_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (cancelContextMenu)
+            {
+                e.Cancel = true;
+            }
+        }
+
+        private void BanUser_Click(object sender, EventArgs e)
+        {
+            var selectedRows = userInformationDataGridView.SelectedRows;
+            foreach (DataGridViewRow selectedRow in selectedRows)
+            {
+                var rowIndex = selectedRow.Index;
+
+                if (rowIndex < 0)
+                {
+                    continue;
+                }
+
+                var person = _user[rowIndex];
+                var dlgConfirm =
+                    MessageBox.Show(
+                        "Забанить пользователя?\r\n\r\nИмя: " + person.Name + "\r\n Фамилия: " + person.Surname,
+                        "Подтвердите", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                if (dlgConfirm == DialogResult.Yes)
+                {
+                    ActionsWithUsers.UserActions(_db, person, AdministratorActionsWithUser.banUser, _id);
+                }
+            }
+        }
+
+        private void RestoreUser_Click(object sender, EventArgs e)
+        {
+            var selectedRows = userInformationDataGridView.SelectedRows;
+            foreach (DataGridViewRow selectedRow in selectedRows)
+            {
+                var rowIndex = selectedRow.Index;
+
+                if (rowIndex < 0)
+                {
+                    continue;
+                }
+
+                var person = _user[rowIndex];
+                var dlgConfirm =
+                    MessageBox.Show(
+                        "Разбанить пользователя?\r\n\r\nИмя: " + person.Name + "\r\n Фамилия: " + person.Surname,
+                        "Подтвердите", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                if (dlgConfirm == DialogResult.Yes)
+                {
+                    ActionsWithUsers.UserActions(_db, person, AdministratorActionsWithUser.unbanUser, _id);
+                }
+            }
+        }
+
+        private void MakeAdministrator_Click(object sender, EventArgs e)
+        {
+            var selectedRows = userInformationDataGridView.SelectedRows;
+            foreach (DataGridViewRow selectedRow in selectedRows)
+            {
+                var rowIndex = selectedRow.Index;
+
+                if (rowIndex < 0)
+                {
+                    continue;
+                }
+
+                var person = _user[rowIndex];
+                var dlgConfirm =
+                    MessageBox.Show(
+                        "Доавить пользователю права адмнистратора?\r\n\r\nИмя: " + person.Name + "\r\n Фамилия: " +
+                        person.Surname, "Подтвердите", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                if (dlgConfirm == DialogResult.Yes)
+                {
+                    var name = person.Name;
+                    var surName = person.Surname;
+                    ActionsWithUsers.CreatingAdministrator(_db, name, surName);
+                }
+            }
+        }
+
+        private void ShowHistoryOperations_Click(object sender, EventArgs e)
+        {
+            var selectedRows = userInformationDataGridView.SelectedRows;
+            foreach (DataGridViewRow selectedRow in selectedRows)
+            {
+                var rowIndex = selectedRow.Index;
+
+                if (rowIndex < 0)
+                {
+                    continue;
+                }
+
+                var person = _user[rowIndex];
+                var userTransactionHistory = new UserTransactionHistory(_db, _formData, person);
+                userTransactionHistory.Show();
             }
         }
     }

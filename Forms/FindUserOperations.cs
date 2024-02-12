@@ -9,7 +9,7 @@ namespace FinancialApp.Forms
         private List<HistoryTransfer> _personHistoryOperation;
         private Person _personRecipient;
         private List<HistoryTransfer> _operationPersonRecipient;
-        private FormData _formData;
+        private readonly FormData _formData;
 
         public FindUserOperations(DB db, FormData formData)
         {
@@ -38,7 +38,7 @@ namespace FinancialApp.Forms
                     return;
                 }
 
-                _operationPersonRecipient = _db.HistoryTransfers.Where(h => h.SenderId == _personRecipient.Id || h.RecipientId == _personRecipient.Id).ToList();
+                _operationPersonRecipient = CommonMethod.GetHistoryTransfer(_db, _personRecipient.Id);
             }
             else
             {

@@ -8,7 +8,7 @@ namespace FinancialApp.Forms
         private readonly Form _form;
         private readonly DB _db;
         private readonly Guid _id;
-        private FormData _formDataData;
+        private readonly FormData _formDataData;
 
         public EnterForm(Guid id, Form form, DB db)
         {
