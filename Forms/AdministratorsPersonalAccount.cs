@@ -105,6 +105,11 @@ namespace FinancialApp.Forms
 
                         var user = _db.Persons.FirstOrDefault(u =>
                             u.Name.ToLower() == nameTextBox.Text.ToLower() && u.Surname.ToLower() == surnameTextBox.Text.ToLower());
+                        if (user.IsBanned)
+                        {
+                            MessageBox.Show("Пользователь забанен. Присвоение ему статуса администратора не возможно!");
+                            return;
+                        }
                         if (user == null)
                         {
                             MessageBox.Show(

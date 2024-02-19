@@ -316,6 +316,11 @@ namespace FinancialApp.Forms
                 }
 
                 var person = _user[rowIndex];
+                if (person.IsBanned)
+                {
+                    MessageBox.Show("Пользователь забанен. Присвоение ему статуса администратора не возможно!");
+                    return;
+                }
                 var dlgConfirm =
                     MessageBox.Show(
                         "Доавить пользователю права адмнистратора?\r\n\r\nИмя: " + person.Name + "\r\n Фамилия: " +
