@@ -142,5 +142,25 @@ namespace FinancialApp.GeneralMethods
             }
             return res.ToString();
         }
+
+        public static void CreatingAdministratorFormUsers(DB db, string name, string surName)
+        {
+            var user = db.Persons.First(u => u.Name == name && u.Surname == surName);
+            var admin = new Admin
+            {
+                Login = user.Login,
+                Password = user.Password,
+                Id = user.Id,
+                Name = user.Name,
+                Surname = user.Surname
+            };
+
+            db.Admins.Add(admin);
+
+            MessageBox.Show("Поздравляем! Вы успешно добавили администратора");
+            Thread.Sleep(50);
+
+            db.SaveDB();
+        }
     }
 }
