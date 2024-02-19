@@ -201,7 +201,7 @@ namespace FinancialApp.Forms
             {
                 flag = false;
                 message =
-                    $"У вас недостаточно срадств на счету с которого вы хотите произвести {TypeOperation.GetTypeOfOperation(TypeOfOperation.exchange)}!\n Хотите пополнить счет?";
+                    $"У вас недостаточно срадств на счету с которого вы хотите произвести {TypeOperation.GetTypeOfOperation(TypeOfOperation.exchange)}и!\n Хотите пополнить счет?";
                 ExchangeError(message, flag);
                 return;
             }
@@ -241,7 +241,7 @@ namespace FinancialApp.Forms
 
         private void SaveMoneyExchangeHistory(int debit, double money)
         {
-            MessageBox.Show($"Поздравляем! Вы успешно {TypeOperation.GetTypeOfOperation(TypeOfOperation.exchange)} деньги");
+            MessageBox.Show($"Поздравляем! Вы успешно {TypeOperation.GetTypeOfOperation(TypeOfOperation.exchange)}и деньги");
             var historyTransfer = new HistoryTransfer
             {
                 SenderId = _id,

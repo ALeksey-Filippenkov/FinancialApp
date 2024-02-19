@@ -1,7 +1,6 @@
 ﻿using FinancialApp.DataBase;
 using FinancialApp.Enum;
 using FinancialApp.GeneralMethods;
-using Microsoft.Office.Interop.Excel;
 
 namespace FinancialApp.Forms
 {
@@ -27,7 +26,7 @@ namespace FinancialApp.Forms
             else
             {
                 _isGeneralAdmin = isGeneralAdmin;
-                var nameAdmin = _db.Admins.First(n => n.Id == _id);
+                var nameAdmin = db.Admins.First(n => n.Id == id);
                 nameAdministration.Text = string.Join(" ", nameAdmin.Name + nameAdmin.Surname);
             }
             _form = form1;
@@ -113,7 +112,7 @@ namespace FinancialApp.Forms
                             return;
                         }
 
-                        ActionsWithUsers.CreatingAdministrator(_db, nameTextBox.Text, surnameTextBox.Text);
+                        ActionsWithUsers.CreatingAdministratorFormUsers(_db, nameTextBox.Text, surnameTextBox.Text);
                         break;
                     case 1:
                         ActionsWithUsers.CreatingAdministrator(_db, nameTextBox.Text, surnameTextBox.Text);

@@ -324,7 +324,7 @@ namespace FinancialApp.Forms
                 {
                     var name = person.Name;
                     var surName = person.Surname;
-                    ActionsWithUsers.CreatingAdministrator(_db, name, surName);
+                    ActionsWithUsers.CreatingAdministratorFormUsers(_db, name, surName);
                 }
             }
         }

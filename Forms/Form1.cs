@@ -27,11 +27,36 @@ namespace FinancialApp.Forms
         private void SearchPerson()
         {
             var searchAccount = _db.Persons.FirstOrDefault(enterAccount => enterAccount.Login == loginInput.Text && enterAccount.Password == passwordInput.Text);
+            var searchAdmin = _db.Admins.FirstOrDefault(admin => admin.Login == loginInput.Text && admin.Password == passwordInput.Text);
 
             switch (searchAccount)
             {
                 case { IsBanned: false }:
-                    EnterAccount(searchAccount.Id);
+                    if (searchAdmin != null && searchAccount.Login.Equals(searchAdmin.Login) && searchAccount.Password.Equals(searchAdmin.Password))
+                    {
+                        var messageBox = new MessageBoxForm();
+                        var result = messageBox.ShowDialog();
+                        switch (result)
+                        {
+                            case DialogResult.OK:
+                                EnterAccount(searchAccount.Id);
+                                break;
+                            case DialogResult.No:
+                            {
+                                var administratorsPersonalAccount = new AdministratorsPersonalAccount(false, this, _db, searchAdmin.Id);
+                                administratorsPersonalAccount.Show();
+                                Hide();
+                                break;
+                            }
+                            default:
+                                messageBox.Close();
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        EnterAccount(searchAccount.Id);
+                    }
                     break;
                 case { IsBanned: true }:
                     MessageBox.Show("Пользователь забанен");
@@ -48,7 +73,6 @@ namespace FinancialApp.Forms
                     }
                     else
                     {
-                        var searchAdmin = _db.Admins.FirstOrDefault(admin => admin.Login == loginInput.Text && admin.Password == passwordInput.Text);
                         if (searchAdmin == null)
                         {
                             MessageBox.Show("Неверный логин или пароль");
