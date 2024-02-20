@@ -115,9 +115,9 @@
             label1.AutoSize = true;
             label1.Location = new Point(12, 22);
             label1.Name = "label1";
-            label1.Size = new Size(217, 15);
+            label1.Size = new Size(158, 15);
             label1.TabIndex = 18;
-            label1.Text = "Введите имя пользователя для поиска";
+            label1.Text = "Введите данные для поиска";
             // 
             // printExcelButton
             // 

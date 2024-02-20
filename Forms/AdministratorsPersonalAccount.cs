@@ -186,7 +186,7 @@ namespace FinancialApp.Forms
 
         private void SearchAdministratorActionsButton_Click(object sender, EventArgs e)
         {
-            var administratorActions = new HistoryAdministratorsActions();
+            var administratorActions = new HistoryAdministratorsActions(_db);
             administratorActions.Show();
         }
 
