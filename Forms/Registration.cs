@@ -1,15 +1,18 @@
 ﻿using FinancialApp.DataBase;
+using FinancialApp.DataBase.DbModels;
 
 namespace FinancialApp.Forms
 {
     public partial class Registration : Form
     {
         private readonly DB _db;
+        private readonly DbFinancial _context;
 
-        public Registration(DB db)
+        public Registration(DB db, DbFinancial context)
         {
             InitializeComponent();
             _db = db;
+            _context = context;
         }
 
         private void AddButton_Click(object sender, EventArgs e)
@@ -17,6 +20,9 @@ namespace FinancialApp.Forms
             CheckingTheEnteredData();
         }
 
+        /// <summary>
+        /// Проверка вводимых пользователем данных
+        /// </summary>
         public void CheckingTheEnteredData()
         {
             if (ageInput.Text == string.Empty || phoneInput.Text == string.Empty)
@@ -26,7 +32,7 @@ namespace FinancialApp.Forms
             }
             else
             {
-                var ageValue = int.TryParse(ageInput.Text, out int ageInt);
+                var ageValue = int.TryParse(ageInput.Text, out var ageInt);
                 if (ageValue == false)
                 {
                     MessageBox.Show("Возраст должен быть числом");
@@ -43,40 +49,54 @@ namespace FinancialApp.Forms
                         return;
                 }
 
-                var phoneNumberValue = int.TryParse(phoneInput.Text, out int phoneNumberInt);
+                var phoneNumberValue = int.TryParse(phoneInput.Text, out var phoneNumberInt);
                 if (phoneNumberValue == false)
                 {
                     MessageBox.Show("Номер телефона должен быть в виде числа");
                     return;
                 }
-                AddPerson(phoneNumberInt);
+                AddPerson(ageInt, phoneNumberInt);
             }
         }
 
-        public void AddPerson(int phoneNumberInt)
+        /// <summary>
+        /// Добавление нового пользователя в базу данных
+        /// </summary>
+        /// <param name="age"></param>
+        /// <param name="phoneNumberInt"></param>
+        public void AddPerson(int age, int phoneNumberInt)
         {
-            
-            var personId = Guid.NewGuid();
-            var person = new Person
+            var person = new DbPerson
             {
                 Name = name.Text,
                 Surname = surnameInput.Text,
+                Age = age,
                 City = cityInput.Text,
                 Adress = adressInput.Text,
-                PhoneNumber = phoneNumberInt,
-                EmailAdress = emailInput.Text
-            };
-
-            if (_db.Persons.Count != 0)
+                EmailAdress = emailInput.Text,
+                Id = Guid.NewGuid(),
+                Password = passwordInput.Text,
+                IsBanned = false
+        };
+            
+            if (_context.Persons.Count() != 0)
             {
-                foreach (var item in _db.Persons)
+                foreach (var item in _context.Persons)
                 {
                     if (item.Login.Equals(loginInput.Text))
                     {
                         MessageBox.Show("Данный логин уже используется\nПридумайте другой.");
                         return;
                     }
+
+                    if (item.PhoneNumber.Equals(phoneNumberInt))
+                    {
+                        MessageBox.Show("Данный телефон уже используется.");
+                        return;
+                    }
+
                     person.Login = loginInput.Text;
+                    person.PhoneNumber = phoneNumberInt;
                 }
             }
             else
@@ -84,14 +104,10 @@ namespace FinancialApp.Forms
                 person.Login = loginInput.Text;
             }
 
-            person.Password = passwordInput.Text;
-            person.Id = personId;
-            person.IsBanned = false;
-            _db.Persons.Add(person);
+            _context.Persons.Add(person);
 
             MessageBox.Show("Поздравляем! Вы успешно прошли регистрацию");
-            Thread.Sleep(50);
-            _db.SaveDB();
+            _context.SaveChanges();
             Close();
         }
 

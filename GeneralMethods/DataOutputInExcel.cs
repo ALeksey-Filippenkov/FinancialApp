@@ -1,4 +1,5 @@
 ﻿using FinancialApp.DataBase;
+using FinancialApp.DataBase.DbModels;
 using FinancialApp.Enum;
 using System.Runtime.InteropServices;
 using Excel = Microsoft.Office.Interop.Excel;
@@ -8,13 +9,15 @@ namespace FinancialApp.GeneralMethods
     public class DataOutputInExcel
     {
         private readonly DB _db;
+        private readonly DbFinancial _context;
 
-        public DataOutputInExcel(DB db)
+        public DataOutputInExcel(DB db, DbFinancial context)
         {
             _db = db;
+            _context = context;
         }
 
-        public void GetDataOutputInExcel(List<HistoryTransfer> operationHistory)
+        public void GetDataOutputInExcel(List<DbHistoryTransfer> operationHistory)
         {
             Excel.Application application = null;
             Excel.Workbook workbook = null;
@@ -42,8 +45,8 @@ namespace FinancialApp.GeneralMethods
 
                 foreach (var transferItem in operationHistory)
                 {
-                    var personSender = _db.Persons.First(p => p.Id == transferItem.SenderId);
-                    var personRecipient = _db.Persons.FirstOrDefault(p => p.Id == transferItem.RecipientId);
+                    var personSender = _context.Persons.First(p => p.Id == transferItem.SenderId);
+                    var personRecipient = _context.Persons.FirstOrDefault(p => p.Id == transferItem.RecipientId);
 
                     worksheet.Cells[row, column].Value = transferItem.DateTime;
                     worksheet.Cells[row, column + 1].Value = personSender.Name;

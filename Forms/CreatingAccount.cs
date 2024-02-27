@@ -1,4 +1,5 @@
 ﻿using FinancialApp.DataBase;
+using FinancialApp.DataBase.DbModels;
 using FinancialApp.Enum;
 
 namespace FinancialApp.Forms
@@ -7,12 +8,14 @@ namespace FinancialApp.Forms
     {
         private readonly DB _db;
         private readonly Guid _id;
+        private readonly DbFinancial _context;
 
-        public CreatingAccount(DB db, Guid id)
+        public CreatingAccount(DB db, Guid id, DbFinancial context)
         {
             InitializeComponent();
             _db = db;
             _id = id;
+            _context = context;
         }
 
         private void CreatingCashAccount_Click(object sender, EventArgs e)
@@ -24,17 +27,17 @@ namespace FinancialApp.Forms
             }
             else
             {
-                var money = new PersonMoney
+                var money = new DbPersonMoney
                 {
                     PersonId = _id,
                     Id = Guid.NewGuid(),
                     Type = (CurrencyType)listBox1.SelectedIndex,
                     Balance = 0
                 };
-                _db.Money.Add(money);
+                _context.Money.Add(money);
                 MessageBox.Show("Поздравляем! Вы успешно создали счет");
                 Thread.Sleep(50);
-                _db.SaveDB();
+                _context.SaveChanges();
                 Close();
             }
         }

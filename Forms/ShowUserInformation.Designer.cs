@@ -64,7 +64,7 @@
             userInformationDataGridView.RowTemplate.Height = 25;
             userInformationDataGridView.Size = new Size(1206, 428);
             userInformationDataGridView.TabIndex = 21;
-            userInformationDataGridView.CellEndEdit += DataGridViewBooks_CellEndEdit;
+            userInformationDataGridView.CellEndEdit += DataGridViewPersons_CellEndEdit;
             userInformationDataGridView.MouseDown += UserInformationDataGridView_MouseDown;
             // 
             // ContextMenuStripForGrid

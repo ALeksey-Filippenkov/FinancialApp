@@ -1,15 +1,16 @@
 ﻿using FinancialApp.DataBase;
+using FinancialApp.DataBase.DbModels;
 using FinancialApp.Enum;
 
 namespace FinancialApp.GeneralMethods
 {
     public static class RebootLabelText
     {
-        public static void LabelText (DB db, Guid id, FormData form)
+        public static void LabelText (DB db, Guid id, FormData form, DbFinancial context)
         {
-            var rub = db.Money.FirstOrDefault(p => p.PersonId == id && p.Type == CurrencyType.RUB);
-            var usd = db.Money.FirstOrDefault(p => p.PersonId == id && p.Type == CurrencyType.USD);
-            var eur = db.Money.FirstOrDefault(p => p.PersonId == id && p.Type == CurrencyType.EUR);
+            var rub = context.Money.FirstOrDefault(p => p.PersonId == id && p.Type == CurrencyType.RUB);
+            var usd = context.Money.FirstOrDefault(p => p.PersonId == id && p.Type == CurrencyType.USD);
+            var eur = context.Money.FirstOrDefault(p => p.PersonId == id && p.Type == CurrencyType.EUR);
 
            var rubLabel = form.RubLebel;
            var usdLabel = form.UsdLebel;

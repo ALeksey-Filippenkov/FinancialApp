@@ -1,6 +1,4 @@
-﻿using Microsoft.Office.Interop.Excel;
-
-namespace FinancialApp.DataBase
+﻿namespace FinancialApp.DataBase
 {
     public class UserActionInformation
     {

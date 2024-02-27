@@ -1,4 +1,5 @@
 ﻿using FinancialApp.DataBase;
+using FinancialApp.DataBase.DbModels;
 using FinancialApp.Enum;
 using FinancialApp.GeneralMethods;
 using System.Net;
@@ -15,13 +16,15 @@ namespace FinancialApp.Forms
         private double _moneyTransfer;
         private double _usd;
         private double _eur;
+        private readonly DbFinancial _context;
 
-        public MoneyTransfer(DB db, Guid id, FormData formData)
+        public MoneyTransfer(DB db, Guid id, FormData formData, DbFinancial context)
         {
             InitializeComponent();
             _db = db;
             _id = id;
             _formData = formData;
+            _context = context;
             ViewRichTextBoxOutData();
             linkLabel1.LinkClicked += LinkLabel1_LinkClicked;
         }
@@ -80,8 +83,8 @@ namespace FinancialApp.Forms
 
         public void CheckingThePossibilityOfTranslation()
         {
-            var personSender = CommonMethod.GetSearchAccountOwner(_db, currencyList.SelectedIndex, _id);
-            var personRecipient = _db.Persons.FirstOrDefault(p => p.PhoneNumber == _phoneNumberTransfer);
+            var personSender = CommonMethod.GetSearchAccountOwner(_db, currencyList.SelectedIndex, _id, _context);
+            var personRecipient = _context.Persons.FirstOrDefault(p => p.PhoneNumber == _phoneNumberTransfer);
             if (personRecipient == null)
             {
                 MessageBox.Show("Пользователь с таким номером телефона не найден");
@@ -93,7 +96,7 @@ namespace FinancialApp.Forms
                 MessageBox.Show("У Вас нет счета с таким типом валюты");
                 return;
             }
-            var transfer = CommonMethod.GetSearchAccountOwner(_db, currencyList.SelectedIndex, personRecipient.Id);
+            var transfer = CommonMethod.GetSearchAccountOwner(_db, currencyList.SelectedIndex, personRecipient.Id, _context);
 
             if (transfer == null)
             {
@@ -110,7 +113,7 @@ namespace FinancialApp.Forms
             SuccessfulMoneyTransfer(personSender, personRecipient, transfer);
         }
 
-        private void SuccessfulMoneyTransfer(PersonMoney personSender, Person personRecipient, PersonMoney transfer)
+        private void SuccessfulMoneyTransfer(DbPersonMoney personSender, DbPerson personRecipient, DbPersonMoney transfer)
         {
             transfer.Balance += _moneyTransfer;
             personSender.Balance -= _moneyTransfer;
@@ -118,14 +121,15 @@ namespace FinancialApp.Forms
 
             SavingTheTranslationHistory(personRecipient);
             Thread.Sleep(50);
-            _db.SaveDB();
+            _context.SaveChanges();
             Close();
         }
 
-        private void SavingTheTranslationHistory(Person personRecipient)
+        private void SavingTheTranslationHistory(DbPerson personRecipient)
         {
-            var historyTransfer = new HistoryTransfer
+            var historyTransfer = new DbHistoryTransfer
             {
+                Id = Guid.NewGuid(),
                 DateTime = DateTime.Now,
                 SenderId = _id,
                 Type = (CurrencyType)currencyList.SelectedIndex,
@@ -133,10 +137,10 @@ namespace FinancialApp.Forms
                 MoneyTransfer = _moneyTransfer,
                 OperationType = TypeOfOperation.moneyTransfer
             };
-            _db.HistoryTransfers.Add(historyTransfer);
+            _context.HistoryTransfers.Add(historyTransfer);
 
-            PrintHistory.GetPrintHistory(_db, CommonMethod.GetHistoryTransfer(_db, _id), _formData);
-            RebootLabelText.LabelText(_db, _id, _formData);
+            PrintHistory.GetPrintHistory(_db, CommonMethod.GetHistoryTransfer(_db, _id, _context), _formData, _context);
+            RebootLabelText.LabelText(_db, _id, _formData, _context);
         }
 
         private void ViewRichTextBoxOutData()
@@ -179,8 +183,8 @@ namespace FinancialApp.Forms
                 return;
             }
 
-            var debitAccount = CommonMethod.GetSearchAccountOwner(_db, debit, _id);
-            var replenishmentAccount = CommonMethod.GetSearchAccountOwner(_db, replenishment, _id);
+            var debitAccount = CommonMethod.GetSearchAccountOwner(_db, debit, _id, _context);
+            var replenishmentAccount = CommonMethod.GetSearchAccountOwner(_db, replenishment, _id, _context);
             string message;
             var flag = true;
             if (debitAccount == null)
@@ -242,8 +246,9 @@ namespace FinancialApp.Forms
         private void SaveMoneyExchangeHistory(int debit, double money)
         {
             MessageBox.Show($"Поздравляем! Вы успешно {TypeOperation.GetTypeOfOperation(TypeOfOperation.exchange)}и деньги");
-            var historyTransfer = new HistoryTransfer
+            var historyTransfer = new DbHistoryTransfer
             {
+                Id = Guid.NewGuid(),
                 SenderId = _id,
                 DateTime = DateTime.Now,
                 Type = (CurrencyType)debit,
@@ -251,12 +256,12 @@ namespace FinancialApp.Forms
                 RecipientId = _id,
                 OperationType = TypeOfOperation.exchange
             };
-            _db.HistoryTransfers.Add(historyTransfer);
+            _context.HistoryTransfers.Add(historyTransfer);
 
-            _db.SaveDB();
+            _context.SaveChanges();
 
-            PrintHistory.GetPrintHistory(_db, CommonMethod.GetHistoryTransfer(_db, _id), _formData);
-            RebootLabelText.LabelText(_db, _id, _formData);
+            PrintHistory.GetPrintHistory(_db, CommonMethod.GetHistoryTransfer(_db, _id, _context), _formData, _context);
+            RebootLabelText.LabelText(_db, _id, _formData, _context);
         }
 
         private void ExitButton_Click(object sender, EventArgs e)
@@ -277,13 +282,13 @@ namespace FinancialApp.Forms
             if (result != DialogResult.Yes) return;
             if (flag)
             {
-                var creatingAccount = new CreatingAccount(_db, _id);
+                var creatingAccount = new CreatingAccount(_db, _id, _context);
                 creatingAccount.Show();
                 Close();
             }
             else
             {
-                var addMoney = new AddMoney(_db, _id, _formData);
+                var addMoney = new AddMoney(_db, _id, _formData, _context);
                 addMoney.Show();
                 Close();
             }

@@ -1,6 +1,7 @@
 ﻿using FinancialApp.DataBase;
 using FinancialApp.Enum;
 using System.Text;
+using FinancialApp.DataBase.DbModels;
 
 namespace FinancialApp.GeneralMethods
 {
@@ -14,7 +15,7 @@ namespace FinancialApp.GeneralMethods
         /// <param name="userActions"></param>
         /// <param name="id"></param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public static void UserActions(DB db, Person person, AdministratorActionsWithUser userActions, Guid id)
+        public static void UserActions(DB db, DbPerson person, AdministratorActionsWithUser userActions, Guid adminId, DbFinancial context)
         {
             if (person == null)
             {
@@ -26,21 +27,21 @@ namespace FinancialApp.GeneralMethods
             {
                 case AdministratorActionsWithUser.unbanUser:
                     person.IsBanned = false;
-                    SaveHistoryActionWithUser(db, person.Id, userActions, id);
+                    SaveHistoryActionWithUser(db, person.Id, userActions, adminId, context);
                     MessageBox.Show("Пользователь успешно разбанен");
-                    db.SaveDB();
+                    context.SaveChanges();
                     break;
                 case AdministratorActionsWithUser.banUser:
                     person.IsBanned = true;
-                    SaveHistoryActionWithUser(db, person.Id, userActions, id);
+                    SaveHistoryActionWithUser(db, person.Id, userActions, adminId, context);
                     MessageBox.Show("Пользователь успешно забанен");
-                    db.SaveDB();
+                    context.SaveChanges();
                     break;
                 case AdministratorActionsWithUser.deleteUser:
-                    db.Persons.Remove(person);
-                    SaveHistoryActionWithUser(db, person.Id, userActions, id);
+                    context.Persons.Remove(person);
+                    SaveHistoryActionWithUser(db, person.Id, userActions, adminId, context);
                     MessageBox.Show("Пользователь успешно удален");
-                    db.SaveDB();
+                    context.SaveChanges();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(userActions), userActions, null);
@@ -54,17 +55,18 @@ namespace FinancialApp.GeneralMethods
         /// <param name="id"></param>
         /// <param name="userActions"></param>
         /// <param name="_id"></param>
-        public static void SaveHistoryActionWithUser(DB db, Guid id, AdministratorActionsWithUser userActions, Guid _id)
+        public static void SaveHistoryActionWithUser(DB db, Guid personId, AdministratorActionsWithUser userActions, Guid adminId, DbFinancial context)
         {
-            var historyActionWithUser = new HistoryActionsWithUser
+            var historyActionWithUser = new DbHistoryActionsWithUser
             {
-                IdAdministrator = _id,
-                IdPerson = id,
+                Id = Guid.NewGuid(),
+                IdAdministrator = adminId,
+                IdPerson = personId,
                 TypeActionsWithUser = userActions,
                 DateTime = DateTime.Now
             };
 
-            db.HistoryActionsWithUsers.Add(historyActionWithUser);
+            context.HistoryActionsWithUsers.Add(historyActionWithUser);
         }
 
         /// <summary>
@@ -73,9 +75,9 @@ namespace FinancialApp.GeneralMethods
         /// <param name="db"></param>
         /// <param name="name"></param>
         /// <param name="surname"></param>
-        public static void CreatingAdministrator(DB db, string name, string surname)
+        public static void CreatingAdministrator(DB db, string name, string surname, DbFinancial context)
         {
-            var admin = new Admin
+            var admin = new DbAdmin
             {
                 Login = CreatingLogin(),
                 Password = СreatePassword(),
@@ -84,12 +86,12 @@ namespace FinancialApp.GeneralMethods
                 Surname = surname
             };
 
-            db.Admins.Add(admin);
+            context.Admins.Add(admin);
 
-            MessageBox.Show("Поздравляем! Вы успешно прошли регистрацию");
+            MessageBox.Show("Поздравляем! Вы успешно добавили администратора");
             Thread.Sleep(50);
 
-            db.SaveDB();
+            context.SaveChanges();
         }
 
         /// <summary>
@@ -143,10 +145,10 @@ namespace FinancialApp.GeneralMethods
             return res.ToString();
         }
 
-        public static void CreatingAdministratorFormUsers(DB db, string name, string surName)
+        public static void CreatingAdministratorFormUsers(DB db, string name, string surName, DbFinancial context)
         {
-            var user = db.Persons.First(u => u.Name == name && u.Surname == surName);
-            var admin = new Admin
+            var user = context.Persons.First(u => u.Name == name && u.Surname == surName);
+            var admin = new DbAdmin
             {
                 Login = user.Login,
                 Password = user.Password,
@@ -155,12 +157,12 @@ namespace FinancialApp.GeneralMethods
                 Surname = user.Surname
             };
 
-            db.Admins.Add(admin);
+            context.Admins.Add(admin);
 
             MessageBox.Show("Поздравляем! Вы успешно добавили администратора");
             Thread.Sleep(50);
 
-            db.SaveDB();
+            context.SaveChanges();
         }
     }
 }

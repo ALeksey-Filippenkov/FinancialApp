@@ -1,4 +1,5 @@
 ﻿using FinancialApp.DataBase;
+using FinancialApp.DataBase.DbModels;
 using FinancialApp.Enum;
 using FinancialApp.GeneralMethods;
 
@@ -8,9 +9,10 @@ namespace FinancialApp.Forms
     {
         private readonly DB _db;
         private readonly Guid _id;
-        private List<HistoryTransfer> _historyOperation;
+        private List<DbHistoryTransfer> _historyOperation;
+        private readonly DbFinancial _context;
 
-        public OperationSearch(DB db, Guid id)
+        public OperationSearch(DB db, Guid id, DbFinancial context)
         {
             InitializeComponent();
             monthCalendar1.MaxSelectionCount = 31;
@@ -18,6 +20,7 @@ namespace FinancialApp.Forms
             monthCalendar1.ShowToday = true;
             _db = db;
             _id = id;
+            _context = context;
         }
 
         private void ExitButton_Click(object sender, EventArgs e)
@@ -32,7 +35,7 @@ namespace FinancialApp.Forms
             var currencyTypeValue = currencyTypeTextBox.Text.ToUpper();
             var personRecipientName = personRecipientNameTextBox.Text;
 
-            var operationSearch = _db.HistoryTransfers.Where(h => h.SenderId == _id || h.RecipientId == _id).ToList();
+            var operationSearch = _context.HistoryTransfers.Where(h => h.SenderId == _id || h.RecipientId == _id).ToList();
 
             if (operationSearch.Count == 0)
             {
@@ -42,7 +45,7 @@ namespace FinancialApp.Forms
             }
             else
             {
-                _historyOperation = EventSearch.GetEventSearch(_db, operationSearch, startingDateSearch, endDateSearch, currencyTypeValue, personRecipientName);
+                _historyOperation = EventSearch.GetEventSearch(_db, operationSearch, startingDateSearch, endDateSearch, currencyTypeValue, personRecipientName, _context);
             }
 
             if (_historyOperation == null)
@@ -66,7 +69,7 @@ namespace FinancialApp.Forms
             }
         }
 
-        private void PrintEvent(List<HistoryTransfer> historyOperation)
+        private void PrintEvent(List<DbHistoryTransfer> historyOperation)
         {
 
             if (historyOperation.Count == 0)
@@ -78,8 +81,8 @@ namespace FinancialApp.Forms
             {
                 foreach (var transferItem in historyOperation)
                 {
-                    var personSender = _db.Persons.First(p => p.Id == transferItem.SenderId);
-                    var personRecipient = _db.Persons.FirstOrDefault(p => p.Id == transferItem.RecipientId);
+                    var personSender = _context.Persons.First(p => p.Id == transferItem.SenderId);
+                    var personRecipient = _context.Persons.FirstOrDefault(p => p.Id == transferItem.RecipientId);
 
                     operationHistory.Text += transferItem.OperationType switch
                     {
@@ -94,7 +97,7 @@ namespace FinancialApp.Forms
 
         private void HistoryOperationExcel_Click(object sender, EventArgs e)
         {
-            var newExcel = new DataOutputInExcel(_db);
+            var newExcel = new DataOutputInExcel(_db, _context);
             newExcel.GetDataOutputInExcel(_historyOperation);
         }
     }

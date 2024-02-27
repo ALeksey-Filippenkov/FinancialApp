@@ -1,7 +1,11 @@
 ﻿using FinancialApp.DataBase;
+using FinancialApp.DataBase.DbModels;
 using FinancialApp.Enum;
 using FinancialApp.GeneralMethods;
+using System;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace FinancialApp.Forms
@@ -10,20 +14,28 @@ namespace FinancialApp.Forms
     {
         private readonly DB _db;
         private readonly Guid _id;
-        private List<Person> _user;
+        private List<DbPerson> _user;
         private readonly List<string> _personData;
         private int _index;
         private bool cancelContextMenu = false;
         private readonly FormData _formData;
+        private readonly DbFinancial _context;
 
-        public ShowUserInformation(DB db, Guid id)
+        public ShowUserInformation(DB db, Guid id, DbFinancial context, bool isGeneralAdmin)
         {
             _db = db;
             _id = id;
+            _context = context;
             _personData = PersonalData.GetUserData();
             InitializeComponent();
             RefreshDataGridView();
             _formData = new FormData();
+            if (isGeneralAdmin)
+            {
+                var deleteMenuItem = new ToolStripMenuItem("Удалить пользователя");
+                ContextMenuStripForGrid.Items.Add(deleteMenuItem);
+                deleteMenuItem.Click += DeleteMenuItem_Click;
+            }
         }
 
         private void NameTextBox_TextChanged(object sender, EventArgs e)
@@ -42,11 +54,15 @@ namespace FinancialApp.Forms
             RefreshDataGridView();
         }
 
-        private List<Person> GetFilteredPersons()
+        /// <summary>
+        /// Фильтарация информации о пользователях
+        /// </summary>
+        /// <returns></returns>
+        private List<DbPerson> GetFilteredPersons()
         {
             var searchString = nameTextBox.Text.ToLower();
 
-            var searchInfo = _db.Persons.Where(p => p.Name.ToLower().Contains(searchString) && p.Name.Length > 0 ||
+            var searchInfo = _context.Persons.Where(p => p.Name.ToLower().Contains(searchString) && p.Name.Length > 0 ||
                                                     p.Surname.ToLower().Contains(searchString) &&
                                                     p.Surname.Length > 0 ||
                                                     p.City.ToLower().Contains(searchString) && p.City.Length > 0 ||
@@ -73,20 +89,23 @@ namespace FinancialApp.Forms
 
             if (searchString.Length == 0 && _index == -1 || _index == 0)
             {
-                _user = _db.Persons;
+                _user = _context.Persons.ToList();
                 return _user;
             }
 
             if (searchString.Length == 0 && _index == 1)
             {
-                _user = _db.Persons.Where(s => s.IsBanned == true).ToList();
+                _user = _context.Persons.Where(s => s.IsBanned == true).ToList();
                 return _user;
             }
 
-            _user = _db.Persons.Where(s => s.IsBanned == false).ToList();
+            _user = _context.Persons.Where(s => s.IsBanned == false).ToList();
             return _user;
         }
 
+        /// <summary>
+        /// Обноваление в DataGrid информации
+        /// </summary>
         private void RefreshDataGridView()
         {
             userInformationDataGridView.DataSource = null;
@@ -119,7 +138,12 @@ namespace FinancialApp.Forms
             userInformationDataGridView.Columns["IsBanned"].ReadOnly = true;
         }
 
-        private void DataGridViewBooks_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        /// <summary>
+        /// Поиск изменений информации о пользователе в DataGrid
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DataGridViewPersons_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             var row = e.RowIndex;
             var col = e.ColumnIndex;
@@ -157,7 +181,7 @@ namespace FinancialApp.Forms
                     break;
             }
 
-            _db.SaveDB();
+            _context.SaveChanges();
         }
 
         private void ExitButton_Click(object sender, EventArgs e)
@@ -170,6 +194,9 @@ namespace FinancialApp.Forms
             PrintExcel();
         }
 
+        /// <summary>
+        /// Выгрузка данных из DataGrid в Excel
+        /// </summary>
         private void PrintExcel()
         {
             Excel.Application application = null;
@@ -274,8 +301,9 @@ namespace FinancialApp.Forms
                         "Подтвердите", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                 if (dlgConfirm == DialogResult.Yes)
                 {
-                    ActionsWithUsers.UserActions(_db, person, AdministratorActionsWithUser.banUser, _id);
+                    ActionsWithUsers.UserActions(_db, person, AdministratorActionsWithUser.banUser, _id, _context);
                 }
+                RefreshDataGridView();
             }
         }
 
@@ -294,12 +322,13 @@ namespace FinancialApp.Forms
                 var person = _user[rowIndex];
                 var dlgConfirm =
                     MessageBox.Show(
-                        "Разбанить пользователя?\r\n\r\nИмя: " + person.Name + "\r\n Фамилия: " + person.Surname,
+                        "Разбанить пользователя?\r\n\r\nИмя: " + person.Name + "\r\nФамилия: " + person.Surname,
                         "Подтвердите", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                 if (dlgConfirm == DialogResult.Yes)
                 {
-                    ActionsWithUsers.UserActions(_db, person, AdministratorActionsWithUser.unbanUser, _id);
+                    ActionsWithUsers.UserActions(_db, person, AdministratorActionsWithUser.unbanUser, _id, _context);
                 }
+                RefreshDataGridView();
             }
         }
 
@@ -323,14 +352,15 @@ namespace FinancialApp.Forms
                 }
                 var dlgConfirm =
                     MessageBox.Show(
-                        "Доавить пользователю права адмнистратора?\r\n\r\nИмя: " + person.Name + "\r\n Фамилия: " +
+                        "Доавить пользователю права адмнистратора?\r\n\r\nИмя: " + person.Name + "\r\nФамилия: " +
                         person.Surname, "Подтвердите", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                 if (dlgConfirm == DialogResult.Yes)
                 {
                     var name = person.Name;
                     var surName = person.Surname;
-                    ActionsWithUsers.CreatingAdministratorFormUsers(_db, name, surName);
+                    ActionsWithUsers.CreatingAdministratorFormUsers(_db, name, surName, _context);
                 }
+                RefreshDataGridView();
             }
         }
 
@@ -347,8 +377,33 @@ namespace FinancialApp.Forms
                 }
 
                 var person = _user[rowIndex];
-                var userTransactionHistory = new UserTransactionHistory(_db, _formData, person);
+                var userTransactionHistory = new UserTransactionHistory(_db, _formData, person, _context);
                 userTransactionHistory.Show();
+            }
+        }
+
+        void DeleteMenuItem_Click(object sender, EventArgs e)
+        {
+            var selectedRows = userInformationDataGridView.SelectedRows;
+            foreach (DataGridViewRow selectedRow in selectedRows)
+            {
+                var rowIndex = selectedRow.Index;
+
+                if (rowIndex < 0)
+                {
+                    continue;
+                }
+
+                var person = _user[rowIndex];
+                var dlgConfirm =
+                    MessageBox.Show(
+                        "Удалить пользователя?\r\n\r\nИмя: " + person.Name + "\r\nФамилия: " + person.Surname,
+                        "Подтвердите", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                if (dlgConfirm == DialogResult.Yes)
+                {
+                    ActionsWithUsers.UserActions(_db, person, AdministratorActionsWithUser.deleteUser, _id, _context);
+                }
+                RefreshDataGridView();
             }
         }
     }
