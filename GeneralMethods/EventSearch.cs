@@ -1,14 +1,15 @@
 ﻿using FinancialApp.DataBase;
+using FinancialApp.DataBase.DbModels;
 
 namespace FinancialApp.GeneralMethods
 {
     public static class EventSearch
     {
-        public static List<HistoryTransfer> GetEventSearch(DB db, List<HistoryTransfer> operationSearch, DateTime startingDateSearch, DateTime endDateSearch, string currencyTypeValue, string personRecipientName)
+        public static List<DbHistoryTransfer> GetEventSearch(DB db, List<DbHistoryTransfer> operationSearch, DateTime startingDateSearch, DateTime endDateSearch, string currencyTypeValue, string personRecipientName, DbFinancial context)
         {
-            var searchPersonRecipientName = db.Persons.FirstOrDefault(p => p.Name == personRecipientName);
+            var searchPersonRecipientName = context.Persons.FirstOrDefault(p => p.Name == personRecipientName);
 
-            List<HistoryTransfer>? result = null;
+            List<DbHistoryTransfer>? result = null;
 
             if (startingDateSearch == endDateSearch)
             {

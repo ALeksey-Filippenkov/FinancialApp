@@ -1,12 +1,13 @@
 ﻿using FinancialApp.DataBase;
+using FinancialApp.DataBase.DbModels;
 using FinancialApp.Enum;
 
 namespace FinancialApp.GeneralMethods
 {
     public static class PrintHistory
     {
-        public static void GetPrintHistory(DB db, List<HistoryTransfer> operationHistorySearch,
-            FormData dataGrid)
+        public static void GetPrintHistory(DB db, List<DbHistoryTransfer> operationHistorySearch,
+            FormData dataGrid, DbFinancial context)
         {
             var historyOperationDataGridView = dataGrid.HistoryOperationDataGridView;
 
@@ -14,9 +15,9 @@ namespace FinancialApp.GeneralMethods
 
             foreach (var transferItem in operationHistorySearch)
             {
-                var personSender = db.Persons.First(p => p.Id == transferItem.SenderId);
+                var personSender = context.Persons.First(p => p.Id == transferItem.SenderId);
                 var today = DateOnly.FromDateTime(transferItem.DateTime);
-                var personRecipient = db.Persons.FirstOrDefault(p => p.Id == transferItem.RecipientId);
+                var personRecipient = context.Persons.FirstOrDefault(p => p.Id == transferItem.RecipientId);
 
                 var index = historyOperationDataGridView.Rows.Add();
 

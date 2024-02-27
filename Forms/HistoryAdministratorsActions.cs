@@ -1,4 +1,5 @@
 ﻿using FinancialApp.DataBase;
+using FinancialApp.DataBase.DbModels;
 using FinancialApp.Enum;
 using FinancialApp.GeneralMethods;
 using System.Runtime.InteropServices;
@@ -10,10 +11,13 @@ namespace FinancialApp.Forms
     {
         private readonly DB _db;
         private List<UserActionInformation> _actionWithUsers;
-        public HistoryAdministratorsActions(DB db)
+        private readonly DbFinancial _context;
+
+        public HistoryAdministratorsActions(DB db, DbFinancial context)
         {
             InitializeComponent();
             _db = db;
+            _context = context;
             RefreshDataGridView();
 
         }
@@ -38,10 +42,10 @@ namespace FinancialApp.Forms
 
             _actionWithUsers = new List<UserActionInformation>();
 
-            foreach (var item in _db.HistoryActionsWithUsers)
+            foreach (var item in _context.HistoryActionsWithUsers)
             {
-                var searchAdmin = _db.Admins.FirstOrDefault(n => n.Id == item.IdAdministrator);
-                var searchUser = _db.Persons.First(n => n.Id == item.IdPerson);
+                var searchAdmin = _context.Admins.FirstOrDefault(n => n.Id == item.IdAdministrator);
+                var searchUser = _context.Persons.First(n => n.Id == item.IdPerson);
 
 
                 var nameAdmin = searchAdmin == null ? "Супер админ!" : string.Join(" ", searchAdmin.Name, searchAdmin.Surname);

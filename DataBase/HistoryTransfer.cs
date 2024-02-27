@@ -1,19 +1,21 @@
-﻿using FinancialApp.Enum;
+﻿//using FinancialApp.Enum;
 
-namespace FinancialApp.DataBase
-{
-    public class HistoryTransfer
-    {
-        public Guid SenderId { get; set; }
+//namespace FinancialApp.DataBase
+//{
+//    public class HistoryTransfer
+//    {
+//        public Guid Id { get; set; }
 
-        public Guid RecipientId { get; set; }
+//        public Guid SenderId { get; set; }
 
-        public CurrencyType Type { get; set; }
+//        public Guid RecipientId { get; set; }
 
-        public double MoneyTransfer { get; set; }
+//        public CurrencyType Type { get; set; }
 
-        public DateTime DateTime { get; set; }
+//        public double MoneyTransfer { get; set; }
 
-        public TypeOfOperation OperationType { get; set; }
-    }
-}
+//        public DateTime DateTime { get; set; }
+
+//        public TypeOfOperation OperationType { get; set; }
+//    }
+//}

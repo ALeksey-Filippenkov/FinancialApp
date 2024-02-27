@@ -1,4 +1,5 @@
 ﻿using FinancialApp.DataBase;
+using FinancialApp.DataBase.DbModels;
 using FinancialApp.GeneralMethods;
 
 namespace FinancialApp.Forms
@@ -6,12 +7,13 @@ namespace FinancialApp.Forms
     public partial class FindUserOperations : Form
     {
         private readonly DB _db;
-        private List<HistoryTransfer> _personHistoryOperation;
-        private Person _personRecipient;
-        private List<HistoryTransfer> _operationPersonRecipient;
+        private List<DbHistoryTransfer> _personHistoryOperation;
+        private DbPerson? _personRecipient;
+        private List<DbHistoryTransfer> _operationPersonRecipient;
         private readonly FormData _formData;
+        private readonly DbFinancial _context;
 
-        public FindUserOperations(DB db, FormData formData)
+        public FindUserOperations(DB db, FormData formData, DbFinancial context)
         {
             InitializeComponent();
             monthCalendar1.MaxSelectionCount = 31;
@@ -19,6 +21,7 @@ namespace FinancialApp.Forms
             monthCalendar1.ShowToday = true;
             _db = db;
             _formData = formData;
+            _context = context;
         }
 
         private void Button1_Click(object sender, EventArgs e)
@@ -30,7 +33,7 @@ namespace FinancialApp.Forms
 
             if (personName != string.Empty)
             {
-                _personRecipient = _db.Persons.FirstOrDefault(x => x.Name == personName);
+                _personRecipient = _context.Persons.FirstOrDefault(x => x.Name == personName);
                 if (_personRecipient == null)
                 {
                     historyOperationDataGridView.Rows.Clear();
@@ -38,19 +41,19 @@ namespace FinancialApp.Forms
                     return;
                 }
 
-                _operationPersonRecipient = CommonMethod.GetHistoryTransfer(_db, _personRecipient.Id);
+                _operationPersonRecipient = CommonMethod.GetHistoryTransfer(_db, _personRecipient.Id,  _context);
             }
             else
             {
-                _operationPersonRecipient = _db.HistoryTransfers;
+                _operationPersonRecipient = _context.HistoryTransfers.ToList();
             }
 
-            _personHistoryOperation = EventSearch.GetEventSearch(_db, _operationPersonRecipient, startingDateSearch, endDateSearch, currencyTypeValue, personName);
+            _personHistoryOperation = EventSearch.GetEventSearch(_db, _operationPersonRecipient, startingDateSearch, endDateSearch, currencyTypeValue, personName, _context);
 
             if (_personHistoryOperation.Count != 0)
             {
                 _formData.HistoryOperationDataGridView = historyOperationDataGridView;
-                PrintHistory.GetPrintHistory(_db, _personHistoryOperation, _formData);
+                PrintHistory.GetPrintHistory(_db, _personHistoryOperation, _formData, _context);
             }
             else 
             {
@@ -66,7 +69,7 @@ namespace FinancialApp.Forms
 
         private void PrintExcelButton_Click(object sender, EventArgs e)
         {
-            var newExcel = new DataOutputInExcel(_db);
+            var newExcel = new DataOutputInExcel(_db, _context);
             newExcel.GetDataOutputInExcel(_personHistoryOperation);
         }
     }

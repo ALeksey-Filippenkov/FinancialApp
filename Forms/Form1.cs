@@ -1,15 +1,18 @@
 using FinancialApp.DataBase;
+using FinancialApp.DataBase.DbModels;
 
 namespace FinancialApp.Forms
 {
     public partial class Form1 : Form
     {
         private readonly DB _db;
+        private readonly DbFinancial _context;
 
         public Form1()
         {
             InitializeComponent();
             _db = new DB();
+            _context = new DbFinancial();
             _db = _db.ReadDB();
         }
 
@@ -20,14 +23,17 @@ namespace FinancialApp.Forms
 
         private void RegistrationButton_Click(object sender, EventArgs e)
         {
-            var registrationForms = new Registration(_db);
+            var registrationForms = new Registration(_db, _context);
             registrationForms.Show();
         }
-
+        
+        /// <summary>
+        /// Поиск пользователя для входа
+        /// </summary>
         private void SearchPerson()
         {
-            var searchAccount = _db.Persons.FirstOrDefault(enterAccount => enterAccount.Login == loginInput.Text && enterAccount.Password == passwordInput.Text);
-            var searchAdmin = _db.Admins.FirstOrDefault(admin => admin.Login == loginInput.Text && admin.Password == passwordInput.Text);
+            var searchAccount = _context.Persons.FirstOrDefault(enterAccount => enterAccount.Login == loginInput.Text && enterAccount.Password == passwordInput.Text);
+            var searchAdmin = _context.Admins.FirstOrDefault(admin => admin.Login == loginInput.Text && admin.Password == passwordInput.Text);
 
             switch (searchAccount)
             {
@@ -43,7 +49,7 @@ namespace FinancialApp.Forms
                                 break;
                             case DialogResult.No:
                             {
-                                var administratorsPersonalAccount = new AdministratorsPersonalAccount(false, this, _db, searchAdmin.Id);
+                                var administratorsPersonalAccount = new AdministratorsPersonalAccount(false, this, _db, searchAdmin.Id, _context);
                                 administratorsPersonalAccount.Show();
                                 Hide();
                                 break;
@@ -63,11 +69,11 @@ namespace FinancialApp.Forms
                     return;
                 default:
                 {
-                    var generalAdmin = new Admin() { Password = "admin", Login = "admin", Id = Guid.NewGuid()};
+                    var generalAdmin = new DbAdmin() { Password = "admin", Login = "admin", Id = Guid.NewGuid()};
 
                     if (generalAdmin.Password == passwordInput.Text && generalAdmin.Login == loginInput.Text)
                     {
-                        var administratorsPersonalAccount = new AdministratorsPersonalAccount(true, this, _db, generalAdmin.Id);
+                        var administratorsPersonalAccount = new AdministratorsPersonalAccount(true, this, _db, generalAdmin.Id, _context);
                         administratorsPersonalAccount.Show();
                         Hide();
                     }
@@ -79,7 +85,7 @@ namespace FinancialApp.Forms
                             return;
                         }
 
-                        var administratorsPersonalAccount = new AdministratorsPersonalAccount(false, this, _db, searchAdmin.Id);
+                        var administratorsPersonalAccount = new AdministratorsPersonalAccount(false, this, _db, searchAdmin.Id, _context);
                         administratorsPersonalAccount.Show();
                         Hide();
                     }
@@ -90,7 +96,7 @@ namespace FinancialApp.Forms
 
         private void EnterAccount(Guid id)
         {
-            var enterForms = new EnterForm(id, this, _db);
+            var enterForms = new EnterForm(id, this, _db, _context);
             enterForms.Show();
             Hide();
         }

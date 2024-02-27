@@ -1,4 +1,5 @@
 ﻿using FinancialApp.DataBase;
+using FinancialApp.DataBase.DbModels;
 using FinancialApp.GeneralMethods;
 
 namespace FinancialApp.Forms
@@ -9,13 +10,17 @@ namespace FinancialApp.Forms
         private readonly DB _db;
         private readonly Guid _id;
         private readonly FormData _formDataData;
+        private readonly DbFinancial _context;
 
-        public EnterForm(Guid id, Form form, DB db)
+        public EnterForm(Guid id, Form form, DB db, DbFinancial context)
         {
             InitializeComponent();
             _id = id;
             _form = form;
             _db = db;
+            _context = context;
+
+
             _formDataData = new FormData
             {
                 HistoryOperationDataGridView = historyOperationDataGridView,
@@ -27,7 +32,7 @@ namespace FinancialApp.Forms
 
         private void EnterForm_Load(object sender, EventArgs e)
         {
-            var person = _db.Persons.First(p => p.Id == _id);
+            var person = _context.Persons.First(p => p.Id == _id);
             name.Text = person.Name;
             surname.Text = person.Surname;
             age.Text = person.Age.ToString();
@@ -37,7 +42,7 @@ namespace FinancialApp.Forms
             email.Text = person.EmailAdress;
             login.Text = person.Login;
             password.Text = person.Password;
-            CommonMethod.GetHistoryTransfer(_db, _id);
+            CommonMethod.GetHistoryTransfer(_db, _id, _context);
             RefreshDataGridView();
         }
 
@@ -63,7 +68,8 @@ namespace FinancialApp.Forms
                     return;
                 }
             }
-            _db.SaveDB();
+
+            _context.SaveChanges();
             MessageBox.Show("Изменения сохранены");
             Close();
         }
@@ -89,42 +95,42 @@ namespace FinancialApp.Forms
 
         private void Button1_Click(object sender, EventArgs e)
         {
-            var addMoney = new AddMoney(_db, _id, _formDataData);
+            var addMoney = new AddMoney(_db, _id, _formDataData, _context);
             addMoney.Show();
         }
 
         private void CreateAccount_Click(object sender, EventArgs e)
         {
-            var creatingAccount = new CreatingAccount(_db, _id);
+            var creatingAccount = new CreatingAccount(_db, _id, _context);
             creatingAccount.Show();
         }
         
         private void EnterLabelText()
         {
-            RebootLabelText.LabelText(_db, _id, _formDataData);
+            RebootLabelText.LabelText(_db, _id, _formDataData, _context);
         }
 
         private void MoneyTransferButton_Click(object sender, EventArgs e)
         {
-            var moneyTransfer = new MoneyTransfer(_db, _id, _formDataData);
+            var moneyTransfer = new MoneyTransfer(_db, _id, _formDataData, _context);
             moneyTransfer.Show();
         }
 
         private void SearchButton_Click(object sender, EventArgs e)
         {
-            var operationSearch = new OperationSearch(_db, _id);
+            var operationSearch = new OperationSearch(_db, _id, _context);
             operationSearch.Show();
         }
 
         private void HistoryOperationExcel_Click(object sender, EventArgs e)
         {
-            var newExcel = new DataOutputInExcel(_db);
-            newExcel.GetDataOutputInExcel(CommonMethod.GetHistoryTransfer(_db, _id));
+            var newExcel = new DataOutputInExcel(_db, _context);
+            newExcel.GetDataOutputInExcel(CommonMethod.GetHistoryTransfer(_db, _id, _context));
         }
 
         private void TabPage3_Click(object sender, EventArgs e)
         {
-            CommonMethod.GetHistoryTransfer(_db, _id);
+            CommonMethod.GetHistoryTransfer(_db, _id, _context);
             EnterLabelText();
             RefreshDataGridView();
             var panel = new Panel
@@ -137,7 +143,7 @@ namespace FinancialApp.Forms
 
         private void RefreshDataGridView()
         {
-            PrintHistory.GetPrintHistory(_db, CommonMethod.GetHistoryTransfer(_db, _id), _formDataData);
+            PrintHistory.GetPrintHistory(_db, CommonMethod.GetHistoryTransfer(_db, _id, _context), _formDataData, _context);
         }
 
     }

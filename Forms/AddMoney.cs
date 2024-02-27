@@ -1,4 +1,5 @@
 ﻿using FinancialApp.DataBase;
+using FinancialApp.DataBase.DbModels;
 using FinancialApp.Enum;
 using FinancialApp.GeneralMethods;
 
@@ -9,13 +10,15 @@ namespace FinancialApp.Forms
         private readonly DB _db;
         private readonly Guid _id;
         private readonly FormData _formData;
+        private readonly DbFinancial _context;
 
-        public AddMoney(DB db, Guid id, FormData formData)
+        public AddMoney(DB db, Guid id, FormData formData, DbFinancial context)
         {
             InitializeComponent();
             _db = db;
             _id = id;
             _formData = formData;
+            _context = context;
         }
 
         private void AddMoneyButton_Click(object sender, EventArgs e)
@@ -49,7 +52,7 @@ namespace FinancialApp.Forms
 
         public void AddingMoneyToTheAccount(double moneyDouble)
         {
-            var moneyAccount = CommonMethod.GetSearchAccountOwner(_db, currencyList.SelectedIndex, _id);
+            var moneyAccount = CommonMethod.GetSearchAccountOwner(_db, currencyList.SelectedIndex, _id, _context);
             if (moneyAccount == null)
             {
                 MessageBox.Show("Счета с таким видом валюты не найден");
@@ -60,14 +63,15 @@ namespace FinancialApp.Forms
             AddingMoneyToTheHistory(moneyDouble);
             MessageBox.Show("Поздравляем! Вы успешно добавили деньги");
             Thread.Sleep(50);
-            _db.SaveDB();
+            _context.SaveChanges();
             Close();
         }
 
         public void AddingMoneyToTheHistory(double moneyDouble)
         {
-            var historyTransfer = new HistoryTransfer
+            var historyTransfer = new DbHistoryTransfer
             {
+                Id = Guid.NewGuid(),
                 SenderId = _id,
                 RecipientId = _id,
                 DateTime = DateTime.Now,
@@ -75,10 +79,10 @@ namespace FinancialApp.Forms
                 MoneyTransfer = moneyDouble,
                 OperationType = TypeOfOperation.refill
             };
-            _db.HistoryTransfers.Add(historyTransfer);
+            _context.HistoryTransfers.Add(historyTransfer);
 
-            PrintHistory.GetPrintHistory(_db, CommonMethod.GetHistoryTransfer(_db, _id), _formData);
-            RebootLabelText.LabelText(_db, _id, _formData);
+            PrintHistory.GetPrintHistory(_db, CommonMethod.GetHistoryTransfer(_db, _id, _context), _formData, _context);
+            RebootLabelText.LabelText(_db, _id, _formData, _context);
         }
 
         private void ExitButton_Click(object sender, EventArgs e)

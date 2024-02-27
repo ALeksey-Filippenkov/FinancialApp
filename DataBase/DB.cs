@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using FinancialApp.DataBase.DbModels;
 
 namespace FinancialApp.DataBase
 {
@@ -6,24 +7,23 @@ namespace FinancialApp.DataBase
     {
         public DB()
         {
-            Persons = new List<Person>();
+            //Persons = new List<Person>();
 
-            Money = new List<PersonMoney>();
+            //Money = new List<PersonMoney>();
 
-            HistoryTransfers = new List<HistoryTransfer>();
+            //HistoryTransfers = new List<HistoryTransfer>();
 
-            Admins = new List<Admin>();
+            //Admins = new List<Admin>();
         }
+        //public List<Person> Persons { get; set; }
 
-        public List<Person> Persons { get; set; }
+        //public List<PersonMoney> Money { get; set; }
 
-        public List<PersonMoney> Money { get; set; }
+        //public List<HistoryTransfer> HistoryTransfers { get; set; }
 
-        public List<HistoryTransfer> HistoryTransfers { get; set; }
+        //public List<Admin> Admins { get; set; }
 
-        public List<Admin> Admins { get; set; }
-
-        public List<HistoryActionsWithUser> HistoryActionsWithUsers { get; set; }
+        //public List<HistoryActionsWithUser> HistoryActionsWithUsers { get; set; }
 
         public void SaveDB()
         {           

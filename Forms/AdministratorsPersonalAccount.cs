@@ -1,4 +1,5 @@
 ﻿using FinancialApp.DataBase;
+using FinancialApp.DataBase.DbModels;
 using FinancialApp.Enum;
 using FinancialApp.GeneralMethods;
 
@@ -12,8 +13,9 @@ namespace FinancialApp.Forms
         private AdministratorActionsWithUser _userActions;
         private readonly bool _isGeneralAdmin;
         private readonly FormData _formData;
+        private readonly DbFinancial _context;
 
-        public AdministratorsPersonalAccount(bool isGeneralAdmin, Form form1, DB db, Guid id)
+        public AdministratorsPersonalAccount(bool isGeneralAdmin, Form form1, DB db, Guid id, DbFinancial context)
         {
             InitializeComponent();
 
@@ -21,17 +23,18 @@ namespace FinancialApp.Forms
             {
                 workingWithAdministratorButton.Visible = true;
                 _isGeneralAdmin = isGeneralAdmin;
-                nameAdministration.Text = "Супер администратор";
+                nameAdministration.Text = "Супер адмнистратор";
             }
             else
             {
                 _isGeneralAdmin = isGeneralAdmin;
-                var nameAdmin = db.Admins.First(n => n.Id == id);
+                var nameAdmin = context.Admins.First(n => n.Id == id);
                 nameAdministration.Text = string.Join(" ", nameAdmin.Name + nameAdmin.Surname);
             }
             _form = form1;
             _db = db;
             _id = id;
+            _context = context;
             dateTime.Text = DateOnly.FromDateTime(DateTime.Now).ToString();
             _formData = new FormData();
         }
@@ -67,7 +70,7 @@ namespace FinancialApp.Forms
 
         private void ShowUserPersonalDataButton_Click(object sender, EventArgs e)
         {
-            var showUserInformation = new ShowUserInformation(_db, _id);
+            var showUserInformation = new ShowUserInformation(_db, _id, _context, _isGeneralAdmin);
             showUserInformation.Show();
         }
 
@@ -85,7 +88,7 @@ namespace FinancialApp.Forms
 
         private void FindUserOperationsButton_Click(object sender, EventArgs e)
         {
-            var findUserOperations = new FindUserOperations(_db, _formData);
+            var findUserOperations = new FindUserOperations(_db, _formData, _context);
             findUserOperations.Show();
         }
 
@@ -103,7 +106,7 @@ namespace FinancialApp.Forms
                 {
                     case 0:
 
-                        var user = _db.Persons.FirstOrDefault(u =>
+                        var user = _context.Persons.FirstOrDefault(u =>
                             u.Name.ToLower() == nameTextBox.Text.ToLower() && u.Surname.ToLower() == surnameTextBox.Text.ToLower());
                         if (user.IsBanned)
                         {
@@ -117,10 +120,10 @@ namespace FinancialApp.Forms
                             return;
                         }
 
-                        ActionsWithUsers.CreatingAdministratorFormUsers(_db, nameTextBox.Text, surnameTextBox.Text);
+                        ActionsWithUsers.CreatingAdministratorFormUsers(_db, nameTextBox.Text, surnameTextBox.Text, _context);
                         break;
                     case 1:
-                        ActionsWithUsers.CreatingAdministrator(_db, nameTextBox.Text, surnameTextBox.Text);
+                        ActionsWithUsers.CreatingAdministrator(_db, nameTextBox.Text, surnameTextBox.Text, _context);
                         break;
                 }
             }
@@ -130,14 +133,21 @@ namespace FinancialApp.Forms
                 UserActions(person);
             }
         }
-
-        private Person SearchPerson()
+        /// <summary>
+        /// Поиск пользователя
+        /// </summary>
+        /// <returns></returns>
+        private DbPerson SearchPerson()
         {
-            var searchPerson = _db.Persons.FirstOrDefault(p => p.Name == nameTextBox.Text);
+            var searchPerson = _context.Persons.FirstOrDefault(p => p.Name == nameTextBox.Text);
             return searchPerson;
         }
 
-        private void UserActions(Person person)
+        /// <summary>
+        /// Действия администратора с пользователем
+        /// </summary>
+        /// <param name="person"></param>
+        private void UserActions(DbPerson person)
         {
             if (person == null)
             {
@@ -145,7 +155,7 @@ namespace FinancialApp.Forms
                 return;
             }
 
-            ActionsWithUsers.UserActions(_db, person, _userActions, _id);
+            ActionsWithUsers.UserActions(_db, person, _userActions, _id, _context);
 
             VisibleButtonFalse();
         }
@@ -186,7 +196,7 @@ namespace FinancialApp.Forms
 
         private void SearchAdministratorActionsButton_Click(object sender, EventArgs e)
         {
-            var administratorActions = new HistoryAdministratorsActions(_db);
+            var administratorActions = new HistoryAdministratorsActions(_db, _context);
             administratorActions.Show();
         }
 
